@@ -1,189 +1,74 @@
-# Youssef Badawi - Professional Portfolio
-
-A premium, high-performance portfolio website showcasing dual expertise in Veterinary Medicine and AI/Full-Stack Development.
-
-## Overview
-
-This portfolio is a modern, fully-responsive website built with Next.js 16, React 19, and Tailwind CSS. It seamlessly integrates two distinct professional identities with exceptional visual design, smooth animations, and optimized performance.
-
-## Features
-
-### Design & UX
-- **Premium Color System**: Deep navy blue primary, warm tan secondary, vibrant teal accents with perfect contrast ratios
-- **Dynamic Animations**: Scroll-linked interactions, smooth transitions, and mouse-tracking effects
-- **Responsive Design**: Mobile-first approach with full desktop optimization
-- **Interactive Elements**: Project cards, gallery with lightbox, smooth navigation
-
-### Content Sections
-1. **Hero Section**: Compelling introduction with profile image and CTA buttons
-2. **Veterinary Medicine**: Three featured projects with detailed descriptions and impact metrics
-3. **AI & Development**: Four technology projects showcasing full-stack capabilities
-4. **Journey & Vision**: Scroll-triggered interactive section bridging both expertise areas
-5. **Gallery**: Eight curated photos with category filtering and lightbox modal
-6. **Footer**: Complete navigation and social links
-
-### Performance
-- Optimized Next.js configuration with image optimization
-- CSS animations with GPU acceleration
-- Lazy loading support for images
-- Minified assets and efficient code splitting
-- Support for reduced motion preferences
-- Cache headers for optimal performance
-
-### Technical Stack
-- **Frontend**: React 19.2, Next.js 16.2, Tailwind CSS 4
-- **Animations**: CSS animations, Framer Motion ready
-- **Images**: Optimized via Vercel Blob storage
-- **Hosting**: Ready for Vercel deployment
-
-## Project Structure
-
-```
-/vercel/share/v0-project/
-├── app/
-│   ├── layout.tsx          # Root layout with metadata & viewport config
-│   ├── page.tsx            # Main page with section management
-│   └── globals.css         # Global styles, animations, performance optimizations
-├── components/
-│   ├── Navigation.tsx      # Fixed navbar with scroll detection
-│   ├── Hero.tsx           # Hero section with mouse tracking
-│   ├── VeterinarySection.tsx  # Vet medicine portfolio projects
-│   ├── AIDevSection.tsx    # AI/Dev projects and skills
-│   ├── ScrollVideo.tsx     # Interactive scroll-linked section
-│   ├── Gallery.tsx        # Photo gallery with filters and lightbox
-│   └── Footer.tsx         # Footer with links and info
-├── lib/
-│   ├── utils.ts          # Utility functions (pre-installed)
-│   └── performance.ts    # Performance optimization utilities
-├── next.config.mjs       # Next.js configuration with optimizations
-└── package.json
-```
-
-## Getting Started
-
-### Installation
-
-```bash
-# Clone or download the project
-cd /vercel/share/v0-project
-
-# Install dependencies (uses pnpm by default)
-pnpm install
-
-# Run development server
-pnpm dev
-
-# Open browser
-# http://localhost:3000
-```
-
-### Build for Production
-
-```bash
-# Create optimized production build
-pnpm build
-
-# Start production server
-pnpm start
-```
-
-## Design Details
-
-### Color Palette
-- **Primary**: Navy Blue (`oklch(0.22 0.15 260)`)
-- **Secondary**: Warm Tan (`oklch(0.8 0.08 75)`)
-- **Accent**: Vibrant Teal (`oklch(0.6 0.18 200)`)
-- **Neutral**: Clean Whites and Grays
-
-### Typography
-- **Font**: Geist for sans-serif (via next/font/google)
-- **Line Height**: 1.4-1.6 for optimal readability
-- **Hierarchy**: Clear sizing from h1 to body
-
-### Animations
-- Smooth scroll behavior
-- Mouse-tracking hover effects
-- Fade-in on scroll animations
-- Bounce indicators
-- Smooth transitions on all interactive elements
-
-## Performance Optimizations
-
-1. **Image Optimization**: Remote pattern configured for Vercel Blob
-2. **CSS Animations**: GPU-accelerated transforms
-3. **Lazy Loading**: Images load only when needed
-4. **Code Splitting**: Automatic with Next.js
-5. **Cache Headers**: Static assets cached for 1 year, API responses validated
-6. **Reduced Motion**: Respects prefers-reduced-motion media query
-7. **TypeScript**: Full type safety
-
-## Customization
-
-### Update Personal Information
-Edit component files to customize:
-- Hero section text and images
-- Project descriptions and technologies
-- Gallery photos and categories
-- Contact information in footer
-
-### Modify Colors
-Edit design tokens in:
-1. `app/globals.css` - CSS custom properties
-2. `tailwind.config.ts` - Tailwind theme (if needed)
-
-### Add New Sections
-1. Create new component in `/components`
-2. Import in `app/page.tsx`
-3. Add to section navigation in `Navigation.tsx`
-
-## Deployment
-
-### Deploy to Vercel
-
-```bash
-# Using Vercel CLI
-vercel
-
-# Or push to GitHub and deploy via Vercel dashboard
-git push origin main
-```
-
-### Environment Variables
-No environment variables required for basic deployment. All images use public URLs.
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Lighthouse Scores
-
-The site is optimized for excellent performance:
-- Performance: 90+
-- Accessibility: 95+
-- Best Practices: 95+
-- SEO: 100
-
-## Future Enhancements
-
-Potential additions:
-- Blog section for articles
-- Project detail pages
-- Contact form with backend
-- Dark mode toggle (already styled)
-- CMS integration
-- Analytics dashboard
-
-## License
-
-This portfolio is a unique creation. All content and design are proprietary.
-
-## Support
-
-For questions or customization needs, refer to the code comments or documentation in Next.js and Tailwind CSS official docs.
+# ⚜️ SÈN Parfums — منصة التجارة الإلكترونية الفاخرة للعطور المصرية
+> **دار SÈN Parfums** — تجربة تسوق D2C استثنائية لعطور النيش الفاخرة، مع سياسة "الضمان الذهبي" والدفع عند الاستلام (COD) في كافة محافظات مصر.
 
 ---
 
-**Built with v0** - The AI-powered web development platform.
+## 🌟 مميزات المنصة الرئيسية
+
+1. **المنتجات الأيقونية:**
+   - **سِيان زيست (SÈN Zeste):** عطر رجالي بتركيز Extrait de Parfum (50 مل) — 650 ج.م.
+   - **سِيان أورا (SÈN Aura):** عطر حريمي بتركيز Extrait de Parfum (50 مل) — 650 ج.م.
+   - **عرض الثنائي الملكي (Duo Bundle):** العطرين معاً بـ 1,150 ج.م (توفير 150 ج.م + شحن مجاني).
+2. **الضمان الذهبي (The Golden Guarantee):**
+   - عينة تجربة 2 مل مجانية مع كل زجاجة. جرب العينة أولاً، واسترجع 100% من أموالك في حال عدم رضاك إذا بقيت الزجاجة مغلقة.
+3. **الدفع عند الاستلام فقط (Cash on Delivery):**
+   - شحن سريع لجميع محافظات جمهورية مصر العربية مع حساب تلقائي لرسوم الشحن أو شحن مجاني عند الشراء بأكثر من 1,000 ج.م.
+4. **لوحة تحكم السوبر أدمن (`/admin/dashboard`):**
+   - متابعة المتواجدين حالياً في الموقع (Active Live Visitors).
+   - إدارة الطلبات الحية وتحديث الحالات فورياً.
+   - زر تواصل مباشر بنقرة واحدة عبر واتساب مع العملاء (`https://wa.me/201018995002`).
+   - جرد المخزون وتنبيهات نفاذ الكمية.
+5. **بيانات الدعم والتواصل:**
+   - **الخط الساخن / واتساب:** `01018995002`
+   - **البريد الإلكتروني:** `youssefbadawy5002@gmail.com`
+
+---
+
+## 🚀 تشغيل المشروع محلياً (Local Development)
+
+```bash
+# تثبيت الاعتماديات
+npm install
+
+# تشغيل خادم التطوير
+npm run dev
+```
+
+افتح المتصفح على: `http://localhost:3000`  
+ولوحة تحكم السوبر أدمن على: `http://localhost:3000/admin/dashboard`
+
+---
+
+## 🗄️ ربط سوبابيز (Supabase Integration)
+
+1. أنشئ مشروعاً جديداً على [Supabase](https://supabase.com).
+2. افتح **SQL Editor** في لوحة تحكم Supabase والصق محتويات ملف [`supabase_schema.sql`](./supabase_schema.sql) واضغط **Run**. سيتم إنشاء:
+   - جدول الطلبات `orders` مع سياسات الأمان RLS والفهارس.
+   - جدول المستخدمين `profiles` مع Trigger لتسجيل الدخول بجوجل.
+   - جدول الزوار المتواجدين `active_visitors`.
+3. انسخ بيانات المفاتيح من `Settings -> API` وأضفها إلى ملف `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://<your-project-id>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+```
+
+---
+
+## 🌐 النشر التلقائي عبر GitHub Pages (Workflow)
+
+تم إعداد ملف العمل التلقائي [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) لتحديث الموقع تلقائياً بمجرد عمل `git push`:
+
+### تفعيل GitHub Pages في الريبو:
+1. اذهب إلى إعدادات الريبو على جيت هوب: **Settings** -> **Pages**.
+2. تحت قسم **Build and deployment**، اختر **Source**:  
+   👉 **GitHub Actions**.
+3. إذا كنت تستخدم Supabase، يمكنك إضافة المفاتيح في **Settings** -> **Secrets and variables** -> **Actions**:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. بمجرد أي تعديل أو رفع على فرع `main`، سيقوم الـ Action ببناء المشروع ورفعه تلقائياً على:
+   `https://koomn1.github.io/Webb/`
+
+---
+
+© 2026 SÈN Parfums. جميع الحقوق محفوظة.
