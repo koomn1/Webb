@@ -1,6 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-export const SUPER_ADMIN_EMAIL = "youssefbadawy5002@gmail.com";
+export const SUPER_ADMIN_EMAILS = [
+  "yo01009950871@gmail.com",
+  "youssefbadawy5002@gmail.com",
+];
+
+export const SUPER_ADMIN_EMAIL =
+  process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL || "yo01009950871@gmail.com";
 
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL || "https://mock-sen-project.supabase.co";
@@ -25,7 +31,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 export const checkIsSuperAdmin = (email?: string | null): boolean => {
   if (!email) return false;
-  return email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  const normalized = email.trim().toLowerCase();
+  return (
+    SUPER_ADMIN_EMAILS.some((admin) => admin.toLowerCase() === normalized) ||
+    normalized === SUPER_ADMIN_EMAIL.toLowerCase()
+  );
 };
 
 // ==========================================
