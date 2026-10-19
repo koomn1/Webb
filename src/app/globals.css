@@ -9,7 +9,7 @@
     --gold-primary: #d4af37;
     --gold-light: #f3e5ab;
     --gold-dark: #aa820a;
-    --gold-glow: rgba(212, 175, 55, 0.18);
+    --gold-glow: rgba(212, 175, 55, 0.22);
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-gold: rgba(212, 175, 55, 0.3);
     --text-primary: #fcfbfa;
@@ -19,6 +19,13 @@
 
   * {
     border-color: var(--border-subtle);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -26,9 +33,10 @@
     color: var(--text-primary);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     overflow-x: hidden;
+    touch-action: manipulation;
   }
 
-  /* Focus visible accessibility according to WCAG 2.1 AA */
+  /* Accessible focus indicators conforming to WCAG 2.1 AA */
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
@@ -62,8 +70,17 @@
     transform: scale(1);
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.05);
+    opacity: 0.85;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 
@@ -72,6 +89,12 @@
 }
 
 .gold-gradient-text {
+  background: linear-gradient(135deg, #fff3dc 0%, #d4af37 50%, #996515 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
   background: linear-gradient(135deg, #f7ecd5 0%, #d4af37 50%, #aa820a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -82,15 +105,31 @@
 }
 
 .glass-luxury {
-  background: rgba(16, 16, 20, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(16, 16, 22, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-gold {
-  background: rgba(20, 18, 14, 0.85);
+  background: rgba(22, 19, 14, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.glass-dark {
+  background: rgba(12, 12, 16, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Micro-interactions & Touch Sensitivity */
+button, a {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:active, a:active {
+  transform: scale(0.98);
 }

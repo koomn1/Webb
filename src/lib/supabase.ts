@@ -211,9 +211,17 @@ export async function fetchOrdersFromSupabase() {
 
 export async function updateOrderStatusInSupabase(
   orderNumber: string,
-  status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED"
+  status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED",
+  callerEmail?: string | null
 ) {
   if (!isSupabaseConfigured()) return false;
+  
+  // Strict Permission Check: Caller must be verified Super Admin
+  if (callerEmail !== undefined && !checkIsSuperAdmin(callerEmail)) {
+    console.warn("Strict Security: Unauthorized call to updateOrderStatusInSupabase rejected.");
+    return false;
+  }
+
   try {
     const { error } = await supabase
       .from("orders")

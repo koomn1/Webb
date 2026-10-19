@@ -121,11 +121,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (savedCart) setCart(JSON.parse(savedCart));
     } catch {}
 
-    // 2. Load Real Orders
-    loadRealOrders();
+    // 2. Load Real Orders only if on admin page or user is super admin to keep regular pages blazingly fast
+    if (typeof window !== "undefined" && window.location.pathname.includes("/admin")) {
+      loadRealOrders();
+    }
 
-    // 3. Heartbeat for real visitors
-    recordVisitorHeartbeat(window.location.pathname);
+    // 3. Heartbeat for real visitors (runs non-blocking)
+    setTimeout(() => {
+      recordVisitorHeartbeat(window.location.pathname);
+    }, 100);
     const heartbeatInterval = setInterval(() => {
       recordVisitorHeartbeat(window.location.pathname);
     }, 60000);
@@ -175,6 +179,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       };
     }
   }, []);
+
+  useEffect(() => {
+    if (isSuperAdmin) {
+      loadRealOrders();
+    }
+  }, [isSuperAdmin]);
 
   useEffect(() => {
     try {
@@ -275,10 +285,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateOrderStatus = async (orderId: string, status: StoredOrder["status"]) => {
+    if (!isSuperAdmin) {
+      console.warn("Strict Security: Only Super Admin can update order status.");
+      return;
+    }
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status } : o))
     );
-    await updateOrderStatusInSupabase(orderId, status);
+    await updateOrderStatusInSupabase(orderId, status, user?.email);
   };
 
   const refreshOrders = async () => {

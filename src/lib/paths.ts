@@ -29,5 +29,16 @@ export const asset = (path: string): string => {
 };
 
 export const appLink = (path: string): string => {
-  return path.startsWith("/") ? path : `/${path}`;
+  const base = getBasePath();
+  let clean = path.startsWith("/") ? path : `/${path}`;
+  
+  // Ensure page paths end with '/' to avoid 308 redirects on static hosting (Cloudflare/GitHub Pages)
+  if (clean !== "/" && !clean.endsWith("/") && !clean.includes("#") && !clean.includes("?")) {
+    clean = `${clean}/`;
+  }
+
+  if (base && !clean.startsWith(base)) {
+    return `${base}${clean}`;
+  }
+  return clean;
 };
