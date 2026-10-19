@@ -1,30 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
-import { PERFUMES, Perfume } from "@/data/perfumes";
+import { Perfume } from "@/data/perfumes";
+import { useCart } from "@/context/CartContext";
 import { ProductCard } from "./ProductCard";
 import { Sparkles } from "lucide-react";
 
 export function ProductGrid({ onOpenQuickView }: { onOpenQuickView: (perfume: Perfume) => void }) {
+  const { products } = useCart();
   const [activeFilter, setActiveFilter] = useState<string>("all");
 
   const filters = [
     { id: "all", label: "جميع الإبداعات" },
     { id: "Homme", label: "عطور رجالية (Zeste)" },
     { id: "Femme", label: "عطور نسائية (Aura)" },
-    { id: "Duo", label: "باقة الثنائي الملكية (وفر 150 ج.م)" },
+    { id: "Duo", label: "باقة الثنائي الملكية (توفير وشحن مجاني)" },
   ];
 
   const filteredPerfumes =
     activeFilter === "all"
-      ? PERFUMES
-      : PERFUMES.filter((p) => p.gender === activeFilter);
+      ? products
+      : products.filter((p) => p.gender === activeFilter);
 
   return (
     <section id="products" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1C1A18] border border-[#E4C7A8]/30 text-[#E4C7A8] text-xs font-semibold uppercase tracking-widest mb-3">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#1C1A18] border border-[#E4C7A8]/30 text-[#E4C7A8] text-xs font-semibold uppercase tracking-widest mb-3">
           <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
           <span>التشكيلة الأيقونية • ÉDITION LIMITÉE</span>
         </div>

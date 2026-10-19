@@ -121,26 +121,31 @@ export function Footer() {
           {/* Collections */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              التوليفات الحصرية
+              الأقسام والتوليفات الحصرية
             </h4>
             <ul className="space-y-2 text-stone-400 font-light">
               <li>
                 <Link href={appLink("/shop")} className="hover:text-[#E4C7A8] transition-colors">
-                  عطر SÈN Zeste (رجالي - 650 ج.م)
+                  كتالوج المتجر والعطور
                 </Link>
               </li>
               <li>
-                <Link href={appLink("/shop")} className="hover:text-[#E4C7A8] transition-colors">
-                  عطر SÈN Aura (نسائي - 650 ج.م)
+                <Link href={appLink("/duo")} className="hover:text-[#E4C7A8] transition-colors text-[#E4C7A8]">
+                  باقة الثنائي الملكية (عرض التوفير)
                 </Link>
               </li>
               <li>
-                <Link href={appLink("/shop")} className="hover:text-[#E4C7A8] transition-colors">
-                  باقة الثنائي الملكية Zeste & Aura (1,150 ج.م)
+                <Link href={appLink("/finder")} className="hover:text-[#E4C7A8] transition-colors">
+                  مستكشف التوقيع العطري والهرم
                 </Link>
               </li>
               <li>
-                <Link href={appLink("/guarantee")} className="hover:text-[#E4C7A8] transition-colors text-[#E4C7A8]">
+                <Link href={appLink("/about")} className="hover:text-[#E4C7A8] transition-colors">
+                  حكاية الدار وتاريخ النيش
+                </Link>
+              </li>
+              <li>
+                <Link href={appLink("/guarantee")} className="hover:text-[#E4C7A8] transition-colors">
                   ميثاق الثقة والأمان (عينة 2ml مجاناً)
                 </Link>
               </li>

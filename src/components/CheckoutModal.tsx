@@ -11,13 +11,12 @@ import {
   Truck,
   CheckCircle2,
   Phone,
-  Mail,
   AlertCircle,
   Copy,
   Check,
   MessageCircle,
   Banknote,
-  Package,
+  Tag,
 } from "lucide-react";
 
 // Strict Zod Validation Schema for Egyptian COD Checkout adhering to AGENTS.md
@@ -45,7 +44,16 @@ interface CheckoutModalProps {
 }
 
 export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
-  const { cart, subtotal, createOrder } = useCart();
+  const {
+    cart,
+    subtotal,
+    discountAmount,
+    totalAfterDiscount,
+    appliedDiscount,
+    applyDiscountCode,
+    removeDiscountCode,
+    createOrder,
+  } = useCart();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -54,6 +62,9 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     address: "",
     notes: "",
   });
+
+  const [couponInput, setCouponInput] = useState("");
+  const [couponMsg, setCouponMsg] = useState<{ text: string; isError: boolean } | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,7 +79,19 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const hasDuoBundle = cart.some((i) => i.perfume.id === "sen-duo-bundle");
   const isFreeShipping = hasDuoBundle || subtotal >= 1000;
   const shippingFee = isFreeShipping ? 0 : selectedGov?.shippingFee || 45;
-  const grandTotal = subtotal + shippingFee;
+  const grandTotal = totalAfterDiscount + shippingFee;
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    const res = applyDiscountCode(couponInput);
+    if (res.success) {
+      setCouponMsg({ text: res.message, isError: false });
+      setCouponInput("");
+    } else {
+      setCouponMsg({ text: res.message, isError: true });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,7 +185,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               </div>
             </div>
             <p className="text-xs text-stone-400 mb-6 font-light leading-relaxed">
-              ادفع نقداً لمندوب الشحن بعد معاينة الطرد واستلامه، مع ميثاق الثقة والأمان وعينة الـ 2ml المرفقة مجاناً.
+              ادفع نقداً لمندوب الشحن بعد معاينة الطرد وفحصه، مع ميثاق الثقة والأمان وعينة الـ 2ml المرفقة مجاناً.
             </p>
 
             {/* Form */}
@@ -266,6 +289,55 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 />
               </div>
 
+              {/* Coupon Code Section */}
+              <div className="p-3.5 rounded-2xl bg-[#161413] border border-[#24201D]">
+                <label className="text-xs text-stone-300 font-medium block mb-2 flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-[#C58652]" />
+                  <span>هل لديك كود خصم؟</span>
+                </label>
+                {appliedDiscount ? (
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-[#688A75]/15 border border-[#688A75]/30 text-xs">
+                    <span className="font-mono font-bold text-[#8EBBA0]">
+                      {appliedDiscount.code} (خصم: {appliedDiscount.type === "PERCENTAGE" ? `${appliedDiscount.value}%` : `${appliedDiscount.value} ج.م`})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={removeDiscountCode}
+                      className="text-stone-400 hover:text-rose-400 text-xs font-semibold px-2 py-1"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      placeholder="أدخل كود الخصم (مثال: SEN10)"
+                      dir="ltr"
+                      className="flex-1 bg-[#0C0B0A] border border-[#24201D] focus:border-[#C58652] rounded-xl px-3 py-2 text-xs text-white placeholder-stone-600 font-mono uppercase focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      className="px-4 py-2 rounded-xl bg-[#0C0B0A] border border-[#C58652]/40 hover:border-[#C58652] text-[#E4C7A8] text-xs font-semibold shrink-0 transition-colors"
+                    >
+                      تطبيق
+                    </button>
+                  </div>
+                )}
+                {couponMsg && (
+                  <span
+                    className={`text-[11px] block mt-1.5 ${
+                      couponMsg.isError ? "text-rose-400" : "text-[#8EBBA0]"
+                    }`}
+                  >
+                    {couponMsg.text}
+                  </span>
+                )}
+              </div>
+
               {/* Strict COD Payment Method Banner */}
               <div className="p-4 rounded-2xl bg-[#161413] border border-[#C58652]/30 flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#C58652]/15 border border-[#C58652]/30 flex items-center justify-center text-[#E4C7A8] shrink-0">
@@ -287,6 +359,12 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   <span>قيمة المقتنيات:</span>
                   <span className="font-mono text-stone-200">{subtotal.toLocaleString()} ج.م</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-[#8EBBA0]">
+                    <span>خصم الكود ({appliedDiscount?.code}):</span>
+                    <span className="font-mono font-medium">-{discountAmount.toLocaleString()} ج.م</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-stone-400">
                   <span>رسوم الشحن والتوصيل ({formData.governorate}):</span>
                   <span className={shippingFee === 0 ? "text-[#8EBBA0] font-medium" : "font-mono text-stone-200"}>

@@ -12,6 +12,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { CheckoutModal } from "@/components/CheckoutModal";
 import { Footer } from "@/components/Footer";
 import { PERFUMES } from "@/data/perfumes";
+import { useCart } from "@/context/CartContext";
 import {
   Sparkles,
   ShieldCheck,
@@ -21,12 +22,16 @@ import {
   Award,
   Droplets,
   HeartHandshake,
+  Compass,
 } from "lucide-react";
 import { appLink } from "@/lib/paths";
 
 export default function LandingPage() {
+  const { products } = useCart();
   const [isFinderOpen, setIsFinderOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  const displayProducts = products && products.length > 0 ? products : PERFUMES;
 
   return (
     <div className="min-h-screen bg-[#0C0B0A] text-[#FAF8F5] selection:bg-[#C58652]/20 selection:text-[#E4C7A8]">
@@ -80,38 +85,52 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Cards for Zeste & Aura */}
+          {/* Cards for Fragrances */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {PERFUMES.slice(0, 2).map((perfume) => {
-              const isZeste = perfume.id === "sen-zeste";
-              return (
-                <div
-                  key={perfume.id}
-                  className="bg-[#161413] border border-[#24201D] hover:border-[#C58652]/50 rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all group shadow-xl"
-                >
-                  <div>
-                    <div className="relative aspect-square rounded-2xl overflow-hidden mb-6 border border-[#24201D] bg-[#0C0B0A]">
-                      <Image
-                        src={perfume.image}
-                        alt={perfume.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div
-                        className={`absolute top-4 right-4 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium border ${
-                          isZeste
-                            ? "bg-[#688A75]/20 text-[#8EBBA0] border-[#688A75]/40"
-                            : "bg-[#A86E85]/20 text-[#D19BB0] border-[#A86E85]/40"
-                        }`}
-                      >
-                        {perfume.genderAr}
+            {displayProducts
+              .filter((p) => !p.id.includes("bundle") && !p.id.includes("duo"))
+              .slice(0, 4)
+              .map((perfume) => {
+                const isZeste = perfume.id.includes("zeste");
+                const hasDiscount = perfume.comparePrice && perfume.comparePrice > perfume.price;
+                return (
+                  <div
+                    key={perfume.id}
+                    className="bg-[#161413] border border-[#24201D] hover:border-[#C58652]/50 rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all group shadow-xl"
+                  >
+                    <div>
+                      <div className="relative aspect-square rounded-2xl overflow-hidden mb-6 border border-[#24201D] bg-[#0C0B0A]">
+                        <Image
+                          src={perfume.image}
+                          alt={perfume.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div
+                          className={`absolute top-4 right-4 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium border ${
+                            isZeste
+                              ? "bg-[#688A75]/20 text-[#8EBBA0] border-[#688A75]/40"
+                              : "bg-[#A86E85]/20 text-[#D19BB0] border-[#A86E85]/40"
+                          }`}
+                        >
+                          {perfume.genderAr}
+                        </div>
+                        {hasDiscount && (
+                          <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-rose-500/90 text-white font-bold text-[10px] shadow-md">
+                            خصم خاص
+                          </div>
+                        )}
                       </div>
-                    </div>
 
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-serif text-2xl font-medium text-white">{perfume.nameAr}</h3>
-                      <div className="font-serif text-xl font-medium text-[#E4C7A8]">{perfume.price} ج.م</div>
-                    </div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-serif text-2xl font-medium text-white">{perfume.nameAr}</h3>
+                        <div className="text-left">
+                          <div className="font-serif text-xl font-medium text-[#E4C7A8]">{perfume.price} ج.م</div>
+                          {hasDiscount && (
+                            <div className="text-xs text-stone-500 line-through">{perfume.comparePrice} ج.م</div>
+                          )}
+                        </div>
+                      </div>
 
                     <p className="text-stone-400 text-xs sm:text-sm leading-relaxed mb-4 font-light">
                       {perfume.taglineAr}

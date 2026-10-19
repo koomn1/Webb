@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import {
   ShoppingBag,
@@ -14,17 +15,18 @@ import {
   X,
   LayoutDashboard,
   LogIn,
+  Compass,
 } from "lucide-react";
-import { appLink } from "@/lib/paths";
+import { appLink, asset } from "@/lib/paths";
 
-export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
+export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
   const { totalItems, setIsOpen, user, isSuperAdmin, logoutUser } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 30);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -34,14 +36,14 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "glass-luxury py-3 shadow-[0_12px_35px_rgba(0,0,0,0.8)] border-b border-[#25221F]"
+          ? "glass-luxury py-3 shadow-[0_12px_35px_rgba(0,0,0,0.85)] border-b border-[#25221F]"
           : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Mobile menu trigger */}
-          <div className="flex items-center gap-3 lg:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -50,19 +52,18 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
             >
               {mobileMenuOpen ? <X className="w-5 h-5" strokeWidth={1.5} /> : <Menu className="w-5 h-5" strokeWidth={1.5} />}
             </button>
-            <button
-              type="button"
-              onClick={onOpenFinder}
+            <Link
+              href={appLink("/finder")}
               className="w-10 h-10 flex items-center justify-center rounded-full text-[#E4C7A8] hover:bg-[#1C1A18] transition-colors"
               title="مستكشف النوتات العطرية"
               aria-label="مستكشف النوتات"
             >
-              <Sparkles className="w-4 h-4" strokeWidth={1.5} />
-            </button>
+              <Compass className="w-4 h-4" strokeWidth={1.5} />
+            </Link>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs tracking-wider uppercase font-medium text-[#ABA59C]">
+          <nav className="hidden lg:flex items-center gap-6 text-xs tracking-wider uppercase font-medium text-[#ABA59C]">
             <Link
               href={appLink("/")}
               className="hover:text-[#E4C7A8] transition-colors relative group py-1"
@@ -74,36 +75,51 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
               href={appLink("/shop")}
               className="hover:text-[#E4C7A8] transition-colors relative group py-1"
             >
-              تشكيلة العطور
+              التشكيلة
+              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
+            </Link>
+            <Link
+              href={appLink("/duo")}
+              className="hover:text-[#E4C7A8] transition-colors relative group py-1 text-[#F5E4D2]"
+            >
+              باقة الثنائي الملكية
+              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
+            </Link>
+            <Link
+              href={appLink("/finder")}
+              className="hover:text-[#E4C7A8] transition-colors relative group py-1 flex items-center gap-1 text-[#E4C7A8]"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
+              <span>الهرم العطري</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
             </Link>
             <Link
               href={appLink("/guarantee")}
-              className="hover:text-[#E4C7A8] transition-colors relative group py-1 text-[#F5E4D2]"
+              className="hover:text-[#E4C7A8] transition-colors relative group py-1"
             >
-              الضمان الذهبي
+              ميثاق الثقة
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
             </Link>
-            <button
-              type="button"
-              onClick={onOpenFinder}
-              className="flex items-center gap-1.5 text-[#F5E4D2] hover:text-white transition-colors uppercase tracking-wider relative group py-1"
+            <Link
+              href={appLink("/about")}
+              className="hover:text-[#E4C7A8] transition-colors relative group py-1"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
-              <span>مستكشف النوتات</span>
+              قصة الدار
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
-            </button>
+            </Link>
           </nav>
 
-          {/* Central Brand Identity */}
+          {/* Central Brand Identity with Transparent Logo */}
           <div className="text-center">
-            <Link href={appLink("/")} className="inline-block group focus-visible:outline-none">
-              <span className="font-serif text-3xl sm:text-4xl tracking-[0.28em] font-normal uppercase text-white transition-colors duration-300 group-hover:text-[#F5E4D2]">
-                SÈN
-              </span>
-              <span className="block text-[9px] tracking-[0.5em] text-[#E4C7A8] uppercase font-medium -mt-1">
-                HAUTE PARFUMERIE
-              </span>
+            <Link href={appLink("/")} className="inline-block group focus-visible:outline-none py-1">
+              <div className="flex flex-col items-center">
+                <span className="font-serif text-2xl sm:text-3xl tracking-[0.25em] font-light uppercase text-white transition-colors duration-300 group-hover:text-[#F5E4D2]">
+                  SÈN
+                </span>
+                <span className="block text-[8px] tracking-[0.45em] text-[#C58652] uppercase font-medium -mt-1">
+                  HAUTE PARFUMERIE
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -112,7 +128,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
             {/* Phone Support Direct Hotline */}
             <a
               href="tel:01018995002"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#181614] border border-[#2B2724] text-[#ABA59C] hover:text-white hover:border-[#E4C7A8]/40 text-xs font-mono transition-colors"
+              className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#181614] border border-[#2B2724] text-[#ABA59C] hover:text-white hover:border-[#E4C7A8]/40 text-xs font-mono transition-colors"
               title="اتصل بالدعم: 01018995002"
             >
               <Phone className="w-3 h-3 text-[#E4C7A8]" strokeWidth={1.5} />
@@ -193,23 +209,35 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
               تشكيلة العطور
             </Link>
             <Link
-              href={appLink("/guarantee")}
+              href={appLink("/duo")}
               onClick={() => setMobileMenuOpen(false)}
               className="text-[#F5E4D2] hover:text-[#E4C7A8] transition-colors py-1"
             >
-              الضمان الذهبي
+              باقة الثنائي الملكية
             </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenFinder();
-              }}
-              className="text-right text-[#E4C7A8] hover:text-white transition-colors py-1 flex items-center gap-2"
+            <Link
+              href={appLink("/finder")}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-[#E4C7A8] hover:text-white transition-colors py-1 flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4" strokeWidth={1.5} />
-              <span>مستكشف النوتات العطرية</span>
-            </button>
+              <Compass className="w-4 h-4 text-[#C58652]" strokeWidth={1.5} />
+              <span>المستشار العطري والهرم</span>
+            </Link>
+            <Link
+              href={appLink("/guarantee")}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-[#ABA59C] hover:text-[#E4C7A8] transition-colors py-1"
+            >
+              ميثاق الثقة والضمان
+            </Link>
+            <Link
+              href={appLink("/about")}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-[#ABA59C] hover:text-[#E4C7A8] transition-colors py-1"
+            >
+              قصة الدار
+            </Link>
+
             {user ? (
               <div className="pt-3 border-t border-[#25221F] flex items-center justify-between">
                 <span className="text-xs text-[#ECE5DA]">

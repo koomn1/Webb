@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { Perfume, PERFUMES } from "@/data/perfumes";
 import {
   signInWithGoogle,
@@ -11,11 +11,19 @@ import {
   saveOrderToSupabase,
   updateOrderStatusInSupabase,
   fetchOrdersFromSupabase,
+  fetchProductsFromSupabase,
+  saveProductToSupabase,
+  deleteProductFromSupabase,
+  fetchDiscountCodesFromSupabase,
+  saveDiscountCodeToSupabase,
+  deleteDiscountCodeFromSupabase,
+  SupabaseProduct,
+  SupabaseDiscountCode,
   isSupabaseConfigured,
   checkIsSuperAdmin,
   recordVisitorHeartbeat,
 } from "@/lib/supabase";
-import { appLink } from "@/lib/paths";
+import { appLink, asset } from "@/lib/paths";
 
 export interface CartItem {
   id: string; // perfumeId
@@ -39,9 +47,18 @@ export interface StoredOrder {
   subtotal: number;
   shippingFee: number;
   total: number;
+  discountCode?: string;
+  discountAmount?: number;
   paymentMethod: "COD";
   status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
   createdAt: string;
+}
+
+export interface AppliedDiscount {
+  code: string;
+  type: "PERCENTAGE" | "FIXED";
+  value: number;
+  amount: number;
 }
 
 interface CartContextType {
@@ -51,6 +68,13 @@ interface CartContextType {
   user: any | null;
   isSuperAdmin: boolean;
   orders: StoredOrder[];
+  products: Perfume[];
+  discountCodes: SupabaseDiscountCode[];
+  appliedDiscount: AppliedDiscount | null;
+  subtotal: number;
+  discountAmount: number;
+  totalAfterDiscount: number;
+  totalItems: number;
   addToCart: (perfume: Perfume, quantity?: number) => void;
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
@@ -64,11 +88,112 @@ interface CartContextType {
   createOrder: (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => Promise<StoredOrder>;
   updateOrderStatus: (orderId: string, status: StoredOrder["status"]) => Promise<void>;
   refreshOrders: () => Promise<void>;
-  subtotal: number;
-  totalItems: number;
+  // Dynamic Product Management (Supabase + Local)
+  updateProduct: (id: string, updates: Partial<Perfume>) => Promise<boolean>;
+  addProduct: (newPerfume: Omit<Perfume, "slug">) => Promise<boolean>;
+  deleteProduct: (id: string) => Promise<boolean>;
+  refreshProducts: () => Promise<void>;
+  // Discount Engine
+  applyDiscountCode: (codeString: string) => { success: boolean; message: string; discountAmount?: number };
+  removeDiscountCode: () => void;
+  createDiscountCode: (newCode: SupabaseDiscountCode) => Promise<boolean>;
+  deleteDiscountCode: (code: string) => Promise<boolean>;
+  toggleDiscountCode: (code: string) => Promise<boolean>;
+  refreshDiscountCodes: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+
+// Initial fallback discount codes
+const DEFAULT_DISCOUNT_CODES: SupabaseDiscountCode[] = [
+  {
+    code: "SEN10",
+    discount_type: "PERCENTAGE",
+    discount_value: 10,
+    min_order_amount: 500,
+    is_active: true,
+    current_uses: 12,
+    max_uses: 500,
+  },
+  {
+    code: "VIP50",
+    discount_type: "FIXED",
+    discount_value: 50,
+    min_order_amount: 600,
+    is_active: true,
+    current_uses: 28,
+    max_uses: 200,
+  },
+  {
+    code: "ROYAL15",
+    discount_type: "PERCENTAGE",
+    discount_value: 15,
+    min_order_amount: 1000,
+    is_active: true,
+    current_uses: 5,
+    max_uses: 100,
+  },
+];
+
+// Helper to convert DB SupabaseProduct to App Perfume
+function toAppPerfume(sp: SupabaseProduct): Perfume {
+  return {
+    id: sp.id,
+    slug: sp.id,
+    name: sp.name,
+    nameEn: sp.name,
+    nameAr: sp.name_ar,
+    gender: sp.gender as any,
+    genderAr: sp.gender_ar,
+    taglineAr: sp.tagline_ar,
+    taglineEn: sp.tagline_ar,
+    price: Number(sp.price),
+    comparePrice: sp.original_price ? Number(sp.original_price) : undefined,
+    volumeMl: sp.volume_ml,
+    concentration: sp.concentration,
+    oilPct: 20,
+    topNotes: Array.isArray(sp.top_notes) ? sp.top_notes : [],
+    heartNotes: Array.isArray(sp.heart_notes) ? sp.heart_notes : [],
+    baseNotes: Array.isArray(sp.base_notes) ? sp.base_notes : [],
+    sillage: sp.sillage,
+    longevity: sp.longevity,
+    image: sp.image.startsWith("http") || sp.image.startsWith("/") ? sp.image : asset(sp.image),
+    descriptionAr: sp.description_ar,
+    descriptionEn: sp.description_ar,
+    rating: sp.rating ? Number(sp.rating) : 4.9,
+    reviewsCount: sp.reviews_count ? Number(sp.reviews_count) : 120,
+    badge: sp.badge,
+    stockQuantity: 50,
+    inStock: sp.is_available,
+  };
+}
+
+// Helper to convert Perfume to SupabaseProduct
+function toDbProduct(p: Perfume): SupabaseProduct {
+  return {
+    id: p.id,
+    name: p.name,
+    name_ar: p.nameAr,
+    tagline_ar: p.taglineAr,
+    gender: p.gender,
+    gender_ar: p.genderAr,
+    price: p.price,
+    original_price: p.comparePrice,
+    image: p.image,
+    description_ar: p.descriptionAr,
+    volume_ml: p.volumeMl,
+    concentration: p.concentration,
+    top_notes: p.topNotes,
+    heart_notes: p.heartNotes,
+    base_notes: p.baseNotes,
+    sillage: p.sillage,
+    longevity: p.longevity,
+    badge: p.badge,
+    rating: p.rating,
+    reviews_count: p.reviewsCount,
+    is_available: p.inStock,
+  };
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -76,8 +201,69 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<"ar" | "en">("ar");
   const [user, setUser] = useState<any | null>(null);
   const [orders, setOrders] = useState<StoredOrder[]>([]);
+  const [products, setProducts] = useState<Perfume[]>(PERFUMES);
+  const [discountCodes, setDiscountCodes] = useState<SupabaseDiscountCode[]>(DEFAULT_DISCOUNT_CODES);
+  const [appliedDiscount, setAppliedDiscount] = useState<AppliedDiscount | null>(null);
 
   const isSuperAdmin = checkIsSuperAdmin(user?.email);
+
+  // Load dynamic products from Supabase + localStorage
+  const loadDynamicProducts = async () => {
+    let baseList = [...PERFUMES];
+
+    // Check localStorage overrides first
+    try {
+      const localCustom = localStorage.getItem("sen_custom_products");
+      if (localCustom) {
+        const parsed: Perfume[] = JSON.parse(localCustom);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          baseList = parsed;
+        }
+      }
+    } catch {}
+
+    // Then check Supabase
+    if (isSupabaseConfigured()) {
+      try {
+        const sbProducts = await fetchProductsFromSupabase();
+        if (sbProducts && sbProducts.length > 0) {
+          const mapped = sbProducts.map(toAppPerfume);
+          setProducts(mapped);
+          try {
+            localStorage.setItem("sen_custom_products", JSON.stringify(mapped));
+          } catch {}
+          return;
+        }
+      } catch {}
+    }
+
+    setProducts(baseList);
+  };
+
+  // Load discount codes from Supabase + localStorage
+  const loadDiscountCodes = async () => {
+    let list = [...DEFAULT_DISCOUNT_CODES];
+    try {
+      const savedCodes = localStorage.getItem("sen_discount_codes");
+      if (savedCodes) {
+        list = JSON.parse(savedCodes);
+      }
+    } catch {}
+
+    if (isSupabaseConfigured()) {
+      try {
+        const sbCodes = await fetchDiscountCodesFromSupabase();
+        if (sbCodes && sbCodes.length > 0) {
+          list = sbCodes;
+          try {
+            localStorage.setItem("sen_discount_codes", JSON.stringify(sbCodes));
+          } catch {}
+        }
+      } catch {}
+    }
+
+    setDiscountCodes(list);
+  };
 
   const loadRealOrders = async () => {
     if (isSupabaseConfigured()) {
@@ -94,6 +280,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           subtotal: Number(o.subtotal || 0),
           shippingFee: Number(o.shipping_fee || 0),
           total: Number(o.total_amount || 0),
+          discountCode: o.discount_code,
+          discountAmount: o.discount_amount ? Number(o.discount_amount) : undefined,
           paymentMethod: "COD",
           status: o.status || "PENDING",
           createdAt: o.created_at,
@@ -116,18 +304,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // 1. Load cart
+    loadDynamicProducts();
+    loadDiscountCodes();
+
+    // Load active discount from session
     try {
-      const savedCart = localStorage.getItem("sen_cart");
-      if (savedCart) setCart(JSON.parse(savedCart));
+      const savedDisc = sessionStorage.getItem("sen_applied_discount");
+      if (savedDisc) setAppliedDiscount(JSON.parse(savedDisc));
     } catch {}
 
-    // 2. Load Real Orders only if on admin page or user is super admin to keep regular pages blazingly fast
+    // Check admin orders
     if (typeof window !== "undefined" && window.location.pathname.includes("/admin")) {
       loadRealOrders();
     }
 
-    // 3. Heartbeat for real visitors (runs non-blocking)
+    // Heartbeat
     setTimeout(() => {
       recordVisitorHeartbeat(window.location.pathname);
     }, 100);
@@ -135,7 +326,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       recordVisitorHeartbeat(window.location.pathname);
     }, 60000);
 
-    // 4. Load Auth User
+    // Auth
     if (isSupabaseConfigured()) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
@@ -187,18 +378,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isSuperAdmin]);
 
-  // Helper to determine scoped cart key per account
+  // Scoped Cart
   const getCartKey = (u?: any | null) => {
-    if (u?.email) {
-      return `sen_cart_${u.email.trim().toLowerCase()}`;
-    }
-    if (u?.id) {
-      return `sen_cart_${u.id}`;
-    }
+    if (u?.email) return `sen_cart_${u.email.trim().toLowerCase()}`;
+    if (u?.id) return `sen_cart_${u.id}`;
     return "sen_cart_guest";
   };
 
-  // Load account-specific cart whenever active user changes
   useEffect(() => {
     const key = getCartKey(user);
     try {
@@ -206,7 +392,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (saved) {
         setCart(JSON.parse(saved));
       } else if (user) {
-        // If user logged in and has no saved cart yet, inherit guest cart
         const guestCart = localStorage.getItem("sen_cart_guest") || localStorage.getItem("sen_cart");
         if (guestCart) {
           const parsed = JSON.parse(guestCart);
@@ -225,15 +410,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  // Save cart per active account
   useEffect(() => {
     const key = getCartKey(user);
     try {
       localStorage.setItem(key, JSON.stringify(cart));
-      // Also maintain legacy fallback for guest
-      if (!user) {
-        localStorage.setItem("sen_cart", JSON.stringify(cart));
-      }
+      if (!user) localStorage.setItem("sen_cart", JSON.stringify(cart));
     } catch {}
   }, [cart, user]);
 
@@ -278,6 +459,170 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   };
 
+  // Subtotal & Discounts Calculation
+  const subtotal = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  }, [cart]);
+
+  const discountAmount = useMemo(() => {
+    if (!appliedDiscount || subtotal <= 0) return 0;
+    if (appliedDiscount.type === "PERCENTAGE") {
+      const calculated = Math.round((subtotal * appliedDiscount.value) / 100);
+      return calculated;
+    }
+    return Math.min(subtotal, appliedDiscount.value);
+  }, [appliedDiscount, subtotal]);
+
+  const totalAfterDiscount = Math.max(0, subtotal - discountAmount);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Discount Codes Engine
+  const applyDiscountCode = (codeString: string) => {
+    const clean = codeString.trim().toUpperCase();
+    if (!clean) {
+      return { success: false, message: "يرجى كتابة كود الخصم أولاً." };
+    }
+
+    const matched = discountCodes.find(
+      (c) => c.code.toUpperCase() === clean && c.is_active
+    );
+
+    if (!matched) {
+      return { success: false, message: "كود الخصم غير صحيح أو انتهت صلاحيته." };
+    }
+
+    if (matched.min_order_amount && subtotal < matched.min_order_amount) {
+      return {
+        success: false,
+        message: `الحد الأدنى لتطبيق هذا الكود هو ${matched.min_order_amount} ج.م (مجموعك الحالي: ${subtotal} ج.م)`,
+      };
+    }
+
+    let calculatedDiscount = 0;
+    if (matched.discount_type === "PERCENTAGE") {
+      calculatedDiscount = Math.round((subtotal * matched.discount_value) / 100);
+    } else {
+      calculatedDiscount = Math.min(subtotal, matched.discount_value);
+    }
+
+    const discObj: AppliedDiscount = {
+      code: matched.code,
+      type: matched.discount_type,
+      value: matched.discount_value,
+      amount: calculatedDiscount,
+    };
+
+    setAppliedDiscount(discObj);
+    try {
+      sessionStorage.setItem("sen_applied_discount", JSON.stringify(discObj));
+    } catch {}
+
+    return {
+      success: true,
+      message:
+        matched.discount_type === "PERCENTAGE"
+          ? `تم تطبيق كود (${matched.code}) بنجاح! خصم ${matched.discount_value}%`
+          : `تم تطبيق كود (${matched.code}) بنجاح! خصم ${matched.discount_value} ج.م`,
+      discountAmount: calculatedDiscount,
+    };
+  };
+
+  const removeDiscountCode = () => {
+    setAppliedDiscount(null);
+    try {
+      sessionStorage.removeItem("sen_applied_discount");
+    } catch {}
+  };
+
+  const createDiscountCode = async (newCode: SupabaseDiscountCode) => {
+    const updated = [newCode, ...discountCodes.filter((c) => c.code !== newCode.code)];
+    setDiscountCodes(updated);
+    try {
+      localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
+    } catch {}
+    await saveDiscountCodeToSupabase(newCode);
+    return true;
+  };
+
+  const deleteDiscountCode = async (code: string) => {
+    const updated = discountCodes.filter((c) => c.code !== code);
+    setDiscountCodes(updated);
+    try {
+      localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
+    } catch {}
+    await deleteDiscountCodeFromSupabase(code);
+    return true;
+  };
+
+  const toggleDiscountCode = async (code: string) => {
+    const found = discountCodes.find((c) => c.code === code);
+    if (!found) return false;
+    const toggled = { ...found, is_active: !found.is_active };
+    const updated = discountCodes.map((c) => (c.code === code ? toggled : c));
+    setDiscountCodes(updated);
+    try {
+      localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
+    } catch {}
+    await saveDiscountCodeToSupabase(toggled);
+    return true;
+  };
+
+  const refreshDiscountCodes = async () => {
+    await loadDiscountCodes();
+  };
+
+  // Product Management Functions
+  const updateProduct = async (id: string, updates: Partial<Perfume>): Promise<boolean> => {
+    const updatedList = products.map((p) => {
+      if (p.id === id) {
+        return { ...p, ...updates };
+      }
+      return p;
+    });
+
+    setProducts(updatedList);
+    try {
+      localStorage.setItem("sen_custom_products", JSON.stringify(updatedList));
+    } catch {}
+
+    const target = updatedList.find((p) => p.id === id);
+    if (target) {
+      await saveProductToSupabase(toDbProduct(target));
+    }
+    return true;
+  };
+
+  const addProduct = async (newPerfume: Omit<Perfume, "slug">): Promise<boolean> => {
+    const fullPerfume: Perfume = {
+      ...newPerfume,
+      slug: newPerfume.id,
+    };
+    const updatedList = [fullPerfume, ...products];
+    setProducts(updatedList);
+    try {
+      localStorage.setItem("sen_custom_products", JSON.stringify(updatedList));
+    } catch {}
+
+    await saveProductToSupabase(toDbProduct(fullPerfume));
+    return true;
+  };
+
+  const deleteProduct = async (id: string): Promise<boolean> => {
+    const updatedList = products.filter((p) => p.id !== id);
+    setProducts(updatedList);
+    try {
+      localStorage.setItem("sen_custom_products", JSON.stringify(updatedList));
+    } catch {}
+
+    await deleteProductFromSupabase(id);
+    return true;
+  };
+
+  const refreshProducts = async () => {
+    await loadDynamicProducts();
+  };
+
+  // Auth Functions
   const loginWithGoogle = async () => {
     const res = await signInWithGoogle();
     if (res.data && "user" in res.data && (res.data as any).user) {
@@ -307,7 +652,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem("sen_auth_user");
     } catch {}
 
-    // Auto-refresh upon logout seamlessly as requested
     if (typeof window !== "undefined") {
       if (window.location.pathname.includes("/admin")) {
         window.location.href = appLink("/");
@@ -322,6 +666,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const newOrder: StoredOrder = {
       ...orderData,
       id: orderNumber,
+      discountCode: appliedDiscount?.code,
+      discountAmount: discountAmount > 0 ? discountAmount : undefined,
       status: "PENDING",
       paymentMethod: "COD",
       createdAt: new Date().toISOString(),
@@ -341,11 +687,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       subtotal: orderData.subtotal,
       shipping_fee: orderData.shippingFee,
       total_amount: orderData.total,
+      discount_code: appliedDiscount?.code,
+      discount_amount: discountAmount,
       payment_method: "COD",
       status: "PENDING",
     });
 
     clearCart();
+    removeDiscountCode();
     return newOrder;
   };
 
@@ -364,9 +713,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     await loadRealOrders();
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
   return (
     <CartContext.Provider
       value={{
@@ -376,6 +722,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         user,
         isSuperAdmin,
         orders,
+        products,
+        discountCodes,
+        appliedDiscount,
+        subtotal,
+        discountAmount,
+        totalAfterDiscount,
+        totalItems,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -389,8 +742,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         createOrder,
         updateOrderStatus,
         refreshOrders,
-        subtotal,
-        totalItems,
+        updateProduct,
+        addProduct,
+        deleteProduct,
+        refreshProducts,
+        applyDiscountCode,
+        removeDiscountCode,
+        createDiscountCode,
+        deleteDiscountCode,
+        toggleDiscountCode,
+        refreshDiscountCodes,
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import {
@@ -11,9 +11,10 @@ import {
   ShoppingBag,
   ShieldCheck,
   Truck,
-  Sparkles,
   ArrowLeft,
-  Gift,
+  Tag,
+  Check,
+  Percent,
 } from "lucide-react";
 
 interface CartDrawerProps {
@@ -28,7 +29,15 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
     removeFromCart,
     updateQuantity,
     subtotal,
+    discountAmount,
+    totalAfterDiscount,
+    appliedDiscount,
+    applyDiscountCode,
+    removeDiscountCode,
   } = useCart();
+
+  const [couponInput, setCouponInput] = useState("");
+  const [couponMsg, setCouponMsg] = useState<{ text: string; isError: boolean } | null>(null);
 
   if (!isOpen) return null;
 
@@ -39,12 +48,24 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
   const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
   const remainingForFree = Math.max(0, freeShippingThreshold - subtotal);
 
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    const res = applyDiscountCode(couponInput);
+    if (res.success) {
+      setCouponMsg({ text: res.message, isError: false });
+      setCouponInput("");
+    } else {
+      setCouponMsg({ text: res.message, isError: true });
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex justify-start bg-black/80 backdrop-blur-md animate-fadeIn" dir="rtl">
       {/* Backdrop */}
       <div
         className="fixed inset-0"
-        onClick={() => setIsIsOpenSafe(setIsOpen)}
+        onClick={() => setIsOpen(false)}
         aria-hidden="true"
       />
 
@@ -216,20 +237,89 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
           )}
         </div>
 
-        {/* Drawer Footer with Subtotal & Checkout */}
+        {/* Drawer Footer with Coupon Code & Subtotal & Checkout */}
         {cart.length > 0 && (
-          <div className="p-5 border-t border-[#24201D] bg-[#0C0B0A]">
-            <div className="flex items-center justify-between text-xs text-stone-400 mb-2">
-              <span>قيمة المقتنيات:</span>
-              <span className="font-serif text-xl font-medium text-white">
-                {subtotal.toLocaleString()} ج.م
-              </span>
+          <div className="p-5 border-t border-[#24201D] bg-[#0C0B0A] space-y-4">
+            {/* Coupon Code Section */}
+            <div>
+              {appliedDiscount ? (
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#688A75]/15 border border-[#688A75]/40 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Tag className="w-3.5 h-3.5 text-[#8EBBA0]" />
+                    <span className="font-mono font-bold text-[#8EBBA0]">{appliedDiscount.code}</span>
+                    <span className="text-stone-300 text-[11px]">
+                      (خصم {appliedDiscount.type === "PERCENTAGE" ? `${appliedDiscount.value}%` : `${appliedDiscount.value} ج.م`})
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removeDiscountCode}
+                    className="text-stone-400 hover:text-rose-400 p-1 text-[11px]"
+                    title="إزالة الكود"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    placeholder="كود الخصم (مثال: SEN10)"
+                    dir="ltr"
+                    className="flex-1 bg-[#161413] border border-[#24201D] focus:border-[#C58652] rounded-xl px-3.5 py-2 text-xs text-white placeholder-stone-500 font-mono uppercase focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-[#161413] border border-[#C58652]/40 hover:border-[#C58652] text-[#E4C7A8] text-xs font-semibold shrink-0 transition-colors"
+                  >
+                    تطبيق
+                  </button>
+                </form>
+              )}
+              {couponMsg && (
+                <span
+                  className={`text-[11px] block mt-1 ${
+                    couponMsg.isError ? "text-rose-400" : "text-[#8EBBA0]"
+                  }`}
+                >
+                  {couponMsg.text}
+                </span>
+              )}
             </div>
-            <div className="flex items-center justify-between text-xs text-stone-500 mb-4">
-              <span>التسليم والدفع:</span>
-              <span className="text-[#E4C7A8] font-medium">
-                {isFreeShipping ? "توصيل مجاني (الدفع عند المعاينة)" : "الدفع عند الاستلام (COD)"}
-              </span>
+
+            {/* Price Calculations */}
+            <div className="space-y-1.5 text-xs text-stone-400">
+              <div className="flex items-center justify-between">
+                <span>المجموع الفرعي:</span>
+                <span className="font-serif text-sm font-medium text-white">
+                  {subtotal.toLocaleString()} ج.م
+                </span>
+              </div>
+
+              {discountAmount > 0 && (
+                <div className="flex items-center justify-between text-[#8EBBA0]">
+                  <span>خصم كود الترويج ({appliedDiscount?.code}):</span>
+                  <span className="font-mono font-medium">
+                    -{discountAmount.toLocaleString()} ج.م
+                  </span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between text-xs text-stone-500">
+                <span>التسليم والدفع:</span>
+                <span className="text-[#E4C7A8] font-medium">
+                  {isFreeShipping ? "توصيل مجاني (الدفع عند المعاينة)" : "الدفع عند الاستلام (COD)"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[#24201D] text-white">
+                <span className="font-medium">المطلوب عند الاستلام:</span>
+                <span className="font-serif text-xl font-medium text-[#E4C7A8]">
+                  {totalAfterDiscount.toLocaleString()} ج.م
+                </span>
+              </div>
             </div>
 
             <button
@@ -248,8 +338,4 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
       </div>
     </div>
   );
-}
-
-function setIsIsOpenSafe(fn: (val: boolean) => void) {
-  fn(false);
 }

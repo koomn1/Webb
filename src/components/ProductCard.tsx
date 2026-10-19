@@ -36,8 +36,12 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
           className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
         />
 
-        {/* Sophisticated Badge */}
-        {perfume.badge && (
+        {/* Sophisticated Badge & Discount */}
+        {perfume.comparePrice && perfume.comparePrice > perfume.price ? (
+          <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider bg-rose-500/90 text-white shadow-md">
+            خصم {Math.round(((perfume.comparePrice - perfume.price) / perfume.comparePrice) * 100)}%
+          </div>
+        ) : perfume.badge ? (
           <div
             className={`absolute top-3 right-3 z-10 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md ${
               isZeste
@@ -49,7 +53,7 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
           >
             {perfume.badge}
           </div>
-        )}
+        ) : null}
 
         {/* Volume & Type Pill */}
         <div className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full glass-luxury text-[#F5E4D2] text-[10px] font-medium tracking-wider">

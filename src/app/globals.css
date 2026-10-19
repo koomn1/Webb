@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600;700;800&family=Cinzel:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @layer base {
   :root {
-    /* Parisian Haute Parfumerie Palette - Breaking free from generic yellow gold & pitch black */
+    /* Parisian Haute Parfumerie Palette */
     --bg-deep: #0c0b0a;
     --bg-surface: #151312;
     --bg-card: #1c1a18;
@@ -40,6 +41,7 @@
   }
 
   body {
+    font-family: 'Alexandria', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg-deep);
     color: var(--text-primary);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -56,6 +58,15 @@
     outline: 2px solid var(--accent-champagne);
     outline-offset: 2px;
   }
+}
+
+/* Custom Typography Utility Overrides */
+.font-serif {
+  font-family: 'Cinzel', 'Alexandria', Georgia, serif;
+}
+
+.font-sans {
+  font-family: 'Alexandria', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Custom Haute Parfumerie Scrollbar */
@@ -88,6 +99,19 @@
 
 .soft-pulse {
   animation: softPulse 5s infinite ease-in-out;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.8deg);
+  }
+}
+
+.float-slow {
+  animation: floatSlow 6s infinite ease-in-out;
 }
 
 /* Champagne & Bronze Gradient Typography */

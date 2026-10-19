@@ -158,7 +158,7 @@ export async function signOut() {
 }
 
 // ==========================================
-// Database Operations (Orders & Visitors)
+// Database Operations (Orders)
 // ==========================================
 
 export interface SupabaseOrderPayload {
@@ -172,6 +172,8 @@ export interface SupabaseOrderPayload {
   subtotal: number;
   shipping_fee: number;
   total_amount: number;
+  discount_code?: string;
+  discount_amount?: number;
   payment_method: "COD";
   status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 }
@@ -234,6 +236,144 @@ export async function updateOrderStatusInSupabase(
     return true;
   } catch (err) {
     console.warn("Supabase updateStatus exception:", err);
+    return false;
+  }
+}
+
+// ==========================================
+// Database Operations (Products Catalog)
+// ==========================================
+
+export interface SupabaseProduct {
+  id: string;
+  name: string;
+  name_ar: string;
+  tagline_ar: string;
+  gender: string;
+  gender_ar: string;
+  price: number;
+  original_price?: number;
+  image: string;
+  description_ar: string;
+  volume_ml: number;
+  concentration: string;
+  top_notes: string[];
+  heart_notes: string[];
+  base_notes: string[];
+  sillage: string;
+  longevity: string;
+  badge?: string;
+  rating?: number;
+  reviews_count?: number;
+  is_available: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export async function fetchProductsFromSupabase(): Promise<SupabaseProduct[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (error) {
+      // Table may not be created yet in user's Supabase instance
+      return [];
+    }
+    return data || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function saveProductToSupabase(product: SupabaseProduct): Promise<boolean> {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabase.from("products").upsert([
+      {
+        ...product,
+        updated_at: new Date().toISOString(),
+      },
+    ]);
+    if (error) {
+      console.warn("Supabase saveProduct error:", error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn("Supabase saveProduct exception:", err);
+    return false;
+  }
+}
+
+export async function deleteProductFromSupabase(id: string): Promise<boolean> {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if (error) {
+      console.warn("Supabase deleteProduct error:", error.message);
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// ==========================================
+// Database Operations (Discount Codes Engine)
+// ==========================================
+
+export interface SupabaseDiscountCode {
+  id?: string;
+  code: string;
+  discount_type: "PERCENTAGE" | "FIXED";
+  discount_value: number;
+  min_order_amount: number;
+  max_discount_amount?: number;
+  is_active: boolean;
+  max_uses?: number;
+  current_uses: number;
+  expires_at?: string;
+  created_at?: string;
+}
+
+export async function fetchDiscountCodesFromSupabase(): Promise<SupabaseDiscountCode[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const { data, error } = await supabase
+      .from("discount_codes")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) return [];
+    return data || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function saveDiscountCodeToSupabase(code: SupabaseDiscountCode): Promise<boolean> {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabase.from("discount_codes").upsert([code]);
+    if (error) {
+      console.warn("Supabase saveDiscountCode error:", error.message);
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteDiscountCodeFromSupabase(code: string): Promise<boolean> {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabase.from("discount_codes").delete().eq("code", code);
+    if (error) return false;
+    return true;
+  } catch {
     return false;
   }
 }
