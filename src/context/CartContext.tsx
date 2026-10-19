@@ -4,12 +4,16 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Perfume, PERFUMES } from "@/data/perfumes";
 import {
   signInWithGoogle,
+  signInWithEmailPassword,
+  signUpWithEmailPassword,
   signOut,
   supabase,
   saveOrderToSupabase,
   updateOrderStatusInSupabase,
   fetchOrdersFromSupabase,
   isSupabaseConfigured,
+  checkIsSuperAdmin,
+  recordVisitorHeartbeat,
 } from "@/lib/supabase";
 
 export interface CartItem {
@@ -44,6 +48,7 @@ interface CartContextType {
   isOpen: boolean;
   language: "ar" | "en";
   user: any | null;
+  isSuperAdmin: boolean;
   orders: StoredOrder[];
   addToCart: (perfume: Perfume, quantity?: number) => void;
   removeFromCart: (itemId: string) => void;
@@ -51,94 +56,124 @@ interface CartContextType {
   clearCart: () => void;
   setIsOpen: (isOpen: boolean) => void;
   setLanguage: (lang: "ar" | "en") => void;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => Promise<{ error: any }>;
+  loginWithEmail: (email: string, pass: string) => Promise<{ error: any }>;
+  registerWithEmail: (email: string, pass: string, name: string, phone?: string) => Promise<{ error: any }>;
   logoutUser: () => Promise<void>;
   createOrder: (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => Promise<StoredOrder>;
-  updateOrderStatus: (orderId: string, status: StoredOrder["status"]) => void;
+  updateOrderStatus: (orderId: string, status: StoredOrder["status"]) => Promise<void>;
+  refreshOrders: () => Promise<void>;
   subtotal: number;
   totalItems: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Initial mock orders to populate the Super Admin Dashboard with realistic data
-const INITIAL_MOCK_ORDERS: StoredOrder[] = [
-  {
-    id: "SEN-1082",
-    customerName: "أحمد الشناوي",
-    phone: "01098765432",
-    governorate: "القاهرة",
-    address: "التجمع الخامس - حي النرجس - فيلا 42",
-    items: [{ name: "باقة الثنائي الملكية (زيست + أورا)", quantity: 1, price: 1150 }],
-    subtotal: 1150,
-    shippingFee: 0,
-    total: 1150,
-    paymentMethod: "COD",
-    status: "CONFIRMED",
-    createdAt: "2026-10-19T18:40:00Z",
-  },
-  {
-    id: "SEN-1081",
-    customerName: "سارة المهندس",
-    phone: "01234567890",
-    governorate: "الإسكندرية",
-    address: "سموحة - شارع فوزي معاذ - عمارة الأطباء",
-    items: [{ name: "سِيان أورا (حريمي)", quantity: 1, price: 650 }],
-    subtotal: 650,
-    shippingFee: 45,
-    total: 695,
-    paymentMethod: "COD",
-    status: "PENDING",
-    createdAt: "2026-10-19T19:15:00Z",
-  },
-  {
-    id: "SEN-1080",
-    customerName: "محمود بدوي",
-    phone: "01123456789",
-    governorate: "الجيزة",
-    address: "الشيخ زايد - بيفرلي هيلز - مجاورة 3",
-    items: [{ name: "سِيان زيست (رجالي)", quantity: 2, price: 650 }],
-    subtotal: 1300,
-    shippingFee: 0,
-    total: 1300,
-    paymentMethod: "COD",
-    status: "SHIPPED",
-    createdAt: "2026-10-19T16:20:00Z",
-  },
-];
-
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [language, setLanguage] = useState<"ar" | "en">("ar");
   const [user, setUser] = useState<any | null>(null);
-  const [orders, setOrders] = useState<StoredOrder[]>(INITIAL_MOCK_ORDERS);
+  const [orders, setOrders] = useState<StoredOrder[]>([]);
 
-  useEffect(() => {
+  const isSuperAdmin = checkIsSuperAdmin(user?.email);
+
+  const loadRealOrders = async () => {
+    if (isSupabaseConfigured()) {
+      const sbOrders = await fetchOrdersFromSupabase();
+      if (sbOrders) {
+        const formatted: StoredOrder[] = sbOrders.map((o: any) => ({
+          id: o.order_number,
+          customerName: o.customer_name,
+          phone: o.phone,
+          governorate: o.governorate,
+          address: o.address,
+          notes: o.notes,
+          items: Array.isArray(o.items) ? o.items : [],
+          subtotal: Number(o.subtotal || 0),
+          shippingFee: Number(o.shipping_fee || 0),
+          total: Number(o.total_amount || 0),
+          paymentMethod: "COD",
+          status: o.status || "PENDING",
+          createdAt: o.created_at,
+        }));
+        setOrders(formatted);
+        return;
+      }
+    }
+
     try {
-      const savedCart = localStorage.getItem("sen_cart");
-      if (savedCart) setCart(JSON.parse(savedCart));
-
       const savedOrders = localStorage.getItem("sen_orders");
       if (savedOrders) {
         setOrders(JSON.parse(savedOrders));
       } else {
-        localStorage.setItem("sen_orders", JSON.stringify(INITIAL_MOCK_ORDERS));
+        setOrders([]);
       }
+    } catch {
+      setOrders([]);
+    }
+  };
 
-      const savedUser = localStorage.getItem("sen_auth_user");
-      if (savedUser) setUser(JSON.parse(savedUser));
+  useEffect(() => {
+    // 1. Load cart
+    try {
+      const savedCart = localStorage.getItem("sen_cart");
+      if (savedCart) setCart(JSON.parse(savedCart));
     } catch {}
 
-    const handleAuthChange = () => {
-      try {
-        const u = localStorage.getItem("sen_auth_user");
-        setUser(u ? JSON.parse(u) : null);
-      } catch {}
-    };
+    // 2. Load Real Orders
+    loadRealOrders();
 
-    window.addEventListener("sen_auth_change", handleAuthChange);
-    return () => window.removeEventListener("sen_auth_change", handleAuthChange);
+    // 3. Heartbeat for real visitors
+    recordVisitorHeartbeat(window.location.pathname);
+    const heartbeatInterval = setInterval(() => {
+      recordVisitorHeartbeat(window.location.pathname);
+    }, 60000);
+
+    // 4. Load Auth User
+    if (isSupabaseConfigured()) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          try {
+            const savedUser = localStorage.getItem("sen_auth_user");
+            if (savedUser) setUser(JSON.parse(savedUser));
+          } catch {}
+        }
+      });
+
+      const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user || null);
+        if (session?.user) {
+          localStorage.setItem("sen_auth_user", JSON.stringify(session.user));
+        } else {
+          localStorage.removeItem("sen_auth_user");
+        }
+      });
+
+      return () => {
+        clearInterval(heartbeatInterval);
+        authListener.subscription.unsubscribe();
+      };
+    } else {
+      try {
+        const savedUser = localStorage.getItem("sen_auth_user");
+        if (savedUser) setUser(JSON.parse(savedUser));
+      } catch {}
+
+      const handleAuthChange = () => {
+        try {
+          const u = localStorage.getItem("sen_auth_user");
+          setUser(u ? JSON.parse(u) : null);
+        } catch {}
+      };
+      window.addEventListener("sen_auth_change", handleAuthChange);
+      return () => {
+        clearInterval(heartbeatInterval);
+        window.removeEventListener("sen_auth_change", handleAuthChange);
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -183,7 +218,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = () => setCart([]);
 
   const loginWithGoogle = async () => {
-    await signInWithGoogle();
+    const res = await signInWithGoogle();
+    if (res.data && "user" in res.data && (res.data as any).user) {
+      setUser((res.data as any).user);
+    }
+    return { error: res.error };
+  };
+
+  const loginWithEmail = async (email: string, pass: string) => {
+    const res = await signInWithEmailPassword(email, pass);
+    if (res.data?.user) setUser(res.data.user);
+    return { error: res.error };
+  };
+
+  const registerWithEmail = async (email: string, pass: string, name: string, phone?: string) => {
+    const res = await signUpWithEmailPassword(email, pass, name, phone);
+    if (res.data?.user) setUser(res.data.user);
+    return { error: res.error };
   };
 
   const logoutUser = async () => {
@@ -203,7 +254,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     setOrders((prev) => [newOrder, ...prev]);
 
-    // Attempt to persist in Supabase if configured
+    // Persist in Supabase
     await saveOrderToSupabase({
       order_number: orderNumber,
       customer_name: orderData.customerName,
@@ -230,6 +281,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     await updateOrderStatusInSupabase(orderId, status);
   };
 
+  const refreshOrders = async () => {
+    await loadRealOrders();
+  };
+
   const subtotal = cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -240,6 +295,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         isOpen,
         language,
         user,
+        isSuperAdmin,
         orders,
         addToCart,
         removeFromCart,
@@ -248,9 +304,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setIsOpen,
         setLanguage,
         loginWithGoogle,
+        loginWithEmail,
+        registerWithEmail,
         logoutUser,
         createOrder,
         updateOrderStatus,
+        refreshOrders,
         subtotal,
         totalItems,
       }}

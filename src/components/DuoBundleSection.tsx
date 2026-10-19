@@ -5,6 +5,7 @@ import Image from "next/image";
 import { PERFUMES } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
 import { Sparkles, ShoppingBag, Truck, Gift, ShieldCheck, Check } from "lucide-react";
+import { asset } from "@/lib/paths";
 
 export function DuoBundleSection() {
   const { addToCart } = useCart();
@@ -20,7 +21,7 @@ export function DuoBundleSection() {
           {/* Visual Side */}
           <div className="relative w-full lg:w-1/2 aspect-[3/2] max-w-[540px] rounded-2xl overflow-hidden border border-[#D4AF37]/30 shadow-2xl group">
             <Image
-              src="/images/duo_bundle.webp"
+              src={asset("/images/duo_bundle.webp")}
               alt="SÈN Duo Bundle (Zeste & Aura)"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"

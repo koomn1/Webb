@@ -1,3 +1,5 @@
+import { asset } from "@/lib/paths";
+
 export interface Perfume {
   id: string;
   slug: string;
@@ -49,7 +51,7 @@ export const PERFUMES: Perfume[] = [
     baseNotes: ["أخشاب الأرز الأطلسي", "حبوب التونكا الفاخرة", "عنبر نقي دافئ"],
     sillage: "فوحان قوي وواثق (9.6/10)",
     longevity: "ثبات يتجاوز 14 ساعة",
-    image: "/images/zeste.webp",
+    image: asset("/images/zeste.webp"),
     descriptionAr:
       "عطر رجالي صُنع خصيصاً للرجل الأنيق الباحث عن حضور مميز وجذاب. يفتتح بنفحات منعشة من البرتقال الأحمر والتفاح المقرمش، يتبعها قلب دافئ من السكر المكرمل وزهر البرتقال، ليستقر على قاعدة فخمة من خشب الأرز والعنبر.",
     descriptionEn:
@@ -80,7 +82,7 @@ export const PERFUMES: Perfume[] = [
     baseNotes: ["مسك أبيض نقي مخملي", "خشب الصندل العطري", "فانيليا ناعمة"],
     sillage: "هالة أنثوية مغناطيسية (9.5/10)",
     longevity: "ثبات يدوم طوال اليوم",
-    image: "/images/aura.webp",
+    image: asset("/images/aura.webp"),
     descriptionAr:
       "تحفة أنثوية ناعمة تُشع رقة وجاذبية لا تُقاوم. يتناغم عبير التفاح الأحمر الحلو وغزل البنات مع باقة الزهور البيضاء ليعانق بشرتك بلمسة مخملية من المسك الأبيض وخشب الصندل.",
     descriptionEn:
@@ -111,7 +113,7 @@ export const PERFUMES: Perfume[] = [
     baseNotes: ["أخشاب الأرز والمسك الأبيض والعنبر"],
     sillage: "ثنائي متناغم استثنائي",
     longevity: "أكثر من 14 ساعة",
-    image: "/images/duo_bundle.webp",
+    image: asset("/images/duo_bundle.webp"),
     descriptionAr:
       "الباقة الأكثر تميزاً واقتصاداً. تتضمن زجاجة SÈN Zeste الرجالية (50 مل) وزجاجة SÈN Aura النسائية (50 مل)، بالإضافة إلى عينتين 2 مل مجاناً للضمان الذهبي مع شحن مجاني وسريع لكافة محافظات مصر.",
     descriptionEn:
@@ -127,7 +129,7 @@ export const PERFUMES: Perfume[] = [
 export const GOLDEN_GUARANTEE_INFO = {
   titleAr: "الضمان الذهبي من SÈN",
   titleEn: "The SÈN Golden Guarantee",
-  image: "/images/golden_guarantee.webp",
+  image: asset("/images/golden_guarantee.webp"),
   descriptionAr:
     "مع كل زجاجة عطر تطلبها، نرفق عينة تجريبية (2 مل) من نفس العطر مجاناً. جرّب العينة أولاً؛ إذا لم يُناسبك العطر أو لم يلبِّ تطلعاتك، تواصل معنا لاسترجاع الزجاجة الـ 50 مل المغلقة واسترداد 100% من أموالك دون أي تعقيد.",
   descriptionEn:

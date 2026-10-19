@@ -13,10 +13,12 @@ import {
   Menu,
   X,
   LayoutDashboard,
+  LogIn,
 } from "lucide-react";
+import { appLink } from "@/lib/paths";
 
 export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
-  const { totalItems, setIsOpen, user, loginWithGoogle, logoutUser } = useCart();
+  const { totalItems, setIsOpen, user, isSuperAdmin, logoutUser } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -61,27 +63,27 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-7 text-xs tracking-wider uppercase font-medium text-zinc-300">
-            <a
-              href="#products"
+            <Link
+              href={appLink("/")}
               className="hover:text-[#D4AF37] transition-colors relative group py-1"
             >
-              عطور SÈN
+              الرئيسية
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </a>
-            <a
-              href="#bundle"
+            </Link>
+            <Link
+              href={appLink("/shop")}
               className="hover:text-[#D4AF37] transition-colors relative group py-1"
             >
-              باقة الثنائي الملكية
+              تشكيلة العطور
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </a>
-            <a
-              href="#guarantee"
+            </Link>
+            <Link
+              href={appLink("/guarantee")}
               className="hover:text-[#D4AF37] transition-colors relative group py-1 text-[#F3E5AB]"
             >
               الضمان الذهبي
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </a>
+            </Link>
             <button
               type="button"
               onClick={onOpenFinder}
@@ -95,7 +97,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
 
           {/* Central Brand Identity */}
           <div className="text-center">
-            <Link href="/" className="inline-block group focus-visible:outline-none">
+            <Link href={appLink("/")} className="inline-block group focus-visible:outline-none">
               <span className="font-serif text-3xl sm:text-4xl tracking-[0.25em] font-normal uppercase text-white transition-colors duration-300 group-hover:text-[#F3E5AB]">
                 SÈN
               </span>
@@ -105,7 +107,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
             </Link>
           </div>
 
-          {/* Right Tools: Support phone, Google Login, Admin, Cart */}
+          {/* Right Tools: Support phone, Login / Account, Admin (Only for Super Admin), Cart */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Phone Support Direct Hotline */}
             <a
@@ -117,11 +119,23 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
               <span>01018995002</span>
             </a>
 
-            {/* Google Authentication via Supabase */}
+            {/* Super Admin Dashboard Button (ONLY visible for Super Admin) */}
+            {isSuperAdmin && (
+              <Link
+                href={appLink("/admin/dashboard")}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#F3E5AB] hover:bg-[#D4AF37]/25 text-xs font-bold transition-all shadow-sm"
+                title="لوحة تحكم السوبر أدمن"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="hidden sm:inline">لوحة الأدمن</span>
+              </Link>
+            )}
+
+            {/* User Account / Login */}
             {user ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-zinc-300 hidden sm:inline font-medium">
-                  {user.name || "العميل"}
+                  {user.user_metadata?.full_name || user.name || user.email?.split("@")[0]}
                 </span>
                 <button
                   type="button"
@@ -133,53 +147,25 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
                 </button>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={loginWithGoogle}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/80 hover:border-[#D4AF37] text-zinc-300 hover:text-white text-xs transition-colors"
-                title="تسجيل الدخول بجوجل عبر سوبابيز"
+              <Link
+                href={appLink("/login")}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/80 hover:border-[#D4AF37] text-zinc-300 hover:text-white text-xs transition-colors"
               >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                  />
-                </svg>
-                <span className="hidden sm:inline">دخول Google</span>
-              </button>
+                <LogIn className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>دخول</span>
+              </Link>
             )}
 
-            {/* Admin Dashboard shortcut */}
-            <Link
-              href="/admin/dashboard"
-              className="p-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors"
-              title="لوحة تحكم السوبر أدمن"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-            </Link>
-
-            {/* Cart Drawer Trigger */}
+            {/* Cart Trigger Button */}
             <button
               type="button"
               onClick={() => setIsOpen(true)}
-              className="relative flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-br from-zinc-800 to-zinc-900 border border-[#D4AF37]/50 text-[#F3E5AB] hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all"
+              className="relative p-2.5 rounded-full bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 hover:border-[#D4AF37]/60 text-white transition-all shadow-lg hover:scale-105"
               aria-label="حقيبة التسوق"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-[#F3E5AB]" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-[#D4AF37] text-black font-bold text-[10px] shadow-lg animate-scale">
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-pulse">
                   {totalItems}
                 </span>
               )}
@@ -188,51 +174,63 @@ export function Navbar({ onOpenFinder }: { onOpenFinder: () => void }) {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden glass-luxury border-t border-zinc-800 px-6 py-6 mt-3 animate-fadeIn">
-          <div className="flex flex-col gap-4 text-sm font-medium">
-            <a
-              href="#products"
+        <div className="lg:hidden bg-[#0A0A0E] border-b border-zinc-800 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-4 duration-200">
+          <nav className="flex flex-col space-y-3 text-sm font-semibold">
+            <Link
+              href={appLink("/")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-zinc-200 hover:text-[#D4AF37] py-2 border-b border-zinc-800/60"
+              className="text-zinc-200 hover:text-[#D4AF37] py-2 border-b border-zinc-900"
             >
-              عطور SÈN (زيست وأورا)
-            </a>
-            <a
-              href="#bundle"
+              الرئيسية
+            </Link>
+            <Link
+              href={appLink("/shop")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-zinc-200 hover:text-[#D4AF37] py-2 border-b border-zinc-800/60"
+              className="text-zinc-200 hover:text-[#D4AF37] py-2 border-b border-zinc-900"
             >
-              باقة الثنائي الملكية (خصم 150 ج.م)
-            </a>
-            <a
-              href="#guarantee"
+              تشكيلة العطور (Shop)
+            </Link>
+            <Link
+              href={appLink("/guarantee")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#F3E5AB] py-2 border-b border-zinc-800/60 flex items-center gap-2"
+              className="text-[#F3E5AB] hover:text-[#D4AF37] py-2 border-b border-zinc-900"
             >
-              <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
-              <span>الضمان الذهبي وعينة الـ 2ml</span>
-            </a>
+              الضمان الذهبي (Golden Guarantee)
+            </Link>
             <button
               type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenFinder();
               }}
-              className="flex items-center justify-between text-[#E6C687] py-2 text-start"
+              className="text-right text-[#D4AF37] py-2 border-b border-zinc-900 flex items-center justify-between"
             >
               <span>مستكشف النوتات العطرية</span>
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <Sparkles className="w-4 h-4" />
             </button>
-
-            <div className="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
-              <span>الدعم السريع عبر الهاتف:</span>
-              <a href="tel:01018995002" className="text-[#D4AF37] font-mono font-bold">
-                01018995002
-              </a>
-            </div>
-          </div>
+            {isSuperAdmin && (
+              <Link
+                href={appLink("/admin/dashboard")}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-[#D4AF37] font-bold py-2 border-b border-zinc-900 flex items-center gap-2"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>لوحة تحكم السوبر أدمن</span>
+              </Link>
+            )}
+            {!user && (
+              <Link
+                href={appLink("/login")}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white py-2 flex items-center gap-2"
+              >
+                <LogIn className="w-4 h-4 text-[#D4AF37]" />
+                <span>تسجيل الدخول / إنشاء حساب</span>
+              </Link>
+            )}
+          </nav>
         </div>
       )}
     </header>

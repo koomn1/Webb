@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Sparkles, ShieldCheck, Gift, Truck, ArrowLeft, Phone } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { asset } from "@/lib/paths";
 
 export function Hero({ onOpenFinder }: { onOpenFinder: () => void }) {
   return (
@@ -11,7 +12,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder: () => void }) {
       {/* Background Hero Image with Deep Vignette */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/hero.webp"
+          src={asset("/images/hero.webp")}
           alt="SÈN Parfums Zeste"
           fill
           priority

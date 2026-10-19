@@ -2,9 +2,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useCart } from "@/context/CartContext";
 import { Sparkles, Phone, Mail, ShieldCheck, Check, MessageCircle, LayoutDashboard } from "lucide-react";
+import { appLink } from "@/lib/paths";
 
 export function Footer() {
+  const { isSuperAdmin } = useCart();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [error, setError] = useState("");
@@ -73,30 +76,30 @@ export function Footer() {
             <span className="text-[10px] tracking-[0.3em] text-[#D4AF37] uppercase font-semibold block mb-4">
               Parfums
             </span>
-            <p className="text-zinc-500 leading-relaxed font-light text-xs">
-              دار عطور فاخرة مبنية على الفخامة الهادئة والزيوت النقية. عطور Zeste و Aura تُصاغ لِتَصنع حضورك الخالد في كافة المناسبات.
+            <p className="text-zinc-400 text-xs leading-relaxed mb-4">
+              عطور مصرية فاخرة بتركيبات نيش فرنسية أصلية. ثبات استثنائي يتجاوز 14 ساعة وضمان ذهبي كامل.
             </p>
           </div>
 
-          {/* Quick Support Info (Requested Contact Details) */}
+          {/* Support Contacts */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              الدعم وخدمة العملاء
+              خدمة العملاء والدعم
             </h4>
-            <ul className="space-y-2.5 text-zinc-300">
+            <ul className="space-y-2.5 text-zinc-400">
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#D4AF37] shrink-0" />
-                <a href="tel:01018995002" className="hover:text-white font-mono font-bold">
+                <a href="tel:01018995002" className="hover:text-white font-mono text-sm">
                   01018995002
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
                 <a
                   href="https://wa.me/201018995002"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:underline font-mono"
+                  className="hover:text-white text-xs text-[#25D366]"
                 >
                   محادثة واتساب مباشرة
                 </a>
@@ -116,47 +119,49 @@ export function Footer() {
           {/* Collections */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              منتجات SÈN
+              أقسام المتجر
             </h4>
             <ul className="space-y-2 text-zinc-400">
               <li>
-                <a href="#products" className="hover:text-[#D4AF37] transition-colors">
+                <Link href={appLink("/shop")} className="hover:text-[#D4AF37] transition-colors">
                   عطر SÈN Zeste (رجالي - 650 ج.م)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#products" className="hover:text-[#D4AF37] transition-colors">
+                <Link href={appLink("/shop")} className="hover:text-[#D4AF37] transition-colors">
                   عطر SÈN Aura (نسائي - 650 ج.م)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#bundle" className="hover:text-[#D4AF37] transition-colors">
+                <Link href={appLink("/shop")} className="hover:text-[#D4AF37] transition-colors">
                   باقة الثنائي Zeste & Aura (1,150 ج.م)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#guarantee" className="hover:text-[#D4AF37] transition-colors text-[#F3E5AB]">
-                  عينة الضمان الذهبي (2ml مجاناً)
-                </a>
+                <Link href={appLink("/guarantee")} className="hover:text-[#D4AF37] transition-colors text-[#F3E5AB]">
+                  تفاصيل الضمان الذهبي (2ml مجاناً)
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Admin shortcut & Policies */}
+          {/* Admin shortcut (Only Super Admin) & Policies */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              إدارة المتجر والسياسات
+              معلومات وسياسات
             </h4>
             <ul className="space-y-2 text-zinc-400">
-              <li>
-                <Link
-                  href="/admin/dashboard"
-                  className="text-[#D4AF37] hover:underline flex items-center gap-1.5 font-semibold"
-                >
-                  <LayoutDashboard className="w-3.5 h-3.5" />
-                  <span>لوحة تحكم السوبر أدمن</span>
-                </Link>
-              </li>
+              {isSuperAdmin && (
+                <li>
+                  <Link
+                    href={appLink("/admin/dashboard")}
+                    className="text-[#D4AF37] hover:underline flex items-center gap-1.5 font-semibold"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    <span>لوحة تحكم السوبر أدمن</span>
+                  </Link>
+                </li>
+              )}
               <li>الدفع عند الاستلام فقط لجميع المحافظات</li>
               <li>شحن سريع ومؤمن لباب المنزل</li>
               <li>سياسة استرجاع مجانية بالضمان الذهبي</li>

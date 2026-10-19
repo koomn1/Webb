@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { ShieldCheck, Sparkles, CheckCircle2, RotateCcw, Truck, Phone } from "lucide-react";
+import { asset } from "@/lib/paths";
 
 export function GoldenGuaranteeSection() {
   const steps = [
@@ -35,7 +36,7 @@ export function GoldenGuaranteeSection() {
           {/* Visual Side */}
           <div className="relative aspect-[16/9] rounded-3xl overflow-hidden border border-[#D4AF37]/40 shadow-2xl group">
             <Image
-              src="/images/golden_guarantee.webp"
+              src={asset("/images/golden_guarantee.webp")}
               alt="الضمان الذهبي من SÈN Parfums"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
