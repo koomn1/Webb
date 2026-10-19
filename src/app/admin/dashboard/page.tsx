@@ -36,11 +36,14 @@ import {
   CheckCheck,
   Eye,
   ExternalLink,
+  ImagePlus,
+  UploadCloud,
 } from "lucide-react";
 import {
   fetchRealActiveVisitorsCount,
   saveOrderToSupabase,
   SupabaseDiscountCode,
+  uploadProductImage,
 } from "@/lib/supabase";
 import { appLink, asset } from "@/lib/paths";
 import { Fake404 } from "@/components/Fake404";
@@ -105,6 +108,7 @@ export default function AdminDashboardPage() {
   const [editGenderAr, setEditGenderAr] = useState("رجالي");
   const [editGender, setEditGender] = useState<"Homme" | "Femme" | "Duo">("Homme");
   const [editImage, setEditImage] = useState("/images/zeste.webp");
+  const [isUploadingEditImage, setIsUploadingEditImage] = useState(false);
   const [editDescriptionAr, setEditDescriptionAr] = useState("");
   const [editTopNotes, setEditTopNotes] = useState("");
   const [editHeartNotes, setEditHeartNotes] = useState("");
@@ -121,11 +125,45 @@ export default function AdminDashboardPage() {
   const [newGenderAr, setNewGenderAr] = useState("رجالي");
   const [newGender, setNewGender] = useState<"Homme" | "Femme" | "Duo">("Homme");
   const [newImage, setNewImage] = useState("/images/zeste.webp");
+  const [isUploadingNewImage, setIsUploadingNewImage] = useState(false);
   const [newDescriptionAr, setNewDescriptionAr] = useState("");
   const [newTopNotes, setNewTopNotes] = useState("");
   const [newHeartNotes, setNewHeartNotes] = useState("");
   const [newBaseNotes, setNewBaseNotes] = useState("");
   const [isNewProductSaving, setIsNewProductSaving] = useState(false);
+
+  // Handlers for device image upload
+  const handleEditImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingEditImage(true);
+    try {
+      const res = await uploadProductImage(file);
+      if (res.url) {
+        setEditImage(res.url);
+      }
+    } catch {
+      alert("حدث خطأ أثناء قراءة الصورة من جهازك");
+    } finally {
+      setIsUploadingEditImage(false);
+    }
+  };
+
+  const handleNewImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingNewImage(true);
+    try {
+      const res = await uploadProductImage(file);
+      if (res.url) {
+        setNewImage(res.url);
+      }
+    } catch {
+      alert("حدث خطأ أثناء قراءة الصورة من جهازك");
+    } finally {
+      setIsUploadingNewImage(false);
+    }
+  };
 
   // New Discount Code State
   const [showAddDiscountModal, setShowAddDiscountModal] = useState(false);
@@ -988,9 +1026,10 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                     {/* Top image & badges */}
                     <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 bg-zinc-900 border border-zinc-800">
                       <Image
-                        src={p.image.startsWith("http") || p.image.startsWith("/") ? p.image : asset(p.image)}
+                        src={p.image.startsWith("http") || p.image.startsWith("/") || p.image.startsWith("data:") ? p.image : asset(p.image)}
                         alt={p.nameAr}
                         fill
+                        unoptimized={p.image.startsWith("data:") || p.image.startsWith("http")}
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
@@ -1399,29 +1438,58 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                 </div>
               </div>
 
-              {/* Image Picker */}
-              <div>
-                <label className="block text-zinc-300 font-semibold mb-1">صورة العطر</label>
-                <div className="flex gap-2">
+              {/* Image Picker with Device Upload & Preview */}
+              <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+                <label className="block text-zinc-200 font-semibold text-xs">صورة العطر *</label>
+                
+                {/* Live Preview & Device Upload Button */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 rounded-xl bg-zinc-950/80 border border-dashed border-[#C58652]/40">
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700 shrink-0">
+                    <img
+                      src={editImage.startsWith("http") || editImage.startsWith("/") || editImage.startsWith("data:") ? editImage : asset(editImage)}
+                      alt="معاينة صورة العطر"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 text-center sm:text-right space-y-1.5">
+                    <label
+                      htmlFor="edit-image-device-file"
+                      className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] text-xs font-bold shadow-md hover:brightness-105 transition-all"
+                    >
+                      <ImagePlus className="w-4 h-4" />
+                      <span>{isUploadingEditImage ? "جاري معالجة الصورة..." : "اختر صورة جديدة من جهازك"}</span>
+                    </label>
+                    <input
+                      id="edit-image-device-file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleEditImageUpload}
+                      className="hidden"
+                    />
+                    <p className="text-[11px] text-zinc-400">
+                      اختر أي صورة من جهازك (PNG, JPG, WEBP) وسيتم حفظها في قاعدة البيانات فورياً
+                    </p>
+                  </div>
+                </div>
+
+                {/* Preset fallback */}
+                <div className="pt-2 border-t border-zinc-800/80 flex flex-col sm:flex-row gap-2">
                   <select
-                    value={editImage}
-                    onChange={(e) => setEditImage(e.target.value)}
-                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
+                    value={editImage.startsWith("data:") ? "custom" : editImage}
+                    onChange={(e) => {
+                      if (e.target.value !== "custom") setEditImage(e.target.value);
+                    }}
+                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-[11px] text-zinc-300 focus:outline-none focus:border-[#C58652]"
                   >
+                    {editImage.startsWith("data:") && <option value="custom">★ صورة مرفوعة من جهازك (مخصصة)</option>}
                     {PRESET_IMAGES.map((img) => (
                       <option key={img.url} value={img.url}>
-                        {img.label} ({img.url})
+                        {img.label}
                       </option>
                     ))}
                   </select>
                 </div>
-                <input
-                  type="text"
-                  placeholder="أو اكتب رابط مخصص: /images/example.webp أو https://..."
-                  value={editImage}
-                  onChange={(e) => setEditImage(e.target.value)}
-                  className="w-full mt-2 bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 text-zinc-400 focus:outline-none focus:border-[#C58652]"
-                />
               </div>
 
               {/* Olfactory Pyramid */}
@@ -1591,20 +1659,58 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                 </div>
               </div>
 
-              {/* Image Picker */}
-              <div>
-                <label className="block text-zinc-300 font-semibold mb-1">صورة العطر</label>
-                <select
-                  value={newImage}
-                  onChange={(e) => setNewImage(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
-                >
-                  {PRESET_IMAGES.map((img) => (
-                    <option key={img.url} value={img.url}>
-                      {img.label} ({img.url})
-                    </option>
-                  ))}
-                </select>
+              {/* Image Picker with Device Upload & Preview */}
+              <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+                <label className="block text-zinc-200 font-semibold text-xs">صورة العطر *</label>
+                
+                {/* Live Preview & Device Upload Button */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 rounded-xl bg-zinc-950/80 border border-dashed border-[#C58652]/40">
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700 shrink-0">
+                    <img
+                      src={newImage.startsWith("http") || newImage.startsWith("/") || newImage.startsWith("data:") ? newImage : asset(newImage)}
+                      alt="معاينة صورة العطر الجديد"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 text-center sm:text-right space-y-1.5">
+                    <label
+                      htmlFor="new-image-device-file"
+                      className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] text-xs font-bold shadow-md hover:brightness-105 transition-all"
+                    >
+                      <ImagePlus className="w-4 h-4" />
+                      <span>{isUploadingNewImage ? "جاري معالجة الصورة..." : "اختر صورة العطر من جهازك"}</span>
+                    </label>
+                    <input
+                      id="new-image-device-file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleNewImageUpload}
+                      className="hidden"
+                    />
+                    <p className="text-[11px] text-zinc-400">
+                      اختر أي صورة من جهازك (PNG, JPG, WEBP) وسيتم حفظها في قاعدة البيانات فورياً
+                    </p>
+                  </div>
+                </div>
+
+                {/* Preset fallback */}
+                <div className="pt-2 border-t border-zinc-800/80 flex flex-col sm:flex-row gap-2">
+                  <select
+                    value={newImage.startsWith("data:") ? "custom" : newImage}
+                    onChange={(e) => {
+                      if (e.target.value !== "custom") setNewImage(e.target.value);
+                    }}
+                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-[11px] text-zinc-300 focus:outline-none focus:border-[#C58652]"
+                  >
+                    {newImage.startsWith("data:") && <option value="custom">★ صورة مرفوعة من جهازك (مخصصة)</option>}
+                    {PRESET_IMAGES.map((img) => (
+                      <option key={img.url} value={img.url}>
+                        {img.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Olfactory Pyramid */}

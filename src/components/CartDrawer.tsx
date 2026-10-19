@@ -137,6 +137,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                     src={item.perfume.image}
                     alt={item.perfume.nameAr}
                     fill
+                    unoptimized={item.perfume.image?.startsWith("data:") || item.perfume.image?.startsWith("http")}
                     className="object-cover"
                   />
                 </div>

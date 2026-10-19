@@ -104,6 +104,7 @@ export default function LandingPage() {
                           src={perfume.image}
                           alt={perfume.name}
                           fill
+                          unoptimized={perfume.image?.startsWith("data:") || perfume.image?.startsWith("http")}
                           className="object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                         <div
@@ -181,9 +182,6 @@ export default function LandingPage() {
       {/* Brand Craftsmanship Story */}
       <section className="py-24 bg-gradient-to-b from-[#0C0B0A] via-[#161413] to-[#0C0B0A] border-t border-[#24201D]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
-          <div className="w-14 h-14 rounded-full bg-[#C58652]/10 text-[#E4C7A8] flex items-center justify-center mx-auto mb-6 border border-[#C58652]/30 font-serif text-xl font-medium">
-            S
-          </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-medium text-white mb-6">
             رؤية دار <span className="champagne-gradient-text">SÈN Haute Parfumerie</span>
           </h2>

@@ -157,7 +157,7 @@ function toAppPerfume(sp: SupabaseProduct): Perfume {
     baseNotes: Array.isArray(sp.base_notes) ? sp.base_notes : [],
     sillage: sp.sillage,
     longevity: sp.longevity,
-    image: sp.image.startsWith("http") || sp.image.startsWith("/") ? sp.image : asset(sp.image),
+    image: sp.image.startsWith("http") || sp.image.startsWith("/") || sp.image.startsWith("data:") ? sp.image : asset(sp.image),
     descriptionAr: sp.description_ar,
     descriptionEn: sp.description_ar,
     rating: sp.rating ? Number(sp.rating) : 4.9,

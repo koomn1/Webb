@@ -24,20 +24,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-[#C58652]/10 rounded-full blur-[160px] pointer-events-none" />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Transparent Monogram Seal */}
-        <div className="flex justify-center mb-5">
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 float-slow">
-            <Image
-              src={asset("/images/sen_monogram_transparent.png")}
-              alt="SÈN Monogram Seal"
-              fill
-              className="object-contain drop-shadow-[0_4px_20px_rgba(197,134,82,0.35)]"
-              priority
-            />
-          </div>
-        </div>
-
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-2 sm:pt-4">
         {/* Luxury Brand Monogram Ribbon */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-champagne text-[#F5E4D2] text-xs sm:text-[13px] font-medium mb-6 tracking-widest uppercase shadow-lg">
           <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />

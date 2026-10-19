@@ -413,3 +413,80 @@ export async function fetchRealActiveVisitorsCount(): Promise<number> {
     return 1;
   }
 }
+
+// ==========================================
+// Image Upload & Client Compression Helper
+// ==========================================
+export function compressImageFile(file: File, maxDim = 900, quality = 0.82): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined") {
+      resolve("");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new (window as any).Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        let dataUrl = canvas.toDataURL("image/webp", quality);
+        if (!dataUrl.startsWith("data:image/webp")) {
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error("Failed to read image file"));
+    reader.readAsDataURL(file);
+  });
+}
+
+export async function uploadProductImage(file: File): Promise<{ url: string; isBase64: boolean; error?: any }> {
+  // First compress the image
+  const compressedBase64 = await compressImageFile(file);
+
+  // If Supabase is configured, attempt upload to Supabase Storage bucket 'product-images'
+  if (isSupabaseConfigured()) {
+    try {
+      const fileExt = file.name.split(".").pop() || "webp";
+      const fileName = `sen_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+      const filePath = `catalog/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(filePath, file, { cacheControl: "3600", upsert: true });
+
+      if (!uploadError) {
+        const { data } = supabase.storage.from("product-images").getPublicUrl(filePath);
+        if (data?.publicUrl) {
+          return { url: data.publicUrl, isBase64: false };
+        }
+      }
+    } catch (err) {
+      console.warn("Storage upload fallback to base64:", err);
+    }
+  }
+
+  // Graceful, self-contained fallback: compressed base64
+  return { url: compressedBase64, isBase64: true };
+}
+

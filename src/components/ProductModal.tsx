@@ -51,6 +51,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
             src={perfume.image}
             alt={perfume.nameAr}
             fill
+            unoptimized={perfume.image?.startsWith("data:") || perfume.image?.startsWith("http")}
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0C0B0A]/80 via-transparent to-transparent pointer-events-none" />
