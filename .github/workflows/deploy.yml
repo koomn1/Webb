@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -27,15 +27,17 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Setup Pages Configuration
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - name: Install Dependencies
         run: npm install --no-package-lock
 
-      # Step 1: Build & Deploy to Cloudflare Pages (Root Domain: https://sen-parfums.pages.dev)
-      - name: Build for Cloudflare Pages (Root Domain)
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+      - name: Build Next.js Static Export
         env:
-          NEXT_PUBLIC_BASE_PATH: ""
-          DEPLOY_TARGET: cloudflare
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
@@ -43,42 +45,28 @@ jobs:
         run: npm run build
 
       - name: Deploy to Cloudflare Pages (*.pages.dev)
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: sen-parfums
-          directory: out
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-      # Step 2: Build & Deploy to GitHub Pages (Backup subpath: /Webb)
-      - name: Setup Pages Configuration
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Build Next.js Static Export for GitHub Pages
         env:
-          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
-          GITHUB_PAGES: "true"
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_SUPER_ADMIN_EMAIL: ${{ secrets.NEXT_PUBLIC_SUPER_ADMIN_EMAIL }}
-        run: npm run build
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "Deploying to Cloudflare Pages..."
+            npx wrangler pages deploy out --project-name sen-parfums --branch main
+          else
+            echo "Cloudflare credentials not set in GitHub secrets, skipping Cloudflare step."
+          fi
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
-  deploy-github-pages:
+  deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build-and-deploy
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
