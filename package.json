@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db": "node scripts/manage-db.mjs"
+    "db": "node scripts/manage-db.mjs",
+    "cf:login": "wrangler login",
+    "cf:whoami": "wrangler whoami",
+    "cf:deploy": "next build && wrangler pages deploy out --project-name sen-parfums",
+    "deploy:cf": "next build && wrangler pages deploy out --project-name sen-parfums"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
