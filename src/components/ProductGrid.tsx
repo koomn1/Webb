@@ -3,16 +3,16 @@
 import React, { useState } from "react";
 import { PERFUMES, Perfume } from "@/data/perfumes";
 import { ProductCard } from "./ProductCard";
-import { Sparkles, SlidersHorizontal, RotateCcw } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export function ProductGrid({ onOpenQuickView }: { onOpenQuickView: (perfume: Perfume) => void }) {
   const [activeFilter, setActiveFilter] = useState<string>("all");
 
   const filters = [
-    { id: "all", label: "كافة العطور والخيارات" },
+    { id: "all", label: "جميع الإبداعات" },
     { id: "Homme", label: "عطور رجالية (Zeste)" },
     { id: "Femme", label: "عطور نسائية (Aura)" },
-    { id: "Duo", label: "باقة الثنائي (وفر 150 ج.م)" },
+    { id: "Duo", label: "باقة الثنائي الملكية (وفر 150 ج.م)" },
   ];
 
   const filteredPerfumes =
@@ -24,15 +24,15 @@ export function ProductGrid({ onOpenQuickView }: { onOpenQuickView: (perfume: Pe
     <section id="products" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-semibold uppercase tracking-widest mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>المجموعة الأساسية • SÈN PARFUMS</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1C1A18] border border-[#E4C7A8]/30 text-[#E4C7A8] text-xs font-semibold uppercase tracking-widest mb-3">
+          <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
+          <span>التشكيلة الأيقونية • ÉDITION LIMITÉE</span>
         </div>
         <h2 className="font-serif text-3xl sm:text-5xl text-white font-normal mb-4">
-          عطور فاخرة تمنحك الثقة والجاذبية
+          توليفاتٌ عطرية <span className="champagne-gradient-text italic font-serif">تحكي قصة تميزك</span>
         </h2>
-        <p className="text-sm sm:text-base text-zinc-400 font-light leading-relaxed">
-          تم تركيب عطور SÈN بأجود الزيوت العطرية النقية لضمان ثبات وفوحان فائق يدوم طوال اليوم. مع عينة تجريبية 2 مل مجانية مع كل زجاجة للضمان الذهبي، والدفع عند الاستلام بعد المعاينة.
+        <p className="text-sm sm:text-base text-[#ABA59C] font-light leading-relaxed">
+          صيغت بتركيز 20% Extrait de Parfum من أندر الزيوت الفرنسية النقية لضمان ثبات ملكي يتجاوز 14 ساعة وفوحان ساحر. استلم شحنتك، جرّب العينة المرفقة أولاً في منزلك، وادفع عند الاستلام.
         </p>
       </div>
 
@@ -45,8 +45,8 @@ export function ProductGrid({ onOpenQuickView }: { onOpenQuickView: (perfume: Pe
             onClick={() => setActiveFilter(filter.id)}
             className={`min-h-[44px] px-5 py-2.5 rounded-full font-medium transition-all duration-200 shrink-0 ${
               activeFilter === filter.id
-                ? "bg-[#D4AF37] text-black font-bold shadow-[0_0_20px_rgba(212,175,55,0.3)]"
-                : "glass-luxury text-zinc-400 hover:text-white hover:border-zinc-700"
+                ? "bg-gradient-to-r from-[#E4C7A8] via-[#F5E4D2] to-[#C58652] text-[#0C0B0A] font-bold shadow-[0_0_25px_rgba(228,199,168,0.3)]"
+                : "glass-luxury text-[#ABA59C] hover:text-white border-[#2B2724]"
             }`}
           >
             {filter.label}

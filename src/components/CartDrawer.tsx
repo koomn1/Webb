@@ -40,24 +40,29 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
   const remainingForFree = Math.max(0, freeShippingThreshold - subtotal);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-start bg-black/80 backdrop-blur-sm animate-fadeIn" dir="rtl">
-      {/* Click outside to close */}
+    <div className="fixed inset-0 z-50 flex justify-start bg-black/80 backdrop-blur-md animate-fadeIn" dir="rtl">
+      {/* Backdrop */}
       <div
         className="fixed inset-0"
-        onClick={() => setIsOpen(false)}
+        onClick={() => setIsIsOpenSafe(setIsOpen)}
         aria-hidden="true"
       />
 
       {/* Drawer Container */}
-      <div className="relative w-full max-w-md bg-[#101015] border-l border-[#D4AF37]/40 h-full flex flex-col z-10 shadow-[10px_0_40px_rgba(0,0,0,0.9)] animate-slideIn">
+      <div className="relative w-full max-w-md bg-[#0C0B0A] border-l border-[#C58652]/30 h-full flex flex-col z-10 shadow-[10px_0_50px_rgba(0,0,0,0.95)] animate-slideIn">
         {/* Drawer Header */}
-        <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#D4AF37]" />
-            <h2 className="font-serif text-xl text-white font-medium">
-              حقيبة التسوق • SÈN
-            </h2>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-bold">
+        <div className="p-5 border-b border-[#24201D] flex items-center justify-between bg-[#161413]/60">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-[#C58652]/15 border border-[#C58652]/30 flex items-center justify-center">
+              <ShoppingBag className="w-4 h-4 text-[#E4C7A8]" strokeWidth={1.5} />
+            </div>
+            <div>
+              <h2 className="font-serif text-lg text-white font-medium tracking-wide">
+                المقتنيات العطرية
+              </h2>
+              <span className="text-[10px] tracking-widest uppercase text-[#C58652]">SÈN Paris • Le Caire</span>
+            </div>
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#24201D] text-[#E4C7A8] font-mono font-medium border border-[#C58652]/20">
               {cart.reduce((s, i) => s + i.quantity, 0)}
             </span>
           </div>
@@ -65,33 +70,33 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-[#D4AF37] transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-[#161413] border border-[#24201D] text-stone-400 hover:text-white hover:border-[#C58652]/60 transition-colors"
             aria-label="إغلاق حقيبة التسوق"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Free Shipping Progress Indicator */}
-        <div className="px-5 py-3.5 bg-zinc-950/80 border-b border-zinc-800/80">
+        <div className="px-5 py-3.5 bg-[#161413]/40 border-b border-[#24201D]">
           <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-zinc-300 flex items-center gap-1.5">
-              <Truck className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="text-stone-300 flex items-center gap-1.5">
+              <Truck className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
               {isFreeShipping ? (
-                <span className="text-emerald-400 font-semibold">
-                  مبارك! طلبك مؤهل للشحن المجاني السريع لكافة المحافظات
+                <span className="text-[#8EBBA0] font-medium">
+                  طلبك مؤهل لخدمة التوصيل المجاني الخاص لكافة المحافظات
                 </span>
               ) : (
                 <span>
-                  أضف <strong className="text-[#F3E5AB]">{remainingForFree.toLocaleString()} ج.م</strong> أخرى للحصول على شحن مجاني
+                  أضف مقتنيات بقيمة <strong className="text-[#E4C7A8] font-mono">{remainingForFree.toLocaleString()} ج.م</strong> للشحن المجاني
                 </span>
               )}
             </span>
-            <span className="text-[#D4AF37] font-bold text-[11px]">{isFreeShipping ? 100 : progressPercent}%</span>
+            <span className="text-[#E4C7A8] font-mono text-[11px]">{isFreeShipping ? 100 : progressPercent}%</span>
           </div>
-          <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="w-full h-1 bg-[#24201D] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-[#C58652] to-[#E4C7A8] transition-all duration-500 rounded-full"
               style={{ width: `${isFreeShipping ? 100 : progressPercent}%` }}
             />
           </div>
@@ -103,10 +108,10 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
             cart.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-4 p-3.5 rounded-xl bg-zinc-900/50 border border-zinc-800/80 hover:border-zinc-700 transition-colors"
+                className="flex gap-4 p-4 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/40 transition-all duration-300"
               >
                 {/* Thumbnail */}
-                <div className="relative w-20 h-24 rounded-lg overflow-hidden bg-zinc-950 shrink-0 border border-zinc-800">
+                <div className="relative w-20 h-24 rounded-xl overflow-hidden bg-[#0C0B0A] shrink-0 border border-[#24201D]">
                   <Image
                     src={item.perfume.image}
                     alt={item.perfume.nameAr}
@@ -122,7 +127,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                       <h4 className="font-serif text-base text-white font-medium leading-snug">
                         {item.perfume.nameAr}
                       </h4>
-                      <span className="text-[11px] text-[#D4AF37] block">
+                      <span className="text-[11px] text-[#C58652] block font-light">
                         {item.perfume.volumeMl}ml • {item.perfume.concentration}
                       </span>
                     </div>
@@ -130,37 +135,37 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                     <button
                       type="button"
                       onClick={() => removeFromCart(item.id)}
-                      className="text-zinc-500 hover:text-red-400 p-1 transition-colors"
+                      className="text-stone-500 hover:text-rose-400 p-1 transition-colors"
                       aria-label="حذف المنتج"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                     </button>
                   </div>
 
                   {/* Golden Guarantee Tester Badge */}
-                  <div className="text-[10px] text-emerald-400 flex items-center gap-1 my-1">
-                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                    <span>مرفق عينة 2ml مجانية للضمان الذهبي</span>
+                  <div className="text-[10px] text-[#8EBBA0] flex items-center gap-1.5 my-1 bg-[#688A75]/10 px-2 py-0.5 rounded-md w-fit border border-[#688A75]/25">
+                    <ShieldCheck className="w-3 h-3 text-[#8EBBA0]" strokeWidth={1.5} />
+                    <span>مرفق عينة استكشافية 2ml مجانية</span>
                   </div>
 
                   <div className="flex items-center justify-between mt-2">
                     {/* Quantity controls */}
-                    <div className="flex items-center border border-zinc-700/80 rounded-lg bg-zinc-900 px-2 py-0.5">
+                    <div className="flex items-center border border-[#24201D] rounded-lg bg-[#0C0B0A] px-2 py-0.5">
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-5 h-5 flex items-center justify-center text-zinc-400 hover:text-white"
+                        className="w-5 h-5 flex items-center justify-center text-stone-400 hover:text-white"
                         aria-label="تقليل"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-6 text-center text-xs font-semibold text-white">
+                      <span className="w-6 text-center text-xs font-mono font-semibold text-white">
                         {item.quantity}
                       </span>
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-5 h-5 flex items-center justify-center text-zinc-400 hover:text-white"
+                        className="w-5 h-5 flex items-center justify-center text-stone-400 hover:text-white"
                         aria-label="زيادة"
                       >
                         <Plus className="w-3 h-3" />
@@ -168,7 +173,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                     </div>
 
                     {/* Price */}
-                    <div className="font-serif font-bold text-base text-[#F3E5AB]">
+                    <div className="font-serif font-medium text-base text-[#E4C7A8]">
                       {(item.unitPrice * item.quantity).toLocaleString()} ج.م
                     </div>
                   </div>
@@ -178,34 +183,34 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
           ) : (
             /* Empty Cart */
             <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600 mx-auto mb-4">
-                <ShoppingBag className="w-8 h-8" />
+              <div className="w-16 h-16 rounded-full bg-[#161413] border border-[#24201D] flex items-center justify-center text-stone-500 mx-auto mb-4">
+                <ShoppingBag className="w-7 h-7 text-[#C58652]/60" strokeWidth={1.5} />
               </div>
-              <h3 className="font-serif text-lg text-white mb-2">
-                حقيبة التسوق فارغة
+              <h3 className="font-serif text-lg text-white mb-2 font-medium">
+                حقيبتك بانتظار توقيعك العطري
               </h3>
-              <p className="text-xs text-zinc-400 max-w-xs mx-auto mb-6">
-                اختر عطر SÈN Zeste أو SÈN Aura أو باقة الثنائي لبدء تجربة الضمان الذهبي.
+              <p className="text-xs text-stone-400 max-w-xs mx-auto mb-6 leading-relaxed font-light">
+                استكشف توليفات SÈN Zeste المنعشة، أو نعومة SÈN Aura المخملية، أو اقتنِ باقة الثنائي الملكية مع ميثاق الثقة التام.
               </p>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="px-6 py-2.5 rounded-full bg-[#D4AF37] text-black text-xs font-bold uppercase tracking-wider"
+                className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] text-xs font-semibold uppercase tracking-wider hover:brightness-105 transition-all shadow-md"
               >
-                تصفح العطور الآن
+                تصفح التوليفات الحصرية
               </button>
             </div>
           )}
 
           {/* Golden Guarantee Card in Cart */}
           {cart.length > 0 && (
-            <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs">
-              <div className="flex items-center gap-2 text-emerald-400 font-semibold mb-1">
-                <ShieldCheck className="w-4 h-4" />
-                <span>الضمان الذهبي 100% مفعل تلقائياً:</span>
+            <div className="p-4 rounded-2xl bg-[#161413]/70 border border-[#688A75]/30 text-xs">
+              <div className="flex items-center gap-2 text-[#8EBBA0] font-medium mb-1.5">
+                <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
+                <span>ميثاق الثقة والأمان (100% Guaranteed):</span>
               </div>
-              <p className="text-[11px] text-zinc-300 leading-relaxed">
-                ستصلك عينة 2 مل مطابقة لكل زجاجة طلبتها. جرّب العينة أولاً واستمتع بها، وإذا لم يُعجبك العطر يمكنك استرجاع الزجاجة الـ 50 مل المغلقة واسترداد كامل ثمنها.
+              <p className="text-[11px] text-stone-300 leading-relaxed font-light">
+                ستصلك عينة استكشافية 2ml مطابقة لكل زجاجة في طردك. اختبر ثبات العطر وفوحانه بهدوء أولاً؛ وإن لم يطابق ذائقتك، يمكنك إرجاع الزجاجة الكبرى المغلقة واسترداد قيمتها فوراً دون أي تكلفة.
               </p>
             </div>
           )}
@@ -213,17 +218,17 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
 
         {/* Drawer Footer with Subtotal & Checkout */}
         {cart.length > 0 && (
-          <div className="p-5 border-t border-zinc-800 bg-[#0C0C10]">
-            <div className="flex items-center justify-between text-xs text-zinc-400 mb-1.5">
-              <span>المجموع الفرعي:</span>
-              <span className="font-serif text-lg font-bold text-white">
+          <div className="p-5 border-t border-[#24201D] bg-[#0C0B0A]">
+            <div className="flex items-center justify-between text-xs text-stone-400 mb-2">
+              <span>قيمة المقتنيات:</span>
+              <span className="font-serif text-xl font-medium text-white">
                 {subtotal.toLocaleString()} ج.م
               </span>
             </div>
-            <div className="flex items-center justify-between text-xs text-zinc-500 mb-4">
-              <span>الشحن وطريقة الدفع:</span>
-              <span className="text-[#D4AF37] font-semibold">
-                {isFreeShipping ? "شحن مجاني (الدفع عند الاستلام)" : "الدفع عند الاستلام فقط (COD)"}
+            <div className="flex items-center justify-between text-xs text-stone-500 mb-4">
+              <span>التسليم والدفع:</span>
+              <span className="text-[#E4C7A8] font-medium">
+                {isFreeShipping ? "توصيل مجاني (الدفع عند المعاينة)" : "الدفع عند الاستلام (COD)"}
               </span>
             </div>
 
@@ -233,14 +238,18 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                 setIsOpen(false);
                 onOpenCheckout();
               }}
-              className="w-full min-h-[48px] py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA820A] text-black font-bold text-xs uppercase tracking-wider hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2 group"
+              className="w-full min-h-[50px] py-3.5 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] font-semibold text-xs uppercase tracking-wider hover:shadow-[0_0_30px_rgba(197,134,82,0.35)] transition-all flex items-center justify-center gap-2 group"
             >
-              <span>متابعة لطلب العطر (الدفع عند الاستلام)</span>
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              <span>إتمام الطلب (الدفع عند الاستلام فقط)</span>
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
             </button>
           </div>
         )}
       </div>
     </div>
   );
+}
+
+function setIsIsOpenSafe(fn: (val: boolean) => void) {
+  fn(false);
 }

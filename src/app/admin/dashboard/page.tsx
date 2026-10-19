@@ -250,8 +250,8 @@ export default function AdminDashboardPage() {
   // =========================================================================
   if (isAuthChecking) {
     return (
-      <div className="min-h-screen bg-[#08080A] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37] border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-[#0C0B0A] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-[#C58652] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -265,7 +265,7 @@ export default function AdminDashboardPage() {
   // SUPER ADMIN AUTHORIZED VIEW
   // =========================================================================
   return (
-    <div className="min-h-screen bg-[#08080A] text-[#FCFBFA] p-3 sm:p-6 lg:p-8 select-text">
+    <div className="min-h-screen bg-[#0C0B0A] text-[#FAF8F5] p-3 sm:p-6 lg:p-8 select-text">
       {/* Top Header */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-zinc-800">
         <div>
@@ -278,7 +278,7 @@ export default function AdminDashboardPage() {
             <span className="text-gradient-gold font-serif">SÈN Parfums</span>
           </h1>
           <p className="text-zinc-400 text-xs sm:text-sm mt-1">
-            مرحباً، <span className="text-[#F3E5AB] font-mono">{user?.email}</span> • تحكم كامل في الطلبات، المخزون، والبيانات الحية
+            مرحباً، <span className="text-[#E4C7A8] font-mono">{user?.email}</span> • تحكم كامل في الطلبات، المخزون، والبيانات الحية
           </p>
         </div>
 
@@ -305,13 +305,13 @@ export default function AdminDashboardPage() {
             disabled={isRefreshing}
             className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#D4AF37]" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#C58652]" : ""}`} />
             <span>تحديث</span>
           </button>
 
           <Link
             href={appLink("/")}
-            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-black font-bold text-xs flex items-center gap-1.5 shadow-md hover:brightness-110 transition-all"
+            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] font-semibold text-xs flex items-center gap-1.5 shadow-md hover:brightness-105 transition-all"
           >
             <span>زيارة المتجر</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -322,7 +322,7 @@ export default function AdminDashboardPage() {
       {/* Real Statistics Overview Cards */}
       <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 my-6 sm:my-8">
         {/* Real Live Visitors */}
-        <div className="glass-dark border border-zinc-800 hover:border-[#D4AF37]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
+        <div className="glass-dark border border-zinc-800 hover:border-[#C58652]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] sm:text-xs text-zinc-400 font-semibold">المتواجدين الآن</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
@@ -337,14 +337,14 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Real Total Revenue */}
-        <div className="glass-dark border border-zinc-800 hover:border-[#D4AF37]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
+        <div className="glass-dark border border-zinc-800 hover:border-[#C58652]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] sm:text-xs text-zinc-400 font-semibold">إجمالي الإيرادات</span>
-            <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center border border-[#D4AF37]/20">
+            <div className="w-8 h-8 rounded-lg bg-[#C58652]/10 text-[#E4C7A8] flex items-center justify-center border border-[#C58652]/20">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#D4AF37] mb-0.5">
+          <div className="text-2xl sm:text-3xl font-bold text-[#E4C7A8] mb-0.5">
             {stats.totalRevenue.toLocaleString("ar-EG")} <span className="text-xs">ج.م</span>
           </div>
           <p className="text-[10px] sm:text-[11px] text-zinc-400">
@@ -353,7 +353,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Real Total Orders */}
-        <div className="glass-dark border border-zinc-800 hover:border-[#D4AF37]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
+        <div className="glass-dark border border-zinc-800 hover:border-[#C58652]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] sm:text-xs text-zinc-400 font-semibold">إجمالي الطلبات (COD)</span>
             <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
@@ -367,7 +367,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Orders Pending Confirmation */}
-        <div className="glass-dark border border-zinc-800 hover:border-[#D4AF37]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
+        <div className="glass-dark border border-zinc-800 hover:border-[#C58652]/40 rounded-2xl p-4 sm:p-5 transition-all shadow-xl">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] sm:text-xs text-zinc-400 font-semibold">طلبات جديدة معلقة</span>
             <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
@@ -385,7 +385,7 @@ export default function AdminDashboardPage() {
           onClick={() => setStatusFilter("ALL")}
           className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
             statusFilter === "ALL"
-              ? "bg-[#D4AF37] text-black shadow-md"
+              ? "bg-[#C58652] text-[#0C0B0A] shadow-md"
               : "bg-zinc-900 text-zinc-400 hover:text-white"
           }`}
         >
@@ -461,7 +461,7 @@ export default function AdminDashboardPage() {
                 placeholder="بحث برقم الطلب، الاسم، الهاتف..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 pr-9 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37] w-full sm:w-64"
+                className="bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 pr-9 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#C58652] w-full sm:w-64"
               />
               <Search className="w-3.5 h-3.5 text-zinc-500 absolute right-3 top-1/2 -translate-y-1/2" />
             </div>
@@ -471,7 +471,7 @@ export default function AdminDashboardPage() {
               <select
                 value={governorateFilter}
                 onChange={(e) => setGovernorateFilter(e.target.value)}
-                className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-[#D4AF37]"
+                className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-[#C58652]"
               >
                 <option value="ALL">كافة المحافظات</option>
                 {uniqueGovs.map((gov) => (
@@ -517,7 +517,7 @@ export default function AdminDashboardPage() {
                   return (
                     <tr key={order.id} className="hover:bg-zinc-900/40 transition-colors">
                       {/* Order Number */}
-                      <td className="py-3.5 px-3.5 font-mono font-bold text-[#F3E5AB] whitespace-nowrap">
+                      <td className="py-3.5 px-3.5 font-mono font-bold text-[#E4C7A8] whitespace-nowrap">
                         {order.id}
                         <span className="block text-[10px] text-zinc-500 font-sans mt-0.5">
                           {new Date(order.createdAt).toLocaleDateString("ar-EG", {
@@ -571,7 +571,7 @@ export default function AdminDashboardPage() {
                       <td className="py-3.5 px-3.5 whitespace-nowrap">
                         <div className="font-bold text-white text-sm">
                           {order.total.toLocaleString("ar-EG")}{" "}
-                          <span className="text-[10px] text-[#D4AF37]">ج.م</span>
+                          <span className="text-[10px] text-[#C58652]">ج.م</span>
                         </div>
                         <span className="text-[10px] text-zinc-500 block">دفع عند الاستلام</span>
                       </td>
@@ -656,7 +656,7 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h4 className="text-sm font-bold text-white">{perfume.nameAr}</h4>
-                    <span className="text-xs text-[#D4AF37] font-semibold">{perfume.price} ج.م</span>
+                    <span className="text-xs text-[#E4C7A8] font-semibold">{perfume.price} ج.م</span>
                     <span className="block text-[10px] text-zinc-500 mt-0.5">{perfume.genderAr} • 50ml</span>
                   </div>
                   <span
@@ -689,10 +689,10 @@ export default function AdminDashboardPage() {
       {/* Manual Order Modal */}
       {showAddOrderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#0f0f14] border border-[#D4AF37]/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+          <div className="bg-[#0f0f14] border border-[#C58652]/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
             <div className="flex items-center justify-between mb-5 pb-3 border-b border-zinc-800">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <PlusCircle className="w-5 h-5 text-[#D4AF37]" />
+                <PlusCircle className="w-5 h-5 text-[#C58652]" />
                 <span>إضافة طلب هاتف / واتساب يدوي</span>
               </h3>
               <button
@@ -712,7 +712,7 @@ export default function AdminDashboardPage() {
                   value={manualName}
                   onChange={(e) => setManualName(e.target.value)}
                   placeholder="محمد أحمد"
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#C58652]"
                 />
               </div>
 
@@ -725,7 +725,7 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setManualPhone(e.target.value)}
                   placeholder="01018995002"
                   dir="ltr"
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-[#C58652]"
                 />
               </div>
 
@@ -735,7 +735,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={manualGov}
                     onChange={(e) => setManualGov(e.target.value)}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
                   >
                     <option value="القاهرة">القاهرة</option>
                     <option value="الجيزة">الجيزة</option>
@@ -757,7 +757,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={manualPerfume}
                     onChange={(e) => setManualPerfume(e.target.value)}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
                   >
                     <option value="zeste">سِيان زيست (رجالي - 650 ج.م)</option>
                     <option value="aura">سِيان أورا (حريمي - 650 ج.م)</option>
@@ -774,7 +774,7 @@ export default function AdminDashboardPage() {
                   value={manualAddress}
                   onChange={(e) => setManualAddress(e.target.value)}
                   placeholder="الشارع، رقم العمارة، الشقة، علامة مميزة..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#C58652]"
                 />
               </div>
 
@@ -785,7 +785,7 @@ export default function AdminDashboardPage() {
                   value={manualNotes}
                   onChange={(e) => setManualNotes(e.target.value)}
                   placeholder="مثال: يفضل التسليم بعد العصر"
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#C58652]"
                 />
               </div>
 
@@ -793,7 +793,7 @@ export default function AdminDashboardPage() {
                 <button
                   type="submit"
                   disabled={manualSubmitting}
-                  className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-black font-bold text-xs shadow-lg hover:brightness-110 disabled:opacity-50"
+                  className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] font-semibold text-xs shadow-lg hover:brightness-105 disabled:opacity-50"
                 >
                   {manualSubmitting ? "جاري الحفظ في الداتابيز..." : "حفظ الطلب وتأكيده"}
                 </button>

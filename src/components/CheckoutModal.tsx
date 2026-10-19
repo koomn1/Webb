@@ -16,6 +16,8 @@ import {
   Copy,
   Check,
   MessageCircle,
+  Banknote,
+  Package,
 } from "lucide-react";
 
 // Strict Zod Validation Schema for Egyptian COD Checkout adhering to AGENTS.md
@@ -33,7 +35,7 @@ const egyptianCheckoutSchema = z.object({
     .min(1, { message: "يرجى اختيار المحافظة لحساب الشحن بدقة" }),
   address: z
     .string()
-    .min(6, { message: "يرجى كتابة العنوان التفصيلي (المنطقة، الشارع، رقم العمارة أو الفيلا)" }),
+    .min(6, { message: "يرجى كتابة العنوان التفصيلي (المنطقة، الشارع، رقم المبنى)" }),
   notes: z.string().optional(),
 });
 
@@ -109,10 +111,10 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
       try {
         confetti({
-          particleCount: 80,
-          spread: 70,
+          particleCount: 75,
+          spread: 60,
           origin: { y: 0.6 },
-          colors: ["#D4AF37", "#F3E5AB", "#AA820A", "#ffffff"],
+          colors: ["#E4C7A8", "#C58652", "#8EBBA0", "#ffffff"],
         });
       } catch {}
     } catch {
@@ -127,53 +129,60 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   };
 
   const whatsappSupportUrl = `https://wa.me/201018995002?text=${encodeURIComponent(
-    `مرحباً، أود متابعة طلبي رقم ${confirmedOrderNumber} في متجر SÈN Parfums.`
+    `مرحباً، أود متابعة طلبي رقم ${confirmedOrderNumber} في دار SÈN Parfums.`
   )}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn" dir="rtl">
-      <div className="relative w-full max-w-2xl bg-[#111116] border border-[#D4AF37]/50 rounded-2xl p-6 sm:p-8 shadow-[0_0_60px_rgba(0,0,0,0.9)] max-h-[92vh] overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-[#0C0B0A] border border-[#C58652]/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(0,0,0,0.95)] max-h-[92vh] overflow-y-auto">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 left-4 sm:top-6 sm:left-6 w-9 h-9 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-[#D4AF37] transition-colors"
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 w-9 h-9 flex items-center justify-center rounded-full bg-[#161413] border border-[#24201D] text-stone-400 hover:text-white hover:border-[#C58652]/60 transition-colors"
           aria-label="إغلاق"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         {!orderConfirmed ? (
           <div>
             {/* Header */}
-            <div className="flex items-center gap-2 mb-1">
-              <Truck className="w-5 h-5 text-[#D4AF37]" />
-              <h2 className="font-serif text-2xl text-white font-medium">
-                تأكيد الطلب — الدفع عند الاستلام فقط (COD)
-              </h2>
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="w-8 h-8 rounded-full bg-[#C58652]/15 border border-[#C58652]/30 flex items-center justify-center">
+                <Truck className="w-4 h-4 text-[#E4C7A8]" strokeWidth={1.5} />
+              </div>
+              <div>
+                <h2 className="font-serif text-2xl text-white font-medium">
+                  إتمام الطلب • الدفع عند الاستلام (COD)
+                </h2>
+                <span className="text-[11px] text-[#C58652] tracking-wider uppercase block">
+                  SÈN Haute Parfumerie • خدمة التوصيل الخاص
+                </span>
+              </div>
             </div>
-            <p className="text-xs text-zinc-400 mb-6">
-              ادفع نقداً للمندوب بعد استلام الشحنة ومعاينتها، مع ضمان استرجاع ذهبي 100% بعينة الـ 2ml المجانية.
+            <p className="text-xs text-stone-400 mb-6 font-light leading-relaxed">
+              ادفع نقداً لمندوب الشحن بعد معاينة الطرد واستلامه، مع ميثاق الثقة والأمان وعينة الـ 2ml المرفقة مجاناً.
             </p>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Full Name */}
               <div>
-                <label className="text-xs text-zinc-300 font-medium block mb-1">
-                  الاسم بالكامل لاستلام الشحنة *
+                <label className="text-xs text-stone-300 font-medium block mb-1.5">
+                  الاسم الكامل لاستلام الشحنة *
                 </label>
                 <input
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  placeholder="مثال: أحمد محمود بدوي"
-                  className={`w-full bg-zinc-900 border rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#D4AF37] transition-colors ${
-                    errors.fullName ? "border-red-500" : "border-zinc-800"
+                  placeholder="مثال: يوسف محمود بدوي"
+                  className={`w-full bg-[#161413] border rounded-xl px-4 py-2.5 text-xs text-white placeholder-stone-500 focus:border-[#C58652] focus:outline-none transition-colors ${
+                    errors.fullName ? "border-rose-500/80" : "border-[#24201D]"
                   }`}
                 />
                 {errors.fullName && (
-                  <span className="text-[11px] text-red-400 mt-1 flex items-center gap-1">
+                  <span className="text-[11px] text-rose-400 mt-1 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.fullName}
                   </span>
                 )}
@@ -181,7 +190,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
               {/* Egyptian Mobile */}
               <div>
-                <label className="text-xs text-zinc-300 font-medium block mb-1">
+                <label className="text-xs text-stone-300 font-medium block mb-1.5">
                   رقم الموبايل للتواصل والشحن (مصر) *
                 </label>
                 <input
@@ -190,29 +199,29 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="01018995002"
-                  className={`w-full bg-zinc-900 border rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#D4AF37] font-mono text-end transition-colors ${
-                    errors.phone ? "border-red-500" : "border-zinc-800"
+                  className={`w-full bg-[#161413] border rounded-xl px-4 py-2.5 text-xs text-white placeholder-stone-500 focus:border-[#C58652] focus:outline-none font-mono text-end transition-colors ${
+                    errors.phone ? "border-rose-500/80" : "border-[#24201D]"
                   }`}
                 />
                 {errors.phone && (
-                  <span className="text-[11px] text-red-400 mt-1 flex items-center gap-1">
+                  <span className="text-[11px] text-rose-400 mt-1 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.phone}
                   </span>
                 )}
-                <span className="text-[10px] text-zinc-500 mt-0.5 block">
-                  سيتم إرسال رسالة تأكيد عبر واتساب ورسالة نصية قبل خروج المندوب.
+                <span className="text-[10px] text-stone-500 mt-1 block">
+                  سنرسل لك رسالة تأكيد عبر واتساب ورسالة نصية قبل خروج المندوب.
                 </span>
               </div>
 
               {/* Governorate Dropdown */}
               <div>
-                <label className="text-xs text-zinc-300 font-medium block mb-1">
+                <label className="text-xs text-stone-300 font-medium block mb-1.5">
                   المحافظة *
                 </label>
                 <select
                   value={formData.governorate}
                   onChange={(e) => setFormData({ ...formData, governorate: e.target.value })}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-[#D4AF37]"
+                  className="w-full bg-[#161413] border border-[#24201D] rounded-xl px-4 py-2.5 text-xs text-white focus:border-[#C58652] focus:outline-none"
                 >
                   {EGYPTIAN_GOVERNORATES.map((g) => (
                     <option key={g.name} value={g.name}>
@@ -224,20 +233,20 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
               {/* Detailed Address */}
               <div>
-                <label className="text-xs text-zinc-300 font-medium block mb-1">
-                  العنوان بالتفصيل (المنطقة، الشارع، رقم العمارة أو الشقة) *
+                <label className="text-xs text-stone-300 font-medium block mb-1.5">
+                  العنوان بالتفصيل (المنطقة، الشارع، رقم المبنى والشقة) *
                 </label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="مثال: المعادي، شارع النصر، عمارة 15، الدور الرابع"
-                  className={`w-full bg-zinc-900 border rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#D4AF37] transition-colors ${
-                    errors.address ? "border-red-500" : "border-zinc-800"
+                  placeholder="مثال: المعادي الجديدة، شارع النصر، مبنى 14، الدور الخامس"
+                  className={`w-full bg-[#161413] border rounded-xl px-4 py-2.5 text-xs text-white placeholder-stone-500 focus:border-[#C58652] focus:outline-none transition-colors ${
+                    errors.address ? "border-rose-500/80" : "border-[#24201D]"
                   }`}
                 />
                 {errors.address && (
-                  <span className="text-[11px] text-red-400 mt-1 flex items-center gap-1">
+                  <span className="text-[11px] text-rose-400 mt-1 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.address}
                   </span>
                 )}
@@ -245,55 +254,55 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
               {/* Notes */}
               <div>
-                <label className="text-xs text-zinc-400 font-medium block mb-1">
-                  ملاحظات خاصة بالمندوب (اختياري)
+                <label className="text-xs text-stone-400 font-medium block mb-1.5">
+                  ملاحظات التوصيل (اختياري)
                 </label>
                 <input
                   type="text"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="مثال: يرجى الاتصال قبل الوصول بنصف ساعة"
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:border-[#D4AF37]"
+                  placeholder="مثال: الاتصال قبل الوصول بنصف ساعة"
+                  className="w-full bg-[#161413] border border-[#24201D] rounded-xl px-4 py-2 text-xs text-white placeholder-stone-500 focus:border-[#C58652] focus:outline-none"
                 />
               </div>
 
               {/* Strict COD Payment Method Banner */}
-              <div className="p-4 rounded-xl bg-amber-950/20 border border-[#D4AF37]/40 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] shrink-0 font-bold">
-                  💵
+              <div className="p-4 rounded-2xl bg-[#161413] border border-[#C58652]/30 flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-[#C58652]/15 border border-[#C58652]/30 flex items-center justify-center text-[#E4C7A8] shrink-0">
+                  <Banknote className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div className="text-xs">
-                  <span className="font-bold text-[#F3E5AB] block mb-0.5">
-                    طريقة الدفع: الدفع عند الاستلام فقط (Cash on Delivery)
+                  <span className="font-medium text-[#E4C7A8] block mb-0.5">
+                    طريقة الدفع: الدفع نقداً عند الاستلام والمعاينة (COD)
                   </span>
-                  <span className="text-zinc-400 text-[11px]">
-                    تدفع ثمن الأوردر نقداً لمندوب الشحن عند استلام الطرد ومعاينته.
+                  <span className="text-stone-400 text-[11px] font-light">
+                    تدفع القيمة لمندوب التوصيل بعد استلام الطرد وفحصه بكل طمأنينة.
                   </span>
                 </div>
               </div>
 
               {/* Order Summary Recap */}
-              <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800/80 text-xs space-y-2">
-                <div className="flex justify-between text-zinc-400">
-                  <span>قيمة المنتجات:</span>
-                  <span className="font-mono">{subtotal.toLocaleString()} ج.م</span>
+              <div className="p-4 rounded-2xl bg-[#161413]/50 border border-[#24201D] text-xs space-y-2">
+                <div className="flex justify-between text-stone-400">
+                  <span>قيمة المقتنيات:</span>
+                  <span className="font-mono text-stone-200">{subtotal.toLocaleString()} ج.م</span>
                 </div>
-                <div className="flex justify-between text-zinc-400">
-                  <span>مصاريف الشحن ({formData.governorate}):</span>
-                  <span className={shippingFee === 0 ? "text-emerald-400 font-bold" : "font-mono"}>
-                    {shippingFee === 0 ? "شحن مجاني لكافة المحافظات" : `${shippingFee} ج.م`}
+                <div className="flex justify-between text-stone-400">
+                  <span>رسوم الشحن والتوصيل ({formData.governorate}):</span>
+                  <span className={shippingFee === 0 ? "text-[#8EBBA0] font-medium" : "font-mono text-stone-200"}>
+                    {shippingFee === 0 ? "توصيل مجاني لكافة المحافظات" : `${shippingFee} ج.م`}
                   </span>
                 </div>
-                <div className="flex justify-between text-emerald-400">
-                  <span className="flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    الضمان الذهبي وعينة 2ml:
+                <div className="flex justify-between text-[#8EBBA0]">
+                  <span className="flex items-center gap-1.5 font-light">
+                    <ShieldCheck className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    ميثاق الثقة وعينة 2ml الاستكشافية:
                   </span>
-                  <span className="font-bold">مرفقة مجاناً</span>
+                  <span className="font-medium">مرفقة مجاناً</span>
                 </div>
-                <div className="flex justify-between text-white font-serif text-base pt-2 border-t border-zinc-800 font-bold">
+                <div className="flex justify-between text-white font-serif text-base pt-2.5 border-t border-[#24201D] font-medium">
                   <span>المبلغ المطلوب عند الاستلام:</span>
-                  <span className="text-[#F3E5AB]">{grandTotal.toLocaleString()} ج.م</span>
+                  <span className="text-[#E4C7A8] font-mono text-lg">{grandTotal.toLocaleString()} ج.م</span>
                 </div>
               </div>
 
@@ -301,24 +310,24 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full min-h-[48px] py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA820A] text-black font-bold text-xs uppercase tracking-wider hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full min-h-[50px] py-3.5 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] font-semibold text-xs uppercase tracking-wider hover:shadow-[0_0_30px_rgba(197,134,82,0.35)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                    <span>جاري تسجيل الطلب وإرساله لغرفة العمليات...</span>
+                    <span className="w-4 h-4 border-2 border-[#0C0B0A] border-t-transparent rounded-full animate-spin" />
+                    <span>جاري تجهيز الطلب وتوجيهه لفريق الشحن...</span>
                   </span>
                 ) : (
                   <span>
-                    تأكيد الأوردر الآن ({grandTotal.toLocaleString()} ج.م عند الاستلام)
+                    تأكيد الطلب الآن ({grandTotal.toLocaleString()} ج.م عند الاستلام)
                   </span>
                 )}
               </button>
 
               {/* Support Notice */}
-              <div className="text-center text-[11px] text-zinc-400 pt-1">
+              <div className="text-center text-[11px] text-stone-400 pt-1">
                 خدمة العملاء والدعم المباشر:{" "}
-                <a href="tel:01018995002" className="text-[#D4AF37] font-mono font-bold hover:underline">
+                <a href="tel:01018995002" className="text-[#E4C7A8] font-mono font-medium hover:underline">
                   01018995002
                 </a>
               </div>
@@ -327,35 +336,35 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         ) : (
           /* Confirmation Success State */
           <div className="text-center py-6">
-            <div className="w-16 h-16 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mx-auto mb-4">
-              <CheckCircle2 className="w-10 h-10" />
+            <div className="w-16 h-16 rounded-full bg-[#C58652]/15 border border-[#C58652]/40 flex items-center justify-center text-[#E4C7A8] mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8" strokeWidth={1.5} />
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 text-[#D4AF37] text-xs font-semibold mb-3">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>تم تسجيل الأوردر بنجاح مع الضمان الذهبي</span>
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#161413] text-[#8EBBA0] text-xs font-medium border border-[#688A75]/30 mb-3">
+              <ShieldCheck className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span>تم تسجيل الطلب وتفعيل ميثاق الأمان بنجاح</span>
             </div>
 
-            <h2 className="font-serif text-3xl text-white mb-2">
-              شكراً لاختيارك SÈN Parfums
+            <h2 className="font-serif text-3xl text-white mb-2 font-medium">
+              شكراً لاختيارك دار SÈN
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-300 max-w-md mx-auto mb-6">
-              تم استلام طلبك وسيتواصل معك مندوبنا هاتفياً أو عبر واتساب لتأكيد ميعاد التوصيل والدفع عند الاستلام.
+            <p className="text-xs sm:text-sm text-stone-300 max-w-md mx-auto mb-6 font-light leading-relaxed">
+              تم استلام طلبك باعتناء، وسيتواصل معك مستشار التوصيل لتأكيد موعد التسليم والدفع نقداً عند استلام ومعاينة الزجاجة.
             </p>
 
             {/* Order Code Box */}
-            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-900 border border-[#D4AF37]/40 mb-6">
+            <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#161413] border border-[#C58652]/30 mb-6">
               <div className="text-start">
-                <span className="text-[10px] text-zinc-500 uppercase block">كود الطلب الخاص بك:</span>
-                <span className="font-mono text-base font-bold text-[#F3E5AB]">{confirmedOrderNumber}</span>
+                <span className="text-[10px] text-stone-500 uppercase tracking-wider block">كود الطلب المرجعي:</span>
+                <span className="font-mono text-base font-medium text-[#E4C7A8]">{confirmedOrderNumber}</span>
               </div>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
+                className="p-2 rounded-lg bg-[#24201D] hover:bg-[#2e2a26] text-stone-300 hover:text-white transition-colors"
                 title="نسخ كود الطلب"
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-[#8EBBA0]" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
 
@@ -365,23 +374,23 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 href={whatsappSupportUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-lg"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#20b858] text-[#0C0B0A] font-semibold text-xs flex items-center justify-center gap-2 transition-colors shadow-lg"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>متابعة الشحن عبر واتساب الدعم</span>
+                <span>متابعة الشحن والتوصيل عبر واتساب</span>
               </a>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full sm:w-auto px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#161413] border border-[#24201D] hover:border-[#C58652]/40 text-stone-200 text-xs font-medium"
               >
-                العودة للمتجر
+                العودة للتشكيلة
               </button>
             </div>
 
-            <p className="text-[11px] text-zinc-500">
-              الدعم الفني: 01018995002 • youssefbadawy5002@gmail.com
+            <p className="text-[11px] text-stone-500 font-light">
+              الدعم المباشر: 01018995002 • youssefbadawy5002@gmail.com
             </p>
           </div>
         )}

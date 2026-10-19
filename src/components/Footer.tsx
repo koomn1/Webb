@@ -23,20 +23,22 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[#050507] border-t border-zinc-900 text-zinc-400 text-xs pt-16 pb-12" dir="rtl">
+    <footer className="bg-[#0C0B0A] border-t border-[#24201D] text-stone-400 text-xs pt-16 pb-12" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Support & VIP Club Newsletter */}
-        <div className="max-w-3xl mx-auto text-center mb-16 p-8 sm:p-10 rounded-2xl glass-gold border border-[#D4AF37]/30">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 text-[#D4AF37] text-[11px] font-semibold uppercase tracking-widest mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>نادي SÈN الخاص • كود خصم ترحيبي</span>
+        {/* Support & VIP Circle Newsletter */}
+        <div className="max-w-3xl mx-auto text-center mb-16 p-8 sm:p-10 rounded-3xl bg-[#161413] border border-[#C58652]/30 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-1/2 translate-x-1/2 w-64 h-32 bg-[#C58652]/10 rounded-full blur-[80px] pointer-events-none" />
+
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0C0B0A] border border-[#C58652]/30 text-[#E4C7A8] text-[11px] font-medium uppercase tracking-widest mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
+            <span>دائرة SÈN الخاصة • امتيازات حصرية</span>
           </div>
 
-          <h3 className="font-serif text-2xl sm:text-3xl text-white mb-2">
-            انضم لدائرة محبي العطور الفاخرة
+          <h3 className="font-serif text-2xl sm:text-3xl text-white mb-2 font-medium">
+            انضم لنخبة متذوقي العطور النيش
           </h3>
-          <p className="text-zinc-400 text-xs sm:text-sm font-light max-w-lg mx-auto mb-6">
-            سجّل بريدك الإلكتروني للحصول على عروض حصرية على باقات SÈN Zeste و Aura وتجارب عطرية خاصة.
+          <p className="text-stone-400 text-xs sm:text-sm font-light max-w-lg mx-auto mb-6 leading-relaxed">
+            استقبل دعوات الإصدارات المحدودة وامتيازات خاصة على توليفات SÈN Zeste و Aura وتجارب عطرية خاصة تُصنع لك.
           </p>
 
           {!subscribed ? (
@@ -47,71 +49,71 @@ export function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="أدخل بريدك الإلكتروني..."
-                  className="w-full px-4 py-3 rounded-full bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:border-[#D4AF37] transition-colors"
+                  className="w-full px-4 py-3 rounded-full bg-[#0C0B0A] border border-[#24201D] text-white placeholder-stone-500 text-xs focus:border-[#C58652] focus:outline-none transition-colors"
                 />
-                {error && <span className="text-[11px] text-red-400 block mt-1 ps-2">{error}</span>}
+                {error && <span className="text-[11px] text-rose-400 block mt-1 ps-3">{error}</span>}
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 rounded-full bg-[#D4AF37] text-black font-bold text-xs uppercase tracking-wider hover:bg-[#AA820A] transition-colors shrink-0"
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] font-semibold text-xs uppercase tracking-wider hover:brightness-105 transition-all shadow-md shrink-0"
               >
-                انضم الآن
+                انضم للدائرة
               </button>
             </form>
           ) : (
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-semibold text-xs animate-fadeIn">
-              <Check className="w-4 h-4 text-emerald-400" />
-              <span>مرحباً بك في نادي SÈN Parfums الخاص.</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#688A75]/15 border border-[#688A75]/40 text-[#8EBBA0] font-medium text-xs animate-fadeIn">
+              <Check className="w-4 h-4" strokeWidth={2} />
+              <span>مرحباً بك في دائرة SÈN Haute Parfumerie الخاصة.</span>
             </div>
           )}
         </div>
 
         {/* Brand & Support Links */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-zinc-900 text-start">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-[#24201D] text-start">
           {/* Brand Info */}
           <div className="md:col-span-1">
-            <span className="font-serif text-3xl tracking-[0.25em] font-normal uppercase text-white block mb-1">
+            <span className="font-serif text-3xl tracking-[0.25em] font-light uppercase text-white block mb-0.5">
               SÈN
             </span>
-            <span className="text-[10px] tracking-[0.3em] text-[#D4AF37] uppercase font-semibold block mb-4">
-              Parfums
+            <span className="text-[10px] tracking-[0.3em] text-[#C58652] uppercase font-semibold block mb-4">
+              HAUTE PARFUMERIE
             </span>
-            <p className="text-zinc-400 text-xs leading-relaxed mb-4">
-              عطور مصرية فاخرة بتركيبات نيش فرنسية أصلية. ثبات استثنائي يتجاوز 14 ساعة وضمان ذهبي كامل.
+            <p className="text-stone-400 text-xs leading-relaxed mb-4 font-light">
+              توليفات عطرية بتركيبات نيش فرنسية مبتكرة وزيوت نقية بتركيز 20%. ثبات استثنائي يتجاوز 14 ساعة مع ميثاق الثقة والأمان.
             </p>
           </div>
 
           {/* Support Contacts */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              خدمة العملاء والدعم
+              خدمة العملاء والاستشارات
             </h4>
-            <ul className="space-y-2.5 text-zinc-400">
+            <ul className="space-y-2.5 text-stone-400 font-light">
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <Phone className="w-4 h-4 text-[#C58652] shrink-0" strokeWidth={1.5} />
                 <a href="tel:01018995002" className="hover:text-white font-mono text-sm">
                   01018995002
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
+                <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" strokeWidth={1.5} />
                 <a
                   href="https://wa.me/201018995002"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white text-xs text-[#25D366]"
                 >
-                  محادثة واتساب مباشرة
+                  استشارة واتساب مباشرة
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <Mail className="w-4 h-4 text-[#C58652] shrink-0" strokeWidth={1.5} />
                 <a href="mailto:youssefbadawy5002@gmail.com" className="hover:text-white font-mono text-[11px]">
                   youssefbadawy5002@gmail.com
                 </a>
               </li>
-              <li className="text-[11px] text-zinc-500 pt-1">
-                خدمة العملاء متاحة طوال أيام الأسبوع من 9 ص حتى 11 م.
+              <li className="text-[11px] text-stone-500 pt-1 font-light">
+                فريق الاستشارات العطرية متواجد طوال أيام الأسبوع.
               </li>
             </ul>
           </div>
@@ -119,27 +121,27 @@ export function Footer() {
           {/* Collections */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              أقسام المتجر
+              التوليفات الحصرية
             </h4>
-            <ul className="space-y-2 text-zinc-400">
+            <ul className="space-y-2 text-stone-400 font-light">
               <li>
-                <Link href={appLink("/shop")} className="hover:text-[#D4AF37] transition-colors">
+                <Link href={appLink("/shop")} className="hover:text-[#E4C7A8] transition-colors">
                   عطر SÈN Zeste (رجالي - 650 ج.م)
                 </Link>
               </li>
               <li>
-                <Link href={appLink("/shop")} className="hover:text-[#D4AF37] transition-colors">
+                <Link href={appLink("/shop")} className="hover:text-[#E4C7A8] transition-colors">
                   عطر SÈN Aura (نسائي - 650 ج.م)
                 </Link>
               </li>
               <li>
-                <Link href={appLink("/shop")} className="hover:text-[#D4AF37] transition-colors">
-                  باقة الثنائي Zeste & Aura (1,150 ج.م)
+                <Link href={appLink("/shop")} className="hover:text-[#E4C7A8] transition-colors">
+                  باقة الثنائي الملكية Zeste & Aura (1,150 ج.م)
                 </Link>
               </li>
               <li>
-                <Link href={appLink("/guarantee")} className="hover:text-[#D4AF37] transition-colors text-[#F3E5AB]">
-                  تفاصيل الضمان الذهبي (2ml مجاناً)
+                <Link href={appLink("/guarantee")} className="hover:text-[#E4C7A8] transition-colors text-[#E4C7A8]">
+                  ميثاق الثقة والأمان (عينة 2ml مجاناً)
                 </Link>
               </li>
             </ul>
@@ -148,34 +150,34 @@ export function Footer() {
           {/* Admin shortcut (Only Super Admin) & Policies */}
           <div>
             <h4 className="text-white font-medium text-xs uppercase tracking-widest mb-3">
-              معلومات وسياسات
+              المعايير والسياسات
             </h4>
-            <ul className="space-y-2 text-zinc-400">
+            <ul className="space-y-2 text-stone-400 font-light">
               {isSuperAdmin && (
                 <li>
                   <Link
                     href={appLink("/admin/dashboard")}
-                    className="text-[#D4AF37] hover:underline flex items-center gap-1.5 font-semibold"
+                    className="text-[#E4C7A8] hover:underline flex items-center gap-1.5 font-medium"
                   >
-                    <LayoutDashboard className="w-3.5 h-3.5" />
-                    <span>لوحة تحكم السوبر أدمن</span>
+                    <LayoutDashboard className="w-3.5 h-3.5 text-[#C58652]" />
+                    <span>لوحة إدارة الدار (Super Admin)</span>
                   </Link>
                 </li>
               )}
-              <li>الدفع عند الاستلام فقط لجميع المحافظات</li>
-              <li>شحن سريع ومؤمن لباب المنزل</li>
-              <li>سياسة استرجاع مجانية بالضمان الذهبي</li>
+              <li>الدفع عند الاستلام والمعاينة لكافة المحافظات</li>
+              <li>توصيل سريع ومؤمن بعناية فائقة</li>
+              <li>ميثاق استرجاع مريح بعينة الـ 2ml المجانية</li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar: Copyright & Payment Badges */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
-          <p>© 2026 SÈN Parfums. جميع الحقوق محفوظة.</p>
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500 font-light">
+          <p>© 2026 SÈN Haute Parfumerie. جميع الحقوق محفوظة.</p>
 
-          <div className="flex items-center gap-3 text-zinc-300">
-            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-semibold text-[#F3E5AB]">
-              💵 الدفع عند الاستلام فقط (Cash on Delivery)
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 rounded-full bg-[#161413] border border-[#24201D] text-xs font-medium text-[#E4C7A8]">
+              الدفع عند الاستلام فقط (Cash on Delivery)
             </span>
           </div>
         </div>

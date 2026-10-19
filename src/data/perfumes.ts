@@ -39,7 +39,7 @@ export const PERFUMES: Perfume[] = [
     nameAr: "سِيان زيست (رجالي)",
     gender: "Homme",
     genderAr: "عطر رجالي فاخر",
-    taglineAr: "انتعاش الحمضيات الإيطالية المشمسة مع دفء السكر المكرمل والأرز",
+    taglineAr: "انفجار الحمضيات الإيطالية المشمسة يلتقي بدفء السكر المكرمل وأخشاب الأرز الأطلسي",
     taglineEn: "Italian Blood Orange, Crisp Apple, Caramelized Sugar & Cedarwood",
     price: 650,
     comparePrice: 750,
@@ -53,7 +53,7 @@ export const PERFUMES: Perfume[] = [
     longevity: "ثبات يتجاوز 14 ساعة",
     image: asset("/images/zeste.webp"),
     descriptionAr:
-      "عطر رجالي صُنع خصيصاً للرجل الأنيق الباحث عن حضور مميز وجذاب. يفتتح بنفحات منعشة من البرتقال الأحمر والتفاح المقرمش، يتبعها قلب دافئ من السكر المكرمل وزهر البرتقال، ليستقر على قاعدة فخمة من خشب الأرز والعنبر.",
+      "عطرٌ مهيب وُضع للرجل الذي لا يحتاج أن يرفع صوته ليُثبت حضوره. يبدأ بانتعاش آسر من البرتقال الأحمر والتفاح المقرمش، ينساب إلى قلب دافئ من السكر المكرمل وزهر البرتقال النادر، ثم يستقر في هدوء واثق على قاعدة من خشب الأرز الأطلسي والعنبر النقي. ثبات يدوم لأكثر من 14 ساعة وفوحان يترك بصمته أينما حللت.",
     descriptionEn:
       "A bold, invigorating masculine signature balancing crisp blood orange and orchard apple with sweet caramelized sugar and deep cedarwood.",
     rating: 4.97,
@@ -70,7 +70,7 @@ export const PERFUMES: Perfume[] = [
     nameAr: "سِيان أورا (حريمي)",
     gender: "Femme",
     genderAr: "عطر نسائي ساحر",
-    taglineAr: "عبير أنثوي آسر من التفاح السكري، زهور بيضاء، والمسك المخملي",
+    taglineAr: "همسة أنثوية ساحرة من التفاح السكري، زهور بيضاء ملكية، والمسك المخملي النقي",
     taglineEn: "Red Apple, Sweet Spun Sugar, White Florals & Pure Musk",
     price: 650,
     comparePrice: 750,
@@ -84,7 +84,7 @@ export const PERFUMES: Perfume[] = [
     longevity: "ثبات يدوم طوال اليوم",
     image: asset("/images/aura.webp"),
     descriptionAr:
-      "تحفة أنثوية ناعمة تُشع رقة وجاذبية لا تُقاوم. يتناغم عبير التفاح الأحمر الحلو وغزل البنات مع باقة الزهور البيضاء ليعانق بشرتك بلمسة مخملية من المسك الأبيض وخشب الصندل.",
+      "قصيدة أنثوية تجسد الرقة والفتنة الآسرة. تتراقص نفحات التفاح الأحمر السكري والبرتقال الندي مع باقة زهور بيضاء نادرة من حقول غراس الفرنسية، لتذوب في هالة مغناطيسية من المسك الأبيض المخملي وخشب الصندل. عطرٌ يلتف حولك كالحرير ويأسر كل من يقترب.",
     descriptionEn:
       "An enchanting feminine aura wrapped in crisp red apple, whimsical spun sugar, and radiant white petals grounded by velvety white musk.",
     rating: 4.98,
@@ -101,7 +101,7 @@ export const PERFUMES: Perfume[] = [
     nameAr: "باقة الثنائي الملكية (زيست + أورا)",
     gender: "Duo",
     genderAr: "باقة العطرين معاً",
-    taglineAr: "احصل على عطر Zeste و Aura معاً بخصم 150 ج.م + شحن مجاني لكافة المحافظات",
+    taglineAr: "ثنائية الشغف والأناقة: Zeste الرجالي و Aura النسائي معاً بتوفير 150 ج.م وشحن مجاني",
     taglineEn: "Both Zeste (50ml) & Aura (50ml) + Free Priority Shipping",
     price: 1150,
     comparePrice: 1300,
@@ -115,7 +115,7 @@ export const PERFUMES: Perfume[] = [
     longevity: "أكثر من 14 ساعة",
     image: asset("/images/duo_bundle.webp"),
     descriptionAr:
-      "الباقة الأكثر تميزاً واقتصاداً. تتضمن زجاجة SÈN Zeste الرجالية (50 مل) وزجاجة SÈN Aura النسائية (50 مل)، بالإضافة إلى عينتين 2 مل مجاناً للضمان الذهبي مع شحن مجاني وسريع لكافة محافظات مصر.",
+      "التناغم الملكي الأرقى من دار SÈN. عطران صُمما ليكمل كل منهما الآخر: حضور Zeste الرجالي الواثق وغموض Aura الأنثوي الفاتن. تأتيك الباقة في صندوقين فاخرين مع عينتين 2 مل مجاناً للضمان الذهبي، وشحن مجاني وسريع لكافة محافظات مصر.",
     descriptionEn:
       "The definitive dual luxury set. Includes full bottles of SÈN Zeste and SÈN Aura in individual luxury boxes with two complimentary 2ml Golden Guarantee testers.",
     rating: 5.0,

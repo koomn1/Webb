@@ -15,6 +15,7 @@ import {
   checkIsSuperAdmin,
   recordVisitorHeartbeat,
 } from "@/lib/supabase";
+import { appLink } from "@/lib/paths";
 
 export interface CartItem {
   id: string; // perfumeId
@@ -186,11 +187,55 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isSuperAdmin]);
 
+  // Helper to determine scoped cart key per account
+  const getCartKey = (u?: any | null) => {
+    if (u?.email) {
+      return `sen_cart_${u.email.trim().toLowerCase()}`;
+    }
+    if (u?.id) {
+      return `sen_cart_${u.id}`;
+    }
+    return "sen_cart_guest";
+  };
+
+  // Load account-specific cart whenever active user changes
   useEffect(() => {
+    const key = getCartKey(user);
     try {
-      localStorage.setItem("sen_cart", JSON.stringify(cart));
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        setCart(JSON.parse(saved));
+      } else if (user) {
+        // If user logged in and has no saved cart yet, inherit guest cart
+        const guestCart = localStorage.getItem("sen_cart_guest") || localStorage.getItem("sen_cart");
+        if (guestCart) {
+          const parsed = JSON.parse(guestCart);
+          setCart(parsed);
+          localStorage.setItem(key, guestCart);
+        } else {
+          setCart([]);
+        }
+      } else {
+        const guestCart = localStorage.getItem("sen_cart_guest") || localStorage.getItem("sen_cart");
+        if (guestCart) setCart(JSON.parse(guestCart));
+        else setCart([]);
+      }
+    } catch {
+      setCart([]);
+    }
+  }, [user]);
+
+  // Save cart per active account
+  useEffect(() => {
+    const key = getCartKey(user);
+    try {
+      localStorage.setItem(key, JSON.stringify(cart));
+      // Also maintain legacy fallback for guest
+      if (!user) {
+        localStorage.setItem("sen_cart", JSON.stringify(cart));
+      }
     } catch {}
-  }, [cart]);
+  }, [cart, user]);
 
   useEffect(() => {
     try {
@@ -225,7 +270,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    const key = getCartKey(user);
+    try {
+      localStorage.removeItem(key);
+    } catch {}
+  };
 
   const loginWithGoogle = async () => {
     const res = await signInWithGoogle();
@@ -248,8 +299,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logoutUser = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch {}
     setUser(null);
+    try {
+      localStorage.removeItem("sen_auth_user");
+    } catch {}
+
+    // Auto-refresh upon logout seamlessly as requested
+    if (typeof window !== "undefined") {
+      if (window.location.pathname.includes("/admin")) {
+        window.location.href = appLink("/");
+      } else {
+        window.location.reload();
+      }
+    }
   };
 
   const createOrder = async (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => {

@@ -2,19 +2,30 @@
 
 @layer base {
   :root {
-    --bg-deep: #08080a;
-    --bg-surface: #101014;
-    --bg-card: #15151c;
-    --bg-card-hover: #1c1c24;
-    --gold-primary: #d4af37;
-    --gold-light: #f3e5ab;
-    --gold-dark: #aa820a;
-    --gold-glow: rgba(212, 175, 55, 0.22);
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-gold: rgba(212, 175, 55, 0.3);
-    --text-primary: #fcfbfa;
-    --text-secondary: #a3a3b0;
-    --text-muted: #6b6b7a;
+    /* Parisian Haute Parfumerie Palette - Breaking free from generic yellow gold & pitch black */
+    --bg-deep: #0c0b0a;
+    --bg-surface: #151312;
+    --bg-card: #1c1a18;
+    --bg-card-hover: #25221f;
+    
+    /* Champagne Silk & Rose Bronze (Quiet Luxury) */
+    --accent-champagne: #e4c7a8;
+    --accent-champagne-light: #f5e4d2;
+    --accent-bronze: #c58652;
+    --accent-glow: rgba(228, 199, 168, 0.16);
+    
+    /* Fragrance Signature Accents */
+    --zeste-sage: #688a75;
+    --zeste-sage-light: #a5c2b0;
+    --aura-rose: #a86e85;
+    --aura-rose-light: #d6a4b8;
+
+    /* Neutrals */
+    --border-subtle: rgba(255, 255, 255, 0.07);
+    --border-champagne: rgba(228, 199, 168, 0.22);
+    --text-primary: #faf8f5;
+    --text-secondary: #aba59c;
+    --text-muted: #736d65;
   }
 
   * {
@@ -42,84 +53,75 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid var(--gold-primary);
+    outline: 2px solid var(--accent-champagne);
     outline-offset: 2px;
   }
 }
 
-/* Custom Luxury Scrollbar */
+/* Custom Haute Parfumerie Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #08080a;
+  background: #0c0b0a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a36;
+  background: #2a2522;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4af37;
+  background: #c58652;
 }
 
 /* Luxury animations */
-@keyframes goldPulse {
+@keyframes softPulse {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.35;
     transform: scale(1);
   }
   50% {
-    opacity: 0.85;
-    transform: scale(1.04);
+    opacity: 0.75;
+    transform: scale(1.03);
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+.soft-pulse {
+  animation: softPulse 5s infinite ease-in-out;
 }
 
-.gold-pulse {
-  animation: goldPulse 4s infinite ease-in-out;
-}
-
-.gold-gradient-text {
-  background: linear-gradient(135deg, #fff3dc 0%, #d4af37 50%, #996515 100%);
+/* Champagne & Bronze Gradient Typography */
+.champagne-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #f5e4d2 30%, #e4c7a8 70%, #c58652 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+.gold-gradient-text,
 .text-gradient-gold {
-  background: linear-gradient(135deg, #f7ecd5 0%, #d4af37 50%, #aa820a 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f5e4d2 35%, #e4c7a8 75%, #c58652 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.gold-border-gradient {
-  border-image: linear-gradient(to right, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.6), rgba(212, 175, 55, 0.1)) 1;
-}
-
+/* High-End Frosted Glass Layers */
 .glass-luxury {
-  background: rgba(16, 16, 22, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(21, 19, 18, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glass-gold {
-  background: rgba(22, 19, 14, 0.88);
+.glass-gold,
+.glass-champagne {
+  background: rgba(26, 23, 21, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(228, 199, 168, 0.22);
 }
 
 .glass-dark {
-  background: rgba(12, 12, 16, 0.85);
+  background: rgba(18, 16, 15, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -127,7 +129,7 @@
 
 /* Micro-interactions & Touch Sensitivity */
 button, a {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 button:active, a:active {

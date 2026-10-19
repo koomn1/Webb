@@ -18,10 +18,10 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SÈN Parfums | عطور نيش فاخرة • Zeste & Aura",
+  title: "SÈN Haute Parfumerie | عطور نيش باريسية • Zeste & Aura",
   description:
-    "اكتشف عطور SÈN الفاخرة — Zeste الرجالي المنعش و Aura النسائي الساحر مع الضمان الذهبي والدفع عند الاستلام.",
-  keywords: ["SÈN", "SÈN Parfums", "عطور سِيان", "عطر زيست", "عطر أورا", "Zeste", "Aura", "عطور مصرية فاخرة"],
+    "دار SÈN Haute Parfumerie — توليفات عطرية بتركيز 20% زيوت نيش فرنسية نقية مع ميثاق الثقة والأمان وعينة استكشافية 2ml والدفع عند الاستلام.",
+  keywords: ["SÈN", "SÈN Parfums", "SÈN Haute Parfumerie", "عطور سِيان", "عطر زيست", "عطر أورا", "Zeste", "Aura", "عطور نيش مصر"],
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" className={`${cormorant.variable} ${jakarta.variable}`}>
-      <body className="font-sans bg-[#08080A] text-[#FCFBFA] antialiased selection:bg-[#D4AF37]/20 selection:text-[#F3E5AB]">
+      <body className="font-sans bg-[#0C0B0A] text-[#FAF8F5] antialiased selection:bg-[#C58652]/20 selection:text-[#E4C7A8]">
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
