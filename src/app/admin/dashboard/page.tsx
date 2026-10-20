@@ -457,7 +457,7 @@ export default function AdminDashboardPage() {
     setIsDiscountSaving(true);
 
     const formattedCode = newCode.trim().toUpperCase().replace(/\s+/g, "");
-    await createDiscountCode({
+    const saved = await createDiscountCode({
       code: formattedCode,
       discount_type: newDiscountType,
       discount_value: Number(newDiscountValue),
@@ -468,6 +468,10 @@ export default function AdminDashboardPage() {
     });
 
     setIsDiscountSaving(false);
+    if (!saved) {
+      alert("تعذر حفظ كود الخصم في قاعدة البيانات. لم يتم إنشاء الكود.");
+      return;
+    }
     setShowAddDiscountModal(false);
     setNewCode("");
     setNewDiscountValue(15);

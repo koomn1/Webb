@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   description:
     "دار SÈN Haute Parfumerie — توليفات عطرية بتركيز 20% زيوت نيش فرنسية نقية مع ميثاق الثقة والأمان وعينة استكشافية 2ml والدفع عند الاستلام.",
   keywords: ["SÈN", "SÈN Parfums", "SÈN Haute Parfumerie", "عطور سِيان", "عطر زيست", "عطر أورا", "Zeste", "Aura", "عطور نيش مصر"],
+  icons: {
+    icon: "/images/sen_monogram.svg",
+    shortcut: "/images/sen_monogram.svg",
+    apple: "/images/sen_monogram_transparent.png",
+  },
 };
 
 export default function RootLayout({

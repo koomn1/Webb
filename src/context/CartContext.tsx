@@ -83,7 +83,7 @@ interface CartContextType {
   setLanguage: (lang: "ar" | "en") => void;
   loginWithGoogle: () => Promise<{ error: any }>;
   loginWithEmail: (email: string, pass: string) => Promise<{ error: any }>;
-  registerWithEmail: (email: string, pass: string, name: string, phone?: string) => Promise<{ error: any }>;
+  registerWithEmail: (email: string, pass: string, name: string, phone?: string) => Promise<{ error: any; needsEmailConfirmation: boolean }>;
   logoutUser: () => Promise<void>;
   createOrder: (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => Promise<StoredOrder>;
   updateOrderStatus: (orderId: string, status: StoredOrder["status"]) => Promise<void>;
@@ -539,22 +539,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const createDiscountCode = async (newCode: SupabaseDiscountCode) => {
+    const saved = await saveDiscountCodeToSupabase(newCode);
+    if (isSupabaseConfigured() && !saved) return false;
     const updated = [newCode, ...discountCodes.filter((c) => c.code !== newCode.code)];
     setDiscountCodes(updated);
     try {
       localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
     } catch {}
-    await saveDiscountCodeToSupabase(newCode);
     return true;
   };
 
   const deleteDiscountCode = async (code: string) => {
+    const deleted = await deleteDiscountCodeFromSupabase(code);
+    if (isSupabaseConfigured() && !deleted) return false;
     const updated = discountCodes.filter((c) => c.code !== code);
     setDiscountCodes(updated);
     try {
       localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
     } catch {}
-    await deleteDiscountCodeFromSupabase(code);
     return true;
   };
 
@@ -562,12 +564,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const found = discountCodes.find((c) => c.code === code);
     if (!found) return false;
     const toggled = { ...found, is_active: !found.is_active };
+    const saved = await saveDiscountCodeToSupabase(toggled);
+    if (isSupabaseConfigured() && !saved) return false;
     const updated = discountCodes.map((c) => (c.code === code ? toggled : c));
     setDiscountCodes(updated);
     try {
       localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
     } catch {}
-    await saveDiscountCodeToSupabase(toggled);
     return true;
   };
 
@@ -643,8 +646,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const registerWithEmail = async (email: string, pass: string, name: string, phone?: string) => {
     const res = await signUpWithEmailPassword(email, pass, name, phone);
-    if (res.data?.user) setUser(res.data.user);
-    return { error: res.error };
+    const session = "session" in (res.data || {}) ? res.data.session : null;
+    if (session?.user) setUser(session.user);
+    return {
+      error: res.error,
+      needsEmailConfirmation: Boolean(res.data?.user && !session),
+    };
   };
 
   const logoutUser = async () => {
@@ -678,6 +685,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       })),
       discount_code: appliedDiscount?.code,
     });
+    if (isSupabaseConfigured() && !savedOrder) {
+      throw new Error("لم تُرجع قاعدة البيانات رقم الطلب. لم يتم تأكيد الطلب، حاول مرة أخرى.");
+    }
 
     const orderNumber = savedOrder?.order_number || `SEN-${Math.floor(1000 + Math.random() * 9000)}`;
     const newOrder: StoredOrder = {

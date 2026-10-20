@@ -111,7 +111,7 @@ export async function signUpWithEmailPassword(
       localStorage.setItem("sen_auth_user", JSON.stringify(mockUser));
       window.dispatchEvent(new Event("sen_auth_change"));
     }
-    return { data: { user: mockUser }, error: null };
+    return { data: { user: mockUser, session: { user: mockUser } }, error: null };
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -125,7 +125,9 @@ export async function signUpWithEmailPassword(
     },
   });
 
-  if (data?.user) {
+  // Supabase returns a user even when email confirmation is required.
+  // Only persist a client-side user when a real session was created.
+  if (data?.session && data.user) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sen_auth_user", JSON.stringify(data.user));
       window.dispatchEvent(new Event("sen_auth_change"));

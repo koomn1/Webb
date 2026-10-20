@@ -47,11 +47,13 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
-    const { error } = await registerWithEmail(email, password, fullName, phone);
+    const { error, needsEmailConfirmation } = await registerWithEmail(email, password, fullName, phone);
     setLoading(false);
 
     if (error) {
       setErrorMsg(error.message || "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+    } else if (needsEmailConfirmation) {
+      setSuccessMsg("تم إنشاء الحساب. راجع بريدك الإلكتروني واضغط رابط التأكيد، ثم سجّل الدخول من صفحة الدخول.");
     } else {
       setSuccessMsg("تم إنشاء الحساب بنجاح! جاري التوجيه...");
       setTimeout(() => {

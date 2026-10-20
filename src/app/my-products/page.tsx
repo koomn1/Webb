@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -31,6 +31,9 @@ const STATUS_STEPS: {
 
 const statusIndex = (status: StoredOrder["status"]) =>
   STATUS_STEPS.findIndex((step) => step.key === status);
+
+const statusLabel = (status: StoredOrder["status"]) =>
+  STATUS_STEPS.find((step) => step.key === status)?.label || "تم تحديث الطلب";
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat("ar-EG", {
@@ -169,13 +172,38 @@ function OrderCard({ order }: { order: StoredOrder }) {
 export default function MyProductsPage() {
   const { user, orders, refreshOrders } = useCart();
   const [refreshing, setRefreshing] = useState(false);
+  const previousStatuses = useRef<Record<string, StoredOrder["status"]>>({});
 
   useEffect(() => {
-    if (user) void refreshOrders();
+    if (!user) return;
+    void refreshOrders();
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+      void Notification.requestPermission();
+    }
+    const interval = window.setInterval(() => void refreshOrders(), 30000);
+    return () => window.clearInterval(interval);
     // refreshOrders is provided by the client context and intentionally omitted
     // because its identity changes whenever cart state changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  useEffect(() => {
+    if (!user || orders.length === 0) return;
+    const nextStatuses: Record<string, StoredOrder["status"]> = {};
+    for (const order of orders) {
+      const previous = previousStatuses.current[order.id];
+      nextStatuses[order.id] = order.status;
+      if (!previous || previous === order.status || typeof window === "undefined" || !("Notification" in window)) continue;
+      if (Notification.permission === "granted") {
+        new Notification(`تحديث الطلب ${order.id}`, {
+          body: `حالة طلبك الآن: ${statusLabel(order.status)}`,
+          icon: "/images/sen_monogram.svg",
+          tag: `order-${order.id}-${order.status}`,
+        });
+      }
+    }
+    previousStatuses.current = nextStatuses;
+  }, [orders, user]);
 
   const sortedOrders = useMemo(
     () => [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
