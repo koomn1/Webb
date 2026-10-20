@@ -126,17 +126,6 @@ export async function signUpWithEmailPassword(
   });
 
   if (data?.user) {
-    // Upsert into public.profiles
-    await supabase.from("profiles").upsert([
-      {
-        id: data.user.id,
-        email: email.trim(),
-        full_name: fullName.trim(),
-        phone: phone || "",
-        role: checkIsSuperAdmin(email) ? "super_admin" : "customer",
-      },
-    ]);
-
     if (typeof window !== "undefined") {
       localStorage.setItem("sen_auth_user", JSON.stringify(data.user));
       window.dispatchEvent(new Event("sen_auth_change"));
