@@ -68,6 +68,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [confirmedOrderNumber, setConfirmedOrderNumber] = useState("");
   const [copied, setCopied] = useState(false);
@@ -96,6 +97,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+    setSubmitError(null);
 
     const result = egyptianCheckoutSchema.safeParse(formData);
     if (!result.success) {
@@ -140,8 +142,13 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           colors: ["#E4C7A8", "#C58652", "#8EBBA0", "#ffffff"],
         });
       } catch {}
-    } catch {
+    } catch (error) {
       setIsSubmitting(false);
+      setSubmitError(
+        error instanceof Error && error.message
+          ? `تعذر حفظ الطلب: ${error.message}`
+          : "تعذر حفظ الطلب حالياً. لم يتم تأكيده، حاول مرة أخرى."
+      );
     }
   };
 
@@ -401,6 +408,13 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   </span>
                 )}
               </button>
+
+              {submitError && (
+                <div className="flex items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-2.5 text-[11px] leading-relaxed text-rose-300" role="alert">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
 
               {/* Support Notice */}
               <div className="text-center text-[11px] text-stone-400 pt-1">

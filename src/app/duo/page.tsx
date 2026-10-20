@@ -16,7 +16,6 @@ import {
   Truck,
   Check,
   ShoppingBag,
-  Star,
   ArrowLeft,
   Gift,
   Heart,
@@ -93,13 +92,7 @@ export default function DuoPage() {
             <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
               <div>
                 <div className="flex items-center gap-2 text-xs text-[#E4C7A8] mb-2">
-                  <div className="flex items-center text-[#C58652]">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                    ))}
-                  </div>
-                  <span className="font-mono font-medium">5.0</span>
-                  <span className="text-stone-500 font-light">(215 تقييم موثق)</span>
+                  <span className="text-[#C58652]">باقة متكاملة</span>
                 </div>
 
                 <h3 className="font-serif text-2xl sm:text-3xl font-medium text-white mb-2">
@@ -137,9 +130,6 @@ export default function DuoPage() {
                 {/* Pricing Box */}
                 <div className="p-4 rounded-2xl bg-[#0C0B0A] border border-[#24201D] mb-6 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-stone-500 line-through block">
-                      1,300 ج.م
-                    </span>
                     <span className="font-serif text-3xl font-medium text-[#E4C7A8]">
                       1,150 <span className="text-sm font-sans">ج.م</span>
                     </span>

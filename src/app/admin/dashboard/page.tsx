@@ -306,10 +306,8 @@ export default function AdminDashboardPage() {
     const subtotal = price * manualQuantity;
     const shipping = selectedP.id.includes("bundle") || selectedP.id.includes("duo") ? 0 : 50;
     const total = subtotal + shipping;
-    const orderNum = `SEN-${Math.floor(1000 + Math.random() * 9000)}`;
-
     const newOrder: StoredOrder = {
-      id: orderNum,
+      id: "pending",
       customerName: manualName.trim(),
       phone: manualPhone.trim(),
       governorate: manualGov,
@@ -331,20 +329,18 @@ export default function AdminDashboardPage() {
     };
 
     // Save to Supabase
-    await saveOrderToSupabase({
-      order_number: newOrder.id,
+    const savedOrder = await saveOrderToSupabase({
       customer_name: newOrder.customerName,
       phone: newOrder.phone,
       governorate: newOrder.governorate,
       address: newOrder.address,
       notes: newOrder.notes,
-      items: newOrder.items,
-      subtotal: newOrder.subtotal,
-      shipping_fee: newOrder.shippingFee,
-      total_amount: newOrder.total,
-      payment_method: "COD",
-      status: "CONFIRMED",
+      items: [{ product_id: selectedP.id, quantity: manualQuantity }],
     });
+
+    if (savedOrder?.order_number) {
+      await updateOrderStatus(savedOrder.order_number, "CONFIRMED");
+    }
 
     await refreshOrders();
     setManualSubmitting(false);

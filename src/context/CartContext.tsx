@@ -662,37 +662,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const createOrder = async (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => {
-    const orderNumber = `SEN-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newOrder: StoredOrder = {
-      ...orderData,
-      id: orderNumber,
-      discountCode: appliedDiscount?.code,
-      discountAmount: discountAmount > 0 ? discountAmount : undefined,
-      status: "PENDING",
-      paymentMethod: "COD",
-      createdAt: new Date().toISOString(),
-    };
-
-    setOrders((prev) => [newOrder, ...prev]);
-
-    // Persist in Supabase
-    await saveOrderToSupabase({
-      order_number: orderNumber,
+    const savedOrder = await saveOrderToSupabase({
       customer_name: orderData.customerName,
       phone: orderData.phone,
       governorate: orderData.governorate,
       address: orderData.address,
       notes: orderData.notes,
-      items: orderData.items,
-      subtotal: orderData.subtotal,
-      shipping_fee: orderData.shippingFee,
-      total_amount: orderData.total,
+      items: cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity,
+      })),
       discount_code: appliedDiscount?.code,
-      discount_amount: discountAmount,
-      payment_method: "COD",
-      status: "PENDING",
     });
 
+    const orderNumber = savedOrder?.order_number || `SEN-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newOrder: StoredOrder = {
+      ...orderData,
+      id: orderNumber,
+      subtotal: savedOrder ? Number(savedOrder.subtotal) : orderData.subtotal,
+      shippingFee: savedOrder ? Number(savedOrder.shipping_fee) : orderData.shippingFee,
+      total: savedOrder ? Number(savedOrder.total_amount) : orderData.total,
+      discountCode: savedOrder?.discount_code || appliedDiscount?.code,
+      discountAmount: savedOrder ? Number(savedOrder.discount_amount || 0) : discountAmount,
+      status: savedOrder?.status || "PENDING",
+      paymentMethod: "COD",
+      createdAt: savedOrder?.created_at || new Date().toISOString(),
+    };
+
+    setOrders((prev) => [newOrder, ...prev]);
     clearCart();
     removeDiscountCode();
     return newOrder;

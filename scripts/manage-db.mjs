@@ -230,30 +230,22 @@ switch (command) {
       console.log('⚠️ يرجى ضبط .env.local أولاً');
       process.exit(1);
     }
-    const orderNum = `SEN-${Math.floor(1000 + Math.random() * 9000)}`;
-    console.log(`🧪 جاري إرسال طلب تجريبي برقم [${orderNum}]...`);
+    console.log('🧪 جاري إرسال طلب تجريبي عبر دالة checkout الآمنة...');
     try {
-      const { data, error } = await supabase.from('orders').insert([
-        {
-          order_number: orderNum,
-          customer_name: 'عميل تجريبي (CMD)',
-          phone: '01018995002',
-          governorate: 'القاهرة',
-          address: 'المعادي - شارع 9',
-          notes: 'طلب تجريبي تم إنشاؤه عبر سطر الأوامر CMD',
-          items: [{ name: 'سِيان زيست (رجالي)', quantity: 1, price: 650 }],
-          subtotal: 650,
-          shipping_fee: 45,
-          total_amount: 695,
-          payment_method: 'COD',
-          status: 'PENDING',
-        },
-      ]).select();
+      const { data, error } = await supabase.rpc('create_order', {
+        p_customer_name: 'عميل تجريبي (CMD)',
+        p_phone: '01018995002',
+        p_governorate: 'القاهرة',
+        p_address: 'المعادي - شارع 9',
+        p_notes: 'طلب تجريبي تم إنشاؤه عبر سطر الأوامر CMD',
+        p_items: [{ product_id: 'sen-zeste', quantity: 1 }],
+        p_discount_code: null,
+      });
 
       if (error) {
         console.error('❌ فشل إنشاء الطلب التجريبي:', error.message);
       } else {
-        console.log(`🎉 تم إنشاء الطلب التجريبي [${orderNum}] بنجاح في سوبابيز!`);
+        console.log(`🎉 تم إنشاء الطلب التجريبي [${data?.order_number || 'غير معروف'}] بنجاح في سوبابيز!`);
         console.log('يمكنك رؤيته الآن في لوحة تحكم الأدمن أو عبر الأمر:');
         console.log('   npm run db orders\n');
       }

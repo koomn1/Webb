@@ -92,7 +92,6 @@ export default function LandingPage() {
               .slice(0, 4)
               .map((perfume) => {
                 const isZeste = perfume.id.includes("zeste");
-                const hasDiscount = perfume.comparePrice && perfume.comparePrice > perfume.price;
                 return (
                   <div
                     key={perfume.id}
@@ -116,20 +115,12 @@ export default function LandingPage() {
                         >
                           {perfume.genderAr}
                         </div>
-                        {hasDiscount && (
-                          <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-rose-500/90 text-white font-bold text-[10px] shadow-md">
-                            خصم خاص
-                          </div>
-                        )}
                       </div>
 
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-serif text-2xl font-medium text-white">{perfume.nameAr}</h3>
                         <div className="text-left">
                           <div className="font-serif text-xl font-medium text-[#E4C7A8]">{perfume.price} ج.م</div>
-                          {hasDiscount && (
-                            <div className="text-xs text-stone-500 line-through">{perfume.comparePrice} ج.م</div>
-                          )}
                         </div>
                       </div>
 

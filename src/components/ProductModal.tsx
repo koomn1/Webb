@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Perfume } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
-import { X, Star, ShoppingBag, Check, ShieldCheck, Sparkles, Phone } from "lucide-react";
+import { X, ShoppingBag, Check, ShieldCheck, Sparkles, Phone } from "lucide-react";
 
 interface ProductModalProps {
   perfume: Perfume | null;
@@ -80,9 +80,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
         <div className="w-full md:w-1/2 p-6 sm:p-8 overflow-y-auto max-h-[60vh] md:max-h-[94vh]">
           {/* Header */}
           <div className="flex items-center gap-1.5 text-xs text-[#E4C7A8] mb-1">
-            <Star className="w-3.5 h-3.5 fill-current text-[#C58652]" />
-            <span className="font-mono font-medium">{perfume.rating}</span>
-            <span className="text-stone-500 font-light">({perfume.reviewsCount} تقييم موثق)</span>
+            <span className="text-[#C58652]">الملف العطري</span>
           </div>
 
           <h2 className="font-serif text-3xl text-white font-medium mb-1">

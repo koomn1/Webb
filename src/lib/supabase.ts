@@ -162,34 +162,34 @@ export async function signOut() {
 // ==========================================
 
 export interface SupabaseOrderPayload {
-  order_number: string;
   customer_name: string;
   phone: string;
   governorate: string;
   address: string;
   notes?: string;
   items: any;
-  subtotal: number;
-  shipping_fee: number;
-  total_amount: number;
-  discount_code?: string;
-  discount_amount?: number;
-  payment_method: "COD";
-  status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+  discount_code?: string | null;
 }
 
 export async function saveOrderToSupabase(payload: SupabaseOrderPayload) {
   if (!isSupabaseConfigured()) return null;
   try {
-    const { data, error } = await supabase.from("orders").insert([payload]).select().single();
+    const { data, error } = await supabase.rpc("create_order", {
+      p_customer_name: payload.customer_name,
+      p_phone: payload.phone,
+      p_governorate: payload.governorate,
+      p_address: payload.address,
+      p_notes: payload.notes || null,
+      p_items: payload.items,
+      p_discount_code: payload.discount_code || null,
+    });
     if (error) {
-      console.warn("Supabase insert order error:", error.message);
-      return null;
+      throw new Error(error.message);
     }
-    return data;
+    return Array.isArray(data) ? data[0] : data;
   } catch (err) {
     console.warn("Supabase saveOrder exception:", err);
-    return null;
+    throw err instanceof Error ? err : new Error("تعذر حفظ الطلب في قاعدة البيانات");
   }
 }
 
@@ -198,7 +198,7 @@ export async function fetchOrdersFromSupabase() {
   try {
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("id,order_number,customer_name,phone,governorate,address,notes,items,subtotal,shipping_fee,total_amount,discount_code,discount_amount,payment_method,status,created_at,updated_at")
       .order("created_at", { ascending: false });
     if (error) {
       console.warn("Supabase fetch orders error:", error.message);
@@ -489,4 +489,3 @@ export async function uploadProductImage(file: File): Promise<{ url: string; isB
   // Graceful, self-contained fallback: compressed base64
   return { url: compressedBase64, isBase64: true };
 }
-

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Perfume } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
-import { ShoppingBag, Eye, Star, Check, ShieldCheck, Sparkles } from "lucide-react";
+import { ShoppingBag, Eye, Check, ShieldCheck, Sparkles } from "lucide-react";
 
 interface ProductCardProps {
   perfume: Perfume;
@@ -37,12 +37,8 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
           className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
         />
 
-        {/* Sophisticated Badge & Discount */}
-        {perfume.comparePrice && perfume.comparePrice > perfume.price ? (
-          <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider bg-rose-500/90 text-white shadow-md">
-            خصم {Math.round(((perfume.comparePrice - perfume.price) / perfume.comparePrice) * 100)}%
-          </div>
-        ) : perfume.badge ? (
+        {/* Product badge */}
+        {perfume.badge ? (
           <div
             className={`absolute top-3 right-3 z-10 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md ${
               isZeste
@@ -78,16 +74,11 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
       {/* Content & Details */}
       <div className="flex flex-col flex-1 p-5 sm:p-6 justify-between">
         <div>
-          {/* Concentration & Reviews */}
+          {/* Concentration */}
           <div className="flex items-center justify-between text-xs mb-2">
             <span className="text-[#E4C7A8] tracking-widest font-semibold text-[11px] uppercase">
               {perfume.concentration}
             </span>
-            <div className="flex items-center gap-1 text-[#E4C7A8] text-xs">
-              <Star className="w-3.5 h-3.5 fill-current" strokeWidth={1.5} />
-              <span className="font-semibold text-white">{perfume.rating}</span>
-              <span className="text-[#736D65] text-[10px]">({perfume.reviewsCount})</span>
-            </div>
           </div>
 
           {/* Title */}
@@ -131,11 +122,6 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
           {/* Price & Add to Cart */}
           <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#25221F]">
             <div>
-              {perfume.comparePrice && (
-                <span className="text-[10px] text-[#736D65] line-through block">
-                  {perfume.comparePrice} ج.م
-                </span>
-              )}
               <span className="text-xl font-bold text-[#F5E4D2] font-serif">
                 {perfume.price.toLocaleString()} ج.م
               </span>
