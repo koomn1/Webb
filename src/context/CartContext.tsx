@@ -491,6 +491,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return { success: false, message: "كود الخصم غير صحيح أو انتهت صلاحيته." };
     }
 
+    if (matched.max_uses !== undefined && matched.max_uses !== null && matched.current_uses >= matched.max_uses) {
+      return { success: false, message: "كود الخصم استنفد عدد مرات الاستخدام المتاح." };
+    }
+
     if (matched.min_order_amount && subtotal < matched.min_order_amount) {
       return {
         success: false,
@@ -688,6 +692,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       paymentMethod: "COD",
       createdAt: savedOrder?.created_at || new Date().toISOString(),
     };
+
+    if (savedOrder?.discount_code) {
+      setDiscountCodes((prev) => {
+        const updated = prev.map((code) =>
+          code.code.toUpperCase() === savedOrder.discount_code.toUpperCase()
+            ? { ...code, current_uses: code.current_uses + 1 }
+            : code
+        );
+        try {
+          localStorage.setItem("sen_discount_codes", JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+    }
 
     setOrders((prev) => [newOrder, ...prev]);
     clearCart();

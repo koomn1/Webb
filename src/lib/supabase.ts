@@ -344,7 +344,7 @@ export async function fetchDiscountCodesFromSupabase(): Promise<SupabaseDiscount
   try {
     const { data, error } = await supabase
       .from("discount_codes")
-      .select("*")
+      .select("id,code,discount_type,discount_value,min_order_amount,max_discount_amount,is_active,max_uses,current_uses,expires_at,created_at")
       .order("created_at", { ascending: false });
     if (error) return [];
     return data || [];
