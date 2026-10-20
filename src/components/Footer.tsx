@@ -154,6 +154,11 @@ export function Footer() {
                   سياسة خصوصية التطبيق والبيانات
                 </Link>
               </li>
+              <li>
+                <Link href={appLink("/terms-and-conditions")} className="hover:text-[#E4C7A8] transition-colors">
+                  الشروط والأحكام
+                </Link>
+              </li>
             </ul>
           </div>
 
