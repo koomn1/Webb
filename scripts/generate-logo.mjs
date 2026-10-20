@@ -66,9 +66,9 @@ const svgIcon = `<svg width="256" height="256" viewBox="0 0 256 256" fill="none"
   <circle cx="128" cy="128" r="118" stroke="url(#iconGold)" stroke-width="1.8" stroke-dasharray="6 3" fill="none" opacity="0.75" />
   <circle cx="128" cy="128" r="108" stroke="url(#iconGold)" stroke-width="1" fill="none" opacity="0.35" />
   
-  <text x="128" y="158" font-family="'Cinzel', 'Cormorant Garamond', serif" font-size="112" font-weight="400" fill="url(#iconGold)" text-anchor="middle">
-    S
-  </text>
+  <!-- Custom S monogram: a single refined stroke keeps the mark legible at favicon size. -->
+  <path d="M171 72 C159 56 139 50 117 52 C91 54 78 67 79 84 C80 104 99 111 126 119 C153 127 177 138 176 164 C175 187 153 202 127 204 C103 206 83 198 69 183" stroke="url(#iconGold)" stroke-width="10" stroke-linecap="round" fill="none" />
+  <path d="M164 65 C153 56 143 53 132 52" stroke="#FAF0E6" stroke-width="2" stroke-linecap="round" opacity="0.7" />
   <circle cx="128" cy="54" r="3.5" fill="#E4C7A8" />
   <circle cx="128" cy="202" r="3" fill="#C58652" />
 </svg>`;
