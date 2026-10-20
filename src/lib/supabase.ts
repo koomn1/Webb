@@ -330,30 +330,38 @@ export interface SupabaseDiscountCode {
   created_at?: string;
 }
 
-export async function fetchDiscountCodesFromSupabase(): Promise<SupabaseDiscountCode[]> {
+export async function fetchDiscountCodesFromSupabase(): Promise<SupabaseDiscountCode[] | null> {
   if (!isSupabaseConfigured()) return [];
   try {
     const { data, error } = await supabase
       .from("discount_codes")
       .select("id,code,discount_type,discount_value,min_order_amount,max_discount_amount,is_active,max_uses,current_uses,expires_at,created_at")
       .order("created_at", { ascending: false });
-    if (error) return [];
+    if (error) {
+      console.warn("Supabase fetch discount codes error:", error.message);
+      return null;
+    }
     return data || [];
-  } catch {
-    return [];
+  } catch (err) {
+    console.warn("Supabase fetch discount codes exception:", err);
+    return null;
   }
 }
 
 export async function saveDiscountCodeToSupabase(code: SupabaseDiscountCode): Promise<boolean> {
   if (!isSupabaseConfigured()) return true;
   try {
-    const { error } = await supabase.from("discount_codes").upsert([code]);
+    const { error } = await supabase.from("discount_codes").upsert([{
+      ...code,
+      code: code.code.trim().toUpperCase(),
+    }]);
     if (error) {
       console.warn("Supabase saveDiscountCode error:", error.message);
       return false;
     }
     return true;
-  } catch {
+  } catch (err) {
+    console.warn("Supabase saveDiscountCode exception:", err);
     return false;
   }
 }
@@ -361,10 +369,15 @@ export async function saveDiscountCodeToSupabase(code: SupabaseDiscountCode): Pr
 export async function deleteDiscountCodeFromSupabase(code: string): Promise<boolean> {
   if (!isSupabaseConfigured()) return true;
   try {
-    const { error } = await supabase.from("discount_codes").delete().eq("code", code);
-    if (error) return false;
+    const normalizedCode = code.trim().toUpperCase();
+    const { error } = await supabase.from("discount_codes").delete().eq("code", normalizedCode);
+    if (error) {
+      console.warn("Supabase deleteDiscountCode error:", error.message);
+      return false;
+    }
     return true;
-  } catch {
+  } catch (err) {
+    console.warn("Supabase deleteDiscountCode exception:", err);
     return false;
   }
 }

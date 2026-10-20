@@ -1231,7 +1231,11 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                           <button
                             onClick={() => {
                               if (confirm(`هل أنت متأكد من حذف كود الخصم ${codeItem.code}؟`)) {
-                                deleteDiscountCode(codeItem.code);
+                                void deleteDiscountCode(codeItem.code).then((deleted) => {
+                                  if (!deleted) {
+                                    alert("تعذر حذف كود الخصم من قاعدة البيانات. طبّق آخر Migration ثم أعد المحاولة.");
+                                  }
+                                });
                               }
                             }}
                             className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors"

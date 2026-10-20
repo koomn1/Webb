@@ -253,7 +253,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (isSupabaseConfigured()) {
       try {
         const sbCodes = await fetchDiscountCodesFromSupabase();
-        if (sbCodes && sbCodes.length > 0) {
+        // An empty array is a valid database result: all codes may have been deleted.
+        // Only keep local fallback data when the database request itself failed (null).
+        if (sbCodes !== null) {
           list = sbCodes;
           try {
             localStorage.setItem("sen_discount_codes", JSON.stringify(sbCodes));
