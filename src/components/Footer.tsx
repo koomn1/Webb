@@ -146,7 +146,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href={appLink("/guarantee")} className="hover:text-[#E4C7A8] transition-colors">
-                  ميثاق الثقة والأمان (عينة 2ml مجاناً)
+                  ميثاق استرجاع مريح بعينة الـ 2ml المجانية
+                </Link>
+              </li>
+              <li>
+                <Link href={appLink("/privacy-policy")} className="hover:text-[#E4C7A8] transition-colors">
+                  سياسة خصوصية التطبيق والبيانات
                 </Link>
               </li>
             </ul>
