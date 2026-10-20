@@ -187,7 +187,7 @@ export async function fetchOrdersFromSupabase() {
   try {
     const { data, error } = await supabase
       .from("orders")
-      .select("id,order_number,customer_name,phone,governorate,address,notes,items,subtotal,shipping_fee,total_amount,discount_code,discount_amount,payment_method,status,created_at,updated_at")
+      .select("id,user_id,order_number,customer_name,phone,governorate,address,notes,items,subtotal,shipping_fee,total_amount,discount_code,discount_amount,payment_method,status,created_at,updated_at")
       .order("created_at", { ascending: false });
     if (error) {
       console.warn("Supabase fetch orders error:", error.message);

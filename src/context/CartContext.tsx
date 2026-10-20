@@ -373,10 +373,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (isSuperAdmin) {
+    if (user || isSuperAdmin) {
       loadRealOrders();
     }
-  }, [isSuperAdmin]);
+  }, [user, isSuperAdmin]);
 
   // Scoped Cart
   const getCartKey = (u?: any | null) => {

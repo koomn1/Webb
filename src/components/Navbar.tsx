@@ -78,6 +78,15 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
               التشكيلة
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
             </Link>
+            {user && (
+              <Link
+                href={appLink("/my-products")}
+                className="hover:text-[#E4C7A8] transition-colors relative group py-1"
+              >
+                منتجاتي
+                <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#E4C7A8] transition-all duration-300 group-hover:w-full" />
+              </Link>
+            )}
             <Link
               href={appLink("/duo")}
               className="hover:text-[#E4C7A8] transition-colors relative group py-1 text-[#F5E4D2]"
@@ -208,6 +217,15 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
             >
               تشكيلة العطور
             </Link>
+            {user && (
+              <Link
+                href={appLink("/my-products")}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-[#E4C7A8] hover:text-white transition-colors py-1"
+              >
+                منتجاتي وتتبع الطلبات
+              </Link>
+            )}
             <Link
               href={appLink("/duo")}
               onClick={() => setMobileMenuOpen(false)}
