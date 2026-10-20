@@ -63,14 +63,12 @@ const svgIcon = `<svg width="256" height="256" viewBox="0 0 256 256" fill="none"
       <stop offset="100%" stop-color="#C58652" />
     </linearGradient>
   </defs>
-  <circle cx="128" cy="128" r="118" stroke="url(#iconGold)" stroke-width="1.8" stroke-dasharray="6 3" fill="none" opacity="0.75" />
-  <circle cx="128" cy="128" r="108" stroke="url(#iconGold)" stroke-width="1" fill="none" opacity="0.35" />
-  
-  <!-- Custom S monogram: a single refined stroke keeps the mark legible at favicon size. -->
-  <path d="M171 72 C159 56 139 50 117 52 C91 54 78 67 79 84 C80 104 99 111 126 119 C153 127 177 138 176 164 C175 187 153 202 127 204 C103 206 83 198 69 183" stroke="url(#iconGold)" stroke-width="10" stroke-linecap="round" fill="none" />
-  <path d="M164 65 C153 56 143 53 132 52" stroke="#FAF0E6" stroke-width="2" stroke-linecap="round" opacity="0.7" />
-  <circle cx="128" cy="54" r="3.5" fill="#E4C7A8" />
-  <circle cx="128" cy="202" r="3" fill="#C58652" />
+  <!-- Open S ribbon mark: a refined, uncontained silhouette replaces the circular seal. -->
+  <path d="M174 61 C154 45 119 43 94 56 C69 69 67 94 87 108 C101 118 120 121 145 128 C170 135 181 148 174 166 C166 188 137 202 107 199 C89 197 74 190 62 179" stroke="url(#iconGold)" stroke-width="12" stroke-linecap="round" fill="none" />
+  <path d="M170 59 C151 45 122 45 101 54" stroke="#FAF0E6" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+  <path d="M73 185 C87 197 105 201 123 199" stroke="#C58652" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+  <path d="M128 27 L135 39 L128 51 L121 39 Z" fill="url(#iconGold)" />
+  <path d="M128 205 L132 212 L128 219 L124 212 Z" fill="#C58652" opacity="0.8" />
 </svg>`;
 
 fs.writeFileSync(path.join(publicImagesDir, 'sen_monogram.svg'), svgIcon, 'utf-8');
