@@ -337,6 +337,34 @@ export async function deleteProductFromSupabase(id: string): Promise<boolean> {
   }
 }
 
+export interface PublicProductReview {
+  id: string;
+  product_name: string;
+  quote: string;
+  reviewer_label: string;
+  rating: number | null;
+  created_at: string;
+}
+
+export async function fetchPublishedProductReviews(): Promise<PublicProductReview[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .select("id,product_name,quote,reviewer_label,rating,created_at")
+      .order("created_at", { ascending: false })
+      .limit(5);
+    if (error) {
+      console.warn("Supabase fetch published product reviews error:", error.message);
+      return [];
+    }
+    return (data || []) as PublicProductReview[];
+  } catch (err) {
+    console.warn("Supabase fetch published product reviews exception:", err);
+    return [];
+  }
+}
+
 // ==========================================
 // Database Operations (Discount Codes Engine)
 // ==========================================

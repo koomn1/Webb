@@ -1,14 +1,28 @@
-import { MessageCircle, Quote, ShieldCheck } from "lucide-react";
-import { APPROVED_TESTIMONIALS } from "@/data/testimonials";
+"use client";
+
+import { useEffect, useState } from "react";
+import { MessageCircle, Quote, ShieldCheck, Star } from "lucide-react";
+import {
+  fetchPublishedProductReviews,
+  PublicProductReview,
+} from "@/lib/supabase";
 
 const feedbackMessage = encodeURIComponent(
   "مرحباً دار SÈN، جرّبت عينة العطر وأود مشاركة انطباعي."
 );
 
 export function CustomerFeedbackInvitation() {
-  const publishedReviews = APPROVED_TESTIMONIALS
-    .filter((review) => review.consentConfirmed)
-    .slice(0, 5);
+  const [publishedReviews, setPublishedReviews] = useState<PublicProductReview[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    void fetchPublishedProductReviews().then((reviews) => {
+      if (isMounted) setPublishedReviews(reviews.slice(0, 5));
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div>
@@ -39,11 +53,19 @@ export function CustomerFeedbackInvitation() {
                   key={review.id}
                   className="flex h-full flex-col rounded-2xl border border-[#302C28] bg-[#161413] p-5 sm:p-6"
                 >
+                  {review.rating !== null && (
+                    <div className="mb-3 flex items-center gap-1" aria-label={`تقييم ${review.rating} من 5`}>
+                      {Array.from({ length: review.rating }, (_, index) => (
+                        <Star key={index} className="h-3.5 w-3.5 fill-[#E4C7A8] text-[#E4C7A8]" aria-hidden="true" />
+                      ))}
+                      <span className="sr-only">{review.rating} من 5</span>
+                    </div>
+                  )}
                   <Quote className="mb-3 h-5 w-5 text-[#C58652]" aria-hidden="true" />
                   <p className="flex-1 text-sm leading-7 text-stone-200">“{review.quote}”</p>
                   <footer className="mt-5 flex items-center justify-between gap-3 border-t border-[#302C28] pt-4 text-xs">
-                    <span className="font-medium text-[#E4C7A8]">{review.displayName}</span>
-                    <span className="text-stone-500">{review.perfumeLabel}</span>
+                    <span className="font-medium text-[#E4C7A8]">{review.reviewer_label}</span>
+                    <span className="text-stone-500">{review.product_name}</span>
                   </footer>
                 </blockquote>
               ))}
