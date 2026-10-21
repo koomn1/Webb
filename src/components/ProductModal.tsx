@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Perfume, FRAGRANCE_OIL_PERCENTAGE } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
-import { X, ShoppingBag, Check, ShieldCheck, Sparkles, Phone } from "lucide-react";
+import { X, ShoppingBag, Check, ShieldCheck, Sparkles, Phone, Compass } from "lucide-react";
+import { appLink } from "@/lib/paths";
 
 interface ProductModalProps {
   perfume: Perfume | null;
@@ -129,6 +131,14 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
               ))}
             </div>
           </div>
+
+          <Link
+            href={appLink("/finder")}
+            className="mb-6 flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#C58652]/30 bg-[#161413]/70 px-4 py-2.5 text-xs font-medium text-[#E4C7A8] transition-colors hover:border-[#E4C7A8]/60 hover:bg-[#1C1A18]"
+          >
+            <Compass className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+            <span>تعرّف على الهرم العطري بالتفصيل</span>
+          </Link>
 
           {/* Sillage & Longevity */}
           <div className="grid grid-cols-2 gap-3 mb-6 p-3.5 rounded-xl bg-[#161413]/60 border border-[#24201D] text-xs">
