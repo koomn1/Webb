@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart, StoredOrder } from "@/context/CartContext";
@@ -80,7 +80,14 @@ export default function AdminDashboardPage() {
   } = useCart();
 
   const [activeTab, setActiveTab] = useState<"orders" | "products" | "discounts" | "sql">("orders");
-  const [activeVisitors, setActiveVisitors] = useState<number>(1);
+  const [activeVisitors, setActiveVisitors] = useState<number>(0);
+  const [toast, setToast] = useState<{ message: string; kind: "success" | "error" } | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{
+    message: string;
+    run: () => Promise<void>;
+  } | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const confirmationCancelRef = useRef<HTMLButtonElement>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [governorateFilter, setGovernorateFilter] = useState<string>("ALL");
@@ -143,7 +150,7 @@ export default function AdminDashboardPage() {
         setEditImage(res.url);
       }
     } catch {
-      alert("حدث خطأ أثناء قراءة الصورة من جهازك");
+      notify("تعذر تجهيز الصورة من جهازك.", "error");
     } finally {
       setIsUploadingEditImage(false);
     }
@@ -159,7 +166,7 @@ export default function AdminDashboardPage() {
         setNewImage(res.url);
       }
     } catch {
-      alert("حدث خطأ أثناء قراءة الصورة من جهازك");
+      notify("تعذر تجهيز الصورة من جهازك.", "error");
     } finally {
       setIsUploadingNewImage(false);
     }
@@ -170,12 +177,33 @@ export default function AdminDashboardPage() {
   const [newCode, setNewCode] = useState("");
   const [newDiscountType, setNewDiscountType] = useState<"PERCENTAGE" | "FIXED">("PERCENTAGE");
   const [newDiscountValue, setNewDiscountValue] = useState(15);
+  const [newMaxDiscountAmount, setNewMaxDiscountAmount] = useState<number | undefined>(undefined);
   const [newMinOrderAmount, setNewMinOrderAmount] = useState(500);
   const [newMaxUses, setNewMaxUses] = useState(100);
   const [isDiscountSaving, setIsDiscountSaving] = useState(false);
 
   // SQL Copy Feedback State
   const [copiedSql, setCopiedSql] = useState(false);
+
+  const notify = (message: string, kind: "success" | "error" = "success") => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast({ message, kind });
+    toastTimer.current = setTimeout(() => setToast(null), 3500);
+  };
+
+  const runConfirmedAction = async () => {
+    const action = confirmAction?.run;
+    setConfirmAction(null);
+    if (action) await action();
+  };
+
+  useEffect(() => {
+    if (confirmAction) confirmationCancelRef.current?.focus();
+  }, [confirmAction]);
+
+  useEffect(() => () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+  }, []);
 
   // Auth delay to prevent flash of 404
   useEffect(() => {
@@ -329,18 +357,30 @@ export default function AdminDashboardPage() {
     };
 
     // Save to Supabase
-    const savedOrder = await saveOrderToSupabase({
-      customer_name: newOrder.customerName,
-      phone: newOrder.phone,
-      governorate: newOrder.governorate,
-      address: newOrder.address,
-      notes: newOrder.notes,
-      items: [{ product_id: selectedP.id, quantity: manualQuantity }],
-    });
-
-    if (savedOrder?.order_number) {
-      await updateOrderStatus(savedOrder.order_number, "CONFIRMED");
+    let savedOrder;
+    try {
+      savedOrder = await saveOrderToSupabase({
+        customer_name: newOrder.customerName,
+        phone: newOrder.phone,
+        governorate: newOrder.governorate,
+        address: newOrder.address,
+        notes: newOrder.notes,
+        items: [{ product_id: selectedP.id, quantity: manualQuantity }],
+        idempotency_key: window.crypto.randomUUID(),
+      });
+    } catch (error) {
+      setManualSubmitting(false);
+      notify(error instanceof Error ? error.message : "تعذر حفظ الطلب اليدوي.", "error");
+      return;
     }
+
+    if (!savedOrder?.order_number) {
+      setManualSubmitting(false);
+      notify("لم تُرجع قاعدة البيانات رقم الطلب؛ لم يتم حفظه.", "error");
+      return;
+    }
+
+    await updateOrderStatus(savedOrder.order_number, "CONFIRMED");
 
     await refreshOrders();
     setManualSubmitting(false);
@@ -349,6 +389,7 @@ export default function AdminDashboardPage() {
     setManualPhone("");
     setManualAddress("");
     setManualNotes("");
+    notify(`تم حفظ الطلب ${savedOrder.order_number} بنجاح.`);
   };
 
   // Open Edit Product Modal
@@ -453,14 +494,34 @@ export default function AdminDashboardPage() {
   // Add New Discount Code
   const handleCreateDiscountCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCode || !newDiscountValue) return;
+    const formattedCode = newCode.trim().toUpperCase().replace(/\s+/g, "");
+    if (!/^[A-Z0-9][A-Z0-9_-]{1,31}$/.test(formattedCode)) {
+      notify("اكتب كوداً من 2 إلى 32 حرفاً أو رقماً، ويمكن استخدام الشرطة والشرطة السفلية.", "error");
+      return;
+    }
+    if (!Number.isFinite(newDiscountValue) || newDiscountValue <= 0 || (newDiscountType === "PERCENTAGE" && newDiscountValue > 100)) {
+      notify("قيمة الخصم يجب أن تكون أكبر من صفر، ولا تتجاوز النسبة 100٪.", "error");
+      return;
+    }
+    if (newMaxDiscountAmount !== undefined && (!Number.isFinite(newMaxDiscountAmount) || newMaxDiscountAmount <= 0)) {
+      notify("سقف الخصم يجب أن يكون مبلغاً أكبر من صفر.", "error");
+      return;
+    }
+    if (!Number.isFinite(newMinOrderAmount) || newMinOrderAmount < 0) {
+      notify("الحد الأدنى للطلب لا يمكن أن يكون أقل من صفر.", "error");
+      return;
+    }
+    if (!Number.isInteger(newMaxUses) || newMaxUses < 1) {
+      notify("أقصى عدد مرات الاستخدام يجب أن يكون عدداً صحيحاً موجباً.", "error");
+      return;
+    }
     setIsDiscountSaving(true);
 
-    const formattedCode = newCode.trim().toUpperCase().replace(/\s+/g, "");
     const saved = await createDiscountCode({
       code: formattedCode,
       discount_type: newDiscountType,
       discount_value: Number(newDiscountValue),
+      max_discount_amount: newMaxDiscountAmount,
       min_order_amount: Number(newMinOrderAmount || 0),
       max_uses: Number(newMaxUses || 100),
       current_uses: 0,
@@ -469,12 +530,14 @@ export default function AdminDashboardPage() {
 
     setIsDiscountSaving(false);
     if (!saved) {
-      alert("تعذر حفظ كود الخصم في قاعدة البيانات. لم يتم إنشاء الكود.");
+      notify("تعذر حفظ كود الخصم. تحقق من الاتصال والصلاحيات ثم أعد المحاولة.", "error");
       return;
     }
     setShowAddDiscountModal(false);
     setNewCode("");
     setNewDiscountValue(15);
+    setNewMaxDiscountAmount(undefined);
+    notify(`تم إنشاء الكوبون ${formattedCode} بنجاح.`);
   };
 
   // Copy SQL script to clipboard
@@ -1119,11 +1182,16 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
 
                     {!["sen-zeste", "sen-aura", "sen-duo-bundle"].includes(p.id) && (
                       <button
-                        onClick={() => {
-                          if (confirm(`هل أنت متأكد من حذف ${p.nameAr} من الكتالوج؟`)) {
-                            deleteProduct(p.id);
-                          }
-                        }}
+                        onClick={() => setConfirmAction({
+                          message: `هل تريد حذف ${p.nameAr} من الكتالوج؟`,
+                          run: async () => {
+                            const deleted = await deleteProduct(p.id);
+                            notify(
+                              deleted ? `تم حذف ${p.nameAr}.` : "تعذر حذف المنتج من قاعدة البيانات.",
+                              deleted ? "success" : "error"
+                            );
+                          },
+                        })}
                         className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors"
                         title="حذف العطر"
                       >
@@ -1183,8 +1251,9 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                         <span>{codeItem.code}</span>
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(codeItem.code);
-                            alert(`تم نسخ الكود: ${codeItem.code}`);
+                            void navigator.clipboard.writeText(codeItem.code)
+                              .then(() => notify(`تم نسخ الكود ${codeItem.code}.`))
+                              .catch(() => notify("تعذر النسخ؛ انسخ الكود يدوياً.", "error"));
                           }}
                           className="p-1 rounded text-zinc-500 hover:text-white"
                           title="نسخ الكود"
@@ -1229,15 +1298,16 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                             {codeItem.is_active ? "تعطيل" : "تفعيل"}
                           </button>
                           <button
-                            onClick={() => {
-                              if (confirm(`هل أنت متأكد من حذف كود الخصم ${codeItem.code}؟`)) {
-                                void deleteDiscountCode(codeItem.code).then((deleted) => {
-                                  if (!deleted) {
-                                    alert("تعذر حذف كود الخصم من قاعدة البيانات. طبّق آخر Migration ثم أعد المحاولة.");
-                                  }
-                                });
-                              }
-                            }}
+                            onClick={() => setConfirmAction({
+                              message: `هل تريد حذف كود الخصم ${codeItem.code}؟`,
+                              run: async () => {
+                                const deleted = await deleteDiscountCode(codeItem.code);
+                                notify(
+                                  deleted ? `تم حذف الكوبون ${codeItem.code}.` : "تعذر حذف الكوبون. تحقق من صلاحية المسؤول والاتصال.",
+                                  deleted ? "success" : "error"
+                                );
+                              },
+                            })}
                             className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors"
                             title="حذف الكود"
                           >
@@ -1822,7 +1892,11 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                   <label className="block text-zinc-300 font-semibold mb-1">نوع الخصم *</label>
                   <select
                     value={newDiscountType}
-                    onChange={(e) => setNewDiscountType(e.target.value as any)}
+                    onChange={(e) => {
+                      const type = e.target.value as "PERCENTAGE" | "FIXED";
+                      setNewDiscountType(type);
+                      if (type === "FIXED") setNewMaxDiscountAmount(undefined);
+                    }}
                     className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
                   >
                     <option value="PERCENTAGE">نسبة مئوية (%)</option>
@@ -1838,12 +1912,27 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                     type="number"
                     required
                     min={1}
+                    max={newDiscountType === "PERCENTAGE" ? 100 : undefined}
                     value={newDiscountValue}
                     onChange={(e) => setNewDiscountValue(Number(e.target.value))}
                     className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-[#C58652]"
                   />
                 </div>
               </div>
+
+              {newDiscountType === "PERCENTAGE" && (
+                <div>
+                  <label className="block text-zinc-300 font-semibold mb-1">سقف الخصم (اختياري، ج.م)</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={newMaxDiscountAmount ?? ""}
+                    onChange={(e) => setNewMaxDiscountAmount(e.target.value === "" ? undefined : Number(e.target.value))}
+                    placeholder="اتركه فارغاً لعدم وضع سقف"
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
+                  />
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -2014,6 +2103,60 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div
+          role={toast.kind === "error" ? "alert" : "status"}
+          aria-live={toast.kind === "error" ? "assertive" : "polite"}
+          className={`fixed bottom-5 left-1/2 z-[80] -translate-x-1/2 max-w-[calc(100vw-2rem)] rounded-xl border px-4 py-3 text-sm shadow-2xl ${
+            toast.kind === "error"
+              ? "border-rose-500/40 bg-[#241315] text-rose-200"
+              : "border-emerald-500/40 bg-[#122019] text-emerald-100"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
+
+      {confirmAction && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setConfirmAction(null)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setConfirmAction(null);
+          }}
+        >
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="admin-confirm-title"
+            aria-describedby="admin-confirm-message"
+            className="w-full max-w-md rounded-2xl border border-[#C58652]/40 bg-[#151312] p-5 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 id="admin-confirm-title" className="mb-2 text-lg font-bold text-white">تأكيد العملية</h2>
+            <p id="admin-confirm-message" className="mb-5 text-sm leading-relaxed text-stone-300">
+              {confirmAction.message}
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                ref={confirmationCancelRef}
+                type="button"
+                onClick={() => setConfirmAction(null)}
+                className="min-h-11 rounded-xl border border-zinc-700 bg-zinc-900 px-4 text-sm text-zinc-200"
+              >
+                إلغاء
+              </button>
+              <button
+                type="button"
+                onClick={() => void runConfirmedAction()}
+                className="min-h-11 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 text-sm font-semibold text-rose-200"
+              >
+                تأكيد
+              </button>
+            </div>
           </div>
         </div>
       )}

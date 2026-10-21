@@ -17,6 +17,7 @@ import {
   fetchDiscountCodesFromSupabase,
   saveDiscountCodeToSupabase,
   deleteDiscountCodeFromSupabase,
+  validateDiscountCodeWithSupabase,
   SupabaseProduct,
   SupabaseDiscountCode,
   isSupabaseConfigured,
@@ -24,6 +25,7 @@ import {
   recordVisitorHeartbeat,
 } from "@/lib/supabase";
 import { appLink, asset } from "@/lib/paths";
+import { calculateDiscountAmount, normalizeDiscountCode } from "@/lib/discount-math";
 
 export interface CartItem {
   id: string; // perfumeId
@@ -59,6 +61,7 @@ export interface AppliedDiscount {
   type: "PERCENTAGE" | "FIXED";
   value: number;
   amount: number;
+  maxDiscountAmount?: number;
 }
 
 interface CartContextType {
@@ -85,7 +88,10 @@ interface CartContextType {
   loginWithEmail: (email: string, pass: string) => Promise<{ error: any }>;
   registerWithEmail: (email: string, pass: string, name: string, phone?: string) => Promise<{ error: any; needsEmailConfirmation: boolean }>;
   logoutUser: () => Promise<void>;
-  createOrder: (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => Promise<StoredOrder>;
+  createOrder: (
+    orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">,
+    checkoutMeta: { idempotencyKey: string; website?: string }
+  ) => Promise<StoredOrder>;
   updateOrderStatus: (orderId: string, status: StoredOrder["status"]) => Promise<void>;
   refreshOrders: () => Promise<void>;
   // Dynamic Product Management (Supabase + Local)
@@ -94,7 +100,7 @@ interface CartContextType {
   deleteProduct: (id: string) => Promise<boolean>;
   refreshProducts: () => Promise<void>;
   // Discount Engine
-  applyDiscountCode: (codeString: string) => { success: boolean; message: string; discountAmount?: number };
+  applyDiscountCode: (codeString: string) => Promise<{ success: boolean; message: string; discountAmount?: number }>;
   removeDiscountCode: () => void;
   createDiscountCode: (newCode: SupabaseDiscountCode) => Promise<boolean>;
   deleteDiscountCode: (code: string) => Promise<boolean>;
@@ -216,7 +222,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const localCustom = localStorage.getItem("sen_custom_products");
       if (localCustom) {
         const parsed: Perfume[] = JSON.parse(localCustom);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           baseList = parsed;
         }
       }
@@ -226,7 +232,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (isSupabaseConfigured()) {
       try {
         const sbProducts = await fetchProductsFromSupabase();
-        if (sbProducts && sbProducts.length > 0) {
+        // A successful empty result means the catalog was intentionally cleared.
+        if (sbProducts !== null) {
           const mapped = sbProducts.map(toAppPerfume);
           setProducts(mapped);
           try {
@@ -309,6 +316,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     loadDynamicProducts();
     loadDiscountCodes();
 
+    // Order addresses and phone numbers must remain in the database, not browser storage.
+    if (isSupabaseConfigured()) {
+      try {
+        localStorage.removeItem("sen_orders");
+      } catch {}
+    }
+
     // Load active discount from session
     try {
       const savedDisc = sessionStorage.getItem("sen_applied_discount");
@@ -334,27 +348,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (session?.user) {
           setUser(session.user);
         } else {
+          setUser(null);
           try {
-            const savedUser = localStorage.getItem("sen_auth_user");
-            if (savedUser) setUser(JSON.parse(savedUser));
+            localStorage.removeItem("sen_auth_user");
           } catch {}
         }
       });
 
       const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
         setUser(session?.user || null);
-        if (session?.user) {
-          localStorage.setItem("sen_auth_user", JSON.stringify(session.user));
-        } else {
+        try {
           localStorage.removeItem("sen_auth_user");
-        }
+        } catch {}
       });
 
       return () => {
         clearInterval(heartbeatInterval);
         authListener.subscription.unsubscribe();
       };
-    } else {
+    } else if (process.env.NODE_ENV !== "production") {
       try {
         const savedUser = localStorage.getItem("sen_auth_user");
         if (savedUser) setUser(JSON.parse(savedUser));
@@ -371,6 +383,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearInterval(heartbeatInterval);
         window.removeEventListener("sen_auth_change", handleAuthChange);
       };
+    } else {
+      setUser(null);
+      clearInterval(heartbeatInterval);
     }
   }, []);
 
@@ -422,19 +437,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem("sen_orders", JSON.stringify(orders));
+      if (!isSupabaseConfigured() && process.env.NODE_ENV !== "production") {
+        localStorage.setItem("sen_orders", JSON.stringify(orders));
+      }
     } catch {}
   }, [orders]);
 
   const addToCart = (perfume: Perfume, quantity = 1) => {
+    const safeQuantity = Math.min(20, Math.max(1, Math.floor(Number(quantity) || 1)));
     setCart((prev) => {
       const existing = prev.find((item) => item.id === perfume.id);
       if (existing) {
         return prev.map((item) =>
-          item.id === perfume.id ? { ...item, quantity: item.quantity + quantity } : item
+          item.id === perfume.id
+            ? { ...item, quantity: Math.min(20, item.quantity + safeQuantity) }
+            : item
         );
       }
-      return [...prev, { id: perfume.id, perfume, quantity, unitPrice: perfume.price }];
+      return [...prev, { id: perfume.id, perfume, quantity: safeQuantity, unitPrice: perfume.price }];
     });
     setIsOpen(true);
   };
@@ -448,8 +468,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeFromCart(itemId);
       return;
     }
+    const safeQuantity = Math.min(20, Math.max(1, Math.floor(Number(quantity) || 1)));
     setCart((prev) =>
-      prev.map((item) => (item.id === itemId ? { ...item, quantity } : item))
+      prev.map((item) => (item.id === itemId ? { ...item, quantity: safeQuantity } : item))
     );
   };
 
@@ -468,25 +489,61 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const discountAmount = useMemo(() => {
     if (!appliedDiscount || subtotal <= 0) return 0;
-    if (appliedDiscount.type === "PERCENTAGE") {
-      const calculated = Math.round((subtotal * appliedDiscount.value) / 100);
-      return calculated;
-    }
-    return Math.min(subtotal, appliedDiscount.value);
+    return calculateDiscountAmount(
+      {
+        discount_type: appliedDiscount.type,
+        discount_value: appliedDiscount.value,
+        max_discount_amount: appliedDiscount.maxDiscountAmount,
+      },
+      subtotal
+    );
   }, [appliedDiscount, subtotal]);
 
   const totalAfterDiscount = Math.max(0, subtotal - discountAmount);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   // Discount Codes Engine
-  const applyDiscountCode = (codeString: string) => {
-    const clean = codeString.trim().toUpperCase();
+  const applyDiscountCode = async (codeString: string) => {
+    const clean = normalizeDiscountCode(codeString);
     if (!clean) {
       return { success: false, message: "يرجى كتابة كود الخصم أولاً." };
     }
 
+    if (isSupabaseConfigured()) {
+      const validation = await validateDiscountCodeWithSupabase(clean, subtotal);
+      if (
+        !validation.success ||
+        !validation.code ||
+        !validation.discount_type ||
+        validation.discount_value === undefined
+      ) {
+        return { success: false, message: validation.message };
+      }
+
+      const calculatedDiscount = Number(validation.discount_amount || 0);
+      const discObj: AppliedDiscount = {
+        code: validation.code,
+        type: validation.discount_type,
+        value: Number(validation.discount_value),
+        amount: calculatedDiscount,
+        maxDiscountAmount:
+          validation.max_discount_amount == null
+            ? undefined
+            : Number(validation.max_discount_amount),
+      };
+      setAppliedDiscount(discObj);
+      try {
+        sessionStorage.setItem("sen_applied_discount", JSON.stringify(discObj));
+      } catch {}
+      return {
+        success: true,
+        message: validation.message,
+        discountAmount: calculatedDiscount,
+      };
+    }
+
     const matched = discountCodes.find(
-      (c) => c.code.toUpperCase() === clean && c.is_active
+      (c) => normalizeDiscountCode(c.code) === clean && c.is_active
     );
 
     if (!matched) {
@@ -497,6 +554,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return { success: false, message: "كود الخصم استنفد عدد مرات الاستخدام المتاح." };
     }
 
+    if (matched.expires_at && new Date(matched.expires_at).getTime() <= Date.now()) {
+      return { success: false, message: "كود الخصم غير صحيح أو انتهت صلاحيته." };
+    }
+
     if (matched.min_order_amount && subtotal < matched.min_order_amount) {
       return {
         success: false,
@@ -504,18 +565,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       };
     }
 
-    let calculatedDiscount = 0;
-    if (matched.discount_type === "PERCENTAGE") {
-      calculatedDiscount = Math.round((subtotal * matched.discount_value) / 100);
-    } else {
-      calculatedDiscount = Math.min(subtotal, matched.discount_value);
-    }
+    const calculatedDiscount = calculateDiscountAmount(
+      {
+        discount_type: matched.discount_type,
+        discount_value: Number(matched.discount_value),
+        max_discount_amount: matched.max_discount_amount,
+      },
+      subtotal
+    );
 
     const discObj: AppliedDiscount = {
       code: matched.code,
       type: matched.discount_type,
       value: matched.discount_value,
       amount: calculatedDiscount,
+      maxDiscountAmount: matched.max_discount_amount,
     };
 
     setAppliedDiscount(discObj);
@@ -674,7 +738,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const createOrder = async (orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">) => {
+  const createOrder = async (
+    orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">,
+    checkoutMeta: { idempotencyKey: string; website?: string }
+  ) => {
+    if (process.env.NODE_ENV === "production" && !isSupabaseConfigured()) {
+      throw new Error("خدمة الطلبات غير متاحة حالياً. لم يتم حفظ طلبك؛ حاول لاحقاً.");
+    }
     const savedOrder = await saveOrderToSupabase({
       customer_name: orderData.customerName,
       phone: orderData.phone,
@@ -686,6 +756,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         quantity: item.quantity,
       })),
       discount_code: appliedDiscount?.code,
+      idempotency_key: checkoutMeta.idempotencyKey,
+      website: checkoutMeta.website,
     });
     if (isSupabaseConfigured() && !savedOrder) {
       throw new Error("لم تُرجع قاعدة البيانات رقم الطلب. لم يتم تأكيد الطلب، حاول مرة أخرى.");
@@ -695,6 +767,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const newOrder: StoredOrder = {
       ...orderData,
       id: orderNumber,
+      items: Array.isArray(savedOrder?.items)
+        ? savedOrder.items.map((item: { name?: string; quantity?: number; price?: number }) => ({
+            name: item.name || "منتج",
+            quantity: Number(item.quantity || 0),
+            price: Number(item.price || 0),
+          }))
+        : orderData.items,
       subtotal: savedOrder ? Number(savedOrder.subtotal) : orderData.subtotal,
       shippingFee: savedOrder ? Number(savedOrder.shipping_fee) : orderData.shippingFee,
       total: savedOrder ? Number(savedOrder.total_amount) : orderData.total,

@@ -16,11 +16,22 @@ const supabaseAnonKey =
   "mock-anon-key-sen-parfums";
 
 export const isSupabaseConfigured = () => {
-  return (
-    Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-    !process.env.NEXT_PUBLIC_SUPABASE_URL?.includes("mock-sen-project")
-  );
+  const configuredUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const configuredKey = (
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+  )?.trim();
+  if (!configuredUrl || !configuredKey || configuredKey.includes("mock-anon-key")) return false;
+  try {
+    const parsedUrl = new URL(configuredUrl);
+    return parsedUrl.protocol === "https:" && !parsedUrl.hostname.includes("mock-sen-project");
+  } catch {
+    return false;
+  }
 };
+
+const missingSupabaseConfigError = () =>
+  new Error("خدمة المتجر غير متاحة مؤقتاً. يرجى المحاولة لاحقاً.");
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -44,6 +55,9 @@ export const checkIsSuperAdmin = (email?: string | null): boolean => {
 
 export async function signInWithGoogle() {
   if (!isSupabaseConfigured()) {
+    if (process.env.NODE_ENV === "production") {
+      return { data: { user: null }, error: missingSupabaseConfigError() };
+    }
     const mockUser = {
       id: "usr_mock",
       email: SUPER_ADMIN_EMAIL,
@@ -69,6 +83,9 @@ export async function signInWithGoogle() {
 
 export async function signInWithEmailPassword(email: string, password: string) {
   if (!isSupabaseConfigured()) {
+    if (process.env.NODE_ENV === "production") {
+      return { data: { user: null }, error: missingSupabaseConfigError() };
+    }
     const mockUser = {
       id: "usr_" + Math.random().toString(36).substring(2, 9),
       email: email.trim(),
@@ -101,6 +118,9 @@ export async function signUpWithEmailPassword(
   phone?: string
 ) {
   if (!isSupabaseConfigured()) {
+    if (process.env.NODE_ENV === "production") {
+      return { data: { user: null, session: null }, error: missingSupabaseConfigError() };
+    }
     const mockUser = {
       id: "usr_" + Math.random().toString(36).substring(2, 9),
       email: email.trim(),
@@ -158,14 +178,16 @@ export interface SupabaseOrderPayload {
   governorate: string;
   address: string;
   notes?: string;
-  items: any;
+  items: Array<{ product_id: string; quantity: number }>;
   discount_code?: string | null;
+  idempotency_key: string;
+  website?: string;
 }
 
 export async function saveOrderToSupabase(payload: SupabaseOrderPayload) {
   if (!isSupabaseConfigured()) return null;
   try {
-    const { data, error } = await supabase.rpc("create_order", {
+    const { data, error } = await supabase.rpc("submit_checkout", {
       p_customer_name: payload.customer_name,
       p_phone: payload.phone,
       p_governorate: payload.governorate,
@@ -173,6 +195,8 @@ export async function saveOrderToSupabase(payload: SupabaseOrderPayload) {
       p_notes: payload.notes || null,
       p_items: payload.items,
       p_discount_code: payload.discount_code || null,
+      p_idempotency_key: payload.idempotency_key,
+      p_website: payload.website || null,
     });
     if (error) {
       throw new Error(error.message);
@@ -261,7 +285,7 @@ export interface SupabaseProduct {
   updated_at?: string;
 }
 
-export async function fetchProductsFromSupabase(): Promise<SupabaseProduct[]> {
+export async function fetchProductsFromSupabase(): Promise<SupabaseProduct[] | null> {
   if (!isSupabaseConfigured()) return [];
   try {
     const { data, error } = await supabase
@@ -269,12 +293,13 @@ export async function fetchProductsFromSupabase(): Promise<SupabaseProduct[]> {
       .select("*")
       .order("created_at", { ascending: true });
     if (error) {
-      // Table may not be created yet in user's Supabase instance
-      return [];
+      console.warn("Supabase fetch products error:", error.message);
+      return null;
     }
     return data || [];
-  } catch {
-    return [];
+  } catch (err) {
+    console.warn("Supabase fetch products exception:", err);
+    return null;
   }
 }
 
@@ -348,6 +373,39 @@ export async function fetchDiscountCodesFromSupabase(): Promise<SupabaseDiscount
   }
 }
 
+export interface DiscountValidationResult {
+  success: boolean;
+  message: string;
+  code?: string;
+  discount_type?: "PERCENTAGE" | "FIXED";
+  discount_value?: number;
+  max_discount_amount?: number | null;
+  discount_amount?: number;
+}
+
+export async function validateDiscountCodeWithSupabase(
+  code: string,
+  subtotal: number
+): Promise<DiscountValidationResult> {
+  if (!isSupabaseConfigured()) {
+    return { success: false, message: "تعذر التحقق من كود الخصم حالياً." };
+  }
+  try {
+    const { data, error } = await supabase.rpc("validate_discount_code", {
+      p_code: code,
+      p_subtotal: subtotal,
+    });
+    if (error || !data) {
+      console.warn("Supabase validate discount error:", error?.message);
+      return { success: false, message: "تعذر التحقق من كود الخصم حالياً. حاول مرة أخرى." };
+    }
+    return data as DiscountValidationResult;
+  } catch (err) {
+    console.warn("Supabase validate discount exception:", err);
+    return { success: false, message: "تعذر التحقق من كود الخصم حالياً. حاول مرة أخرى." };
+  }
+}
+
 export async function saveDiscountCodeToSupabase(code: SupabaseDiscountCode): Promise<boolean> {
   if (!isSupabaseConfigured()) return true;
   try {
@@ -387,34 +445,28 @@ export async function recordVisitorHeartbeat(page = "/") {
   if (typeof window === "undefined" || !isSupabaseConfigured()) return;
   try {
     let sessionId = sessionStorage.getItem("sen_session_id");
-    if (!sessionId) {
-      sessionId = "sess_" + Math.random().toString(36).substring(2, 12);
+    if (!sessionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sessionId)) {
+      sessionId = window.crypto.randomUUID();
       sessionStorage.setItem("sen_session_id", sessionId);
     }
 
-    await supabase.from("active_visitors").upsert([
-      {
-        session_id: sessionId,
-        current_page: page,
-        last_heartbeat: new Date().toISOString(),
-      },
-    ]);
+    const deviceType = window.innerWidth < 768 ? "Mobile" : "Desktop";
+    await supabase.rpc("record_visitor_heartbeat", {
+      p_session_id: sessionId,
+      p_current_page: page,
+      p_device_type: deviceType,
+    });
   } catch {}
 }
 
 export async function fetchRealActiveVisitorsCount(): Promise<number> {
-  if (!isSupabaseConfigured()) return 1;
+  if (!isSupabaseConfigured()) return 0;
   try {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-    const { count, error } = await supabase
-      .from("active_visitors")
-      .select("*", { count: "exact", head: true })
-      .gte("last_heartbeat", fiveMinutesAgo);
-
-    if (error || count === null) return 1;
-    return Math.max(1, count);
+    const { data, error } = await supabase.rpc("get_active_visitors_count");
+    if (error) return 0;
+    return Math.max(0, Number(data ?? 0));
   } catch {
-    return 1;
+    return 0;
   }
 }
 

@@ -28,7 +28,10 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm install --no-package-lock
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm test
 
       # Step 1: Build for Cloudflare Pages (Root Domain https://sen-parfums.pages.dev)
       - name: Build for Cloudflare Pages (Root Domain)

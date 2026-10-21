@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { EGYPTIAN_GOVERNORATES } from "@/data/perfumes";
 import { z } from "zod";
@@ -23,19 +23,26 @@ import {
 const egyptianCheckoutSchema = z.object({
   fullName: z
     .string()
-    .min(3, { message: "الاسم الكامل يجب أن لا يقل عن 3 أحرف" }),
+    .trim()
+    .min(3, { message: "الاسم الكامل يجب أن لا يقل عن 3 أحرف" })
+    .max(120, { message: "الاسم أطول من الحد المسموح" }),
   phone: z
     .string()
+    .trim()
     .regex(/^01[0125][0-9]{8}$/, {
       message: "رقم الموبايل المصري غير صحيح (يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015 ومكون من 11 رقماً)",
     }),
   governorate: z
     .string()
-    .min(1, { message: "يرجى اختيار المحافظة لحساب الشحن بدقة" }),
+    .trim()
+    .min(1, { message: "يرجى اختيار المحافظة لحساب الشحن بدقة" })
+    .max(80),
   address: z
     .string()
-    .min(6, { message: "يرجى كتابة العنوان التفصيلي (المنطقة، الشارع، رقم المبنى)" }),
-  notes: z.string().optional(),
+    .trim()
+    .min(6, { message: "يرجى كتابة العنوان التفصيلي (المنطقة، الشارع، رقم المبنى)" })
+    .max(500, { message: "العنوان أطول من الحد المسموح" }),
+  notes: z.string().trim().max(500, { message: "الملاحظات أطول من الحد المسموح" }).optional(),
 });
 
 interface CheckoutModalProps {
@@ -71,7 +78,55 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [confirmedOrderNumber, setConfirmedOrderNumber] = useState("");
+  const [confirmedTotal, setConfirmedTotal] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [website, setWebsite] = useState("");
+  const wasOpenRef = useRef(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]), textarea:not([disabled]), a[href]'
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (isOpen && !wasOpenRef.current && orderConfirmed) {
+      setOrderConfirmed(false);
+      setConfirmedOrderNumber("");
+      setConfirmedTotal(0);
+      setCopied(false);
+      setCouponInput("");
+      setCouponMsg(null);
+      setSubmitError(null);
+      setFormData({ fullName: "", phone: "", governorate: "القاهرة", address: "", notes: "" });
+    }
+    wasOpenRef.current = isOpen;
+  }, [isOpen, orderConfirmed]);
 
   if (!isOpen) return null;
 
@@ -82,10 +137,10 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const shippingFee = isFreeShipping ? 0 : selectedGov?.shippingFee || 45;
   const grandTotal = totalAfterDiscount + shippingFee;
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!couponInput.trim()) return;
-    const res = applyDiscountCode(couponInput);
+    const res = await applyDiscountCode(couponInput);
     if (res.success) {
       setCouponMsg({ text: res.message, isError: false });
       setCouponInput("");
@@ -114,12 +169,23 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     setIsSubmitting(true);
 
     try {
+      const storageKey = "sen_checkout_idempotency_key";
+      let idempotencyKey: string | null = null;
+      try {
+        idempotencyKey = sessionStorage.getItem(storageKey);
+      } catch {}
+      if (!idempotencyKey || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(idempotencyKey)) {
+        idempotencyKey = window.crypto.randomUUID();
+        try {
+          sessionStorage.setItem(storageKey, idempotencyKey);
+        } catch {}
+      }
       const order = await createOrder({
-        customerName: formData.fullName,
-        phone: formData.phone,
-        governorate: formData.governorate,
-        address: formData.address,
-        notes: formData.notes,
+        customerName: result.data.fullName,
+        phone: result.data.phone,
+        governorate: result.data.governorate,
+        address: result.data.address,
+        notes: result.data.notes,
         items: cart.map((i) => ({
           name: i.perfume.nameAr,
           quantity: i.quantity,
@@ -128,9 +194,16 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         subtotal,
         shippingFee,
         total: grandTotal,
+      }, {
+        idempotencyKey,
+        website,
       });
 
+      try {
+        sessionStorage.removeItem(storageKey);
+      } catch {}
       setConfirmedOrderNumber(order.id);
+      setConfirmedTotal(order.total);
       setIsSubmitting(false);
       setOrderConfirmed(true);
 
@@ -144,18 +217,34 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       } catch {}
     } catch (error) {
       setIsSubmitting(false);
+      const detail = error instanceof Error ? error.message : "";
+      const safeMessages = [
+        "الاسم الكامل يجب أن لا يقل عن 3 أحرف",
+        "رقم الموبايل المصري غير صحيح",
+        "المحافظة غير مدعومة",
+        "يرجى كتابة العنوان التفصيلي",
+        "كود الخصم غير صالح أو لا ينطبق على الطلب",
+        "تم استلام عدة طلبات من هذا الرقم مؤخراً. انتظر قليلاً ثم حاول مرة أخرى.",
+        "عدد المنتجات في الطلب غير صالح",
+        "كمية أحد المنتجات غير صالحة",
+        "الحد الأقصى لكل منتج هو 20 قطعة",
+      ];
       setSubmitError(
-        error instanceof Error && error.message
-          ? `تعذر حفظ الطلب: ${error.message}`
-          : "تعذر حفظ الطلب حالياً. لم يتم تأكيده، حاول مرة أخرى."
+        safeMessages.find((message) => detail.includes(message)) ||
+          "تعذر حفظ الطلب حالياً. لم يتم تأكيده؛ تحقق من البيانات وحاول مرة أخرى."
       );
     }
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(confirmedOrderNumber);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(confirmedOrderNumber);
+      setCopied(true);
+      setSubmitError(null);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setSubmitError("تعذر نسخ رقم الطلب؛ يمكنك تحديده ونسخه يدوياً.");
+    }
   };
 
   const whatsappSupportUrl = `https://wa.me/201018995002?text=${encodeURIComponent(
@@ -164,12 +253,13 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn" dir="rtl">
-      <div className="relative w-full max-w-2xl bg-[#0C0B0A] border border-[#C58652]/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(0,0,0,0.95)] max-h-[92vh] overflow-y-auto">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="checkout-title" className="relative w-full max-w-2xl bg-[#0C0B0A] border border-[#C58652]/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(0,0,0,0.95)] max-h-[92vh] overflow-y-auto">
         {/* Close Button */}
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
-          className="absolute top-4 left-4 sm:top-6 sm:left-6 w-9 h-9 flex items-center justify-center rounded-full bg-[#161413] border border-[#24201D] text-stone-400 hover:text-white hover:border-[#C58652]/60 transition-colors"
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 w-11 h-11 flex items-center justify-center rounded-full bg-[#161413] border border-[#24201D] text-stone-400 hover:text-white hover:border-[#C58652]/60 transition-colors"
           aria-label="إغلاق"
         >
           <X className="w-4 h-4" />
@@ -183,7 +273,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 <Truck className="w-4 h-4 text-[#E4C7A8]" strokeWidth={1.5} />
               </div>
               <div>
-                <h2 className="font-serif text-2xl text-white font-medium">
+                <h2 id="checkout-title" className="font-serif text-2xl text-white font-medium">
                   إتمام الطلب • الدفع عند الاستلام (COD)
                 </h2>
                 <span className="text-[11px] text-[#C58652] tracking-wider uppercase block">
@@ -197,6 +287,18 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                <label htmlFor="checkout-website">اترك هذا الحقل فارغاً</label>
+                <input
+                  id="checkout-website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(event) => setWebsite(event.target.value)}
+                />
+              </div>
               {/* Full Name */}
               <div>
                 <label className="text-xs text-stone-300 font-medium block mb-1.5">
@@ -336,6 +438,8 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 )}
                 {couponMsg && (
                   <span
+                    role={couponMsg.isError ? "alert" : "status"}
+                    aria-live="polite"
                     className={`text-[11px] block mt-1.5 ${
                       couponMsg.isError ? "text-rose-400" : "text-[#8EBBA0]"
                     }`}
@@ -444,6 +548,13 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               تم استلام طلبك باعتناء، وسيتواصل معك مستشار التوصيل لتأكيد موعد التسليم والدفع نقداً عند استلام ومعاينة الزجاجة.
             </p>
 
+            <div className="mx-auto mb-6 max-w-sm rounded-2xl border border-[#C58652]/30 bg-[#161413] px-5 py-4">
+              <div className="text-xs text-stone-400">إجمالي المبلغ المطلوب عند الاستلام</div>
+              <div className="mt-1 font-mono text-2xl font-semibold text-[#E4C7A8]">
+                {confirmedTotal.toLocaleString()} ج.م
+              </div>
+            </div>
+
             {/* Order Code Box */}
             <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#161413] border border-[#C58652]/30 mb-6">
               <div className="text-start">
@@ -453,12 +564,19 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               <button
                 type="button"
                 onClick={handleCopy}
-                className="p-2 rounded-lg bg-[#24201D] hover:bg-[#2e2a26] text-stone-300 hover:text-white transition-colors"
-                title="نسخ كود الطلب"
+                aria-label="نسخ رقم الطلب"
+                className="min-h-11 min-w-11 rounded-lg bg-[#24201D] p-2 text-stone-300 transition-colors hover:bg-[#2e2a26] hover:text-white"
+                title="نسخ رقم الطلب"
               >
                 {copied ? <Check className="w-4 h-4 text-[#8EBBA0]" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
+            <span className="sr-only" role="status" aria-live="polite">
+              {copied ? "تم نسخ رقم الطلب" : ""}
+            </span>
+            {submitError && (
+              <p role="alert" className="mb-5 text-sm text-rose-300">{submitError}</p>
+            )}
 
             {/* WhatsApp direct tracking button */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">

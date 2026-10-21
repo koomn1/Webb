@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import {
@@ -38,6 +38,38 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
 
   const [couponInput, setCouponInput] = useState("");
   const [couponMsg, setCouponMsg] = useState<{ text: string; isError: boolean } | null>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    drawerRef.current?.querySelector<HTMLElement>("button")?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+      if (event.key !== "Tab" || !drawerRef.current) return;
+      const focusable = Array.from(
+        drawerRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), a[href]'
+        )
+      ).filter((element) => element.tabIndex >= 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, setIsOpen]);
 
   if (!isOpen) return null;
 
@@ -48,10 +80,10 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
   const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
   const remainingForFree = Math.max(0, freeShippingThreshold - subtotal);
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!couponInput.trim()) return;
-    const res = applyDiscountCode(couponInput);
+    const res = await applyDiscountCode(couponInput);
     if (res.success) {
       setCouponMsg({ text: res.message, isError: false });
       setCouponInput("");
@@ -70,7 +102,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
       />
 
       {/* Drawer Container */}
-      <div className="relative w-full max-w-md bg-[#0C0B0A] border-l border-[#C58652]/30 h-full flex flex-col z-10 shadow-[10px_0_50px_rgba(0,0,0,0.95)] animate-slideIn">
+      <div ref={drawerRef} role="dialog" aria-modal="true" aria-labelledby="cart-title" className="relative w-full max-w-md bg-[#0C0B0A] border-l border-[#C58652]/30 h-full flex flex-col z-10 shadow-[10px_0_50px_rgba(0,0,0,0.95)] animate-slideIn">
         {/* Drawer Header */}
         <div className="p-5 border-b border-[#24201D] flex items-center justify-between bg-[#161413]/60">
           <div className="flex items-center gap-2.5">
@@ -78,7 +110,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               <ShoppingBag className="w-4 h-4 text-[#E4C7A8]" strokeWidth={1.5} />
             </div>
             <div>
-              <h2 className="font-serif text-lg text-white font-medium tracking-wide">
+              <h2 id="cart-title" className="font-serif text-lg text-white font-medium tracking-wide">
                 المقتنيات العطرية
               </h2>
               <span className="text-[10px] tracking-widest uppercase text-[#C58652]">SÈN Paris • Le Caire</span>
@@ -176,7 +208,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-5 h-5 flex items-center justify-center text-stone-400 hover:text-white"
+                        className="w-11 h-11 flex items-center justify-center text-stone-400 hover:text-white"
                         aria-label="تقليل"
                       >
                         <Minus className="w-3 h-3" />
@@ -187,7 +219,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-5 h-5 flex items-center justify-center text-stone-400 hover:text-white"
+                        className="w-11 h-11 flex items-center justify-center text-stone-400 hover:text-white"
                         aria-label="زيادة"
                       >
                         <Plus className="w-3 h-3" />
@@ -264,6 +296,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               ) : (
                 <form onSubmit={handleApplyCoupon} className="flex gap-2">
                   <input
+                    aria-label="كود الخصم"
                     type="text"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
@@ -281,6 +314,8 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               )}
               {couponMsg && (
                 <span
+                  role={couponMsg.isError ? "alert" : "status"}
+                  aria-live="polite"
                   className={`text-[11px] block mt-1 ${
                     couponMsg.isError ? "text-rose-400" : "text-[#8EBBA0]"
                   }`}
@@ -316,11 +351,14 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-[#24201D] text-white">
-                <span className="font-medium">المطلوب عند الاستلام:</span>
+                <span className="font-medium">الإجمالي قبل الشحن:</span>
                 <span className="font-serif text-xl font-medium text-[#E4C7A8]">
                   {totalAfterDiscount.toLocaleString()} ج.م
                 </span>
               </div>
+              <p className="text-[10px] text-stone-500 text-center">
+                تُحدد رسوم الشحن والإجمالي النهائي بعد اختيار المحافظة في خطوة تأكيد الطلب.
+              </p>
             </div>
 
             <button
