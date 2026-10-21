@@ -38,7 +38,7 @@ export default function AboutPage() {
             سحر باريس <span className="champagne-gradient-text italic font-serif">وعراقة القاهرة</span>
           </h1>
           <p className="max-w-2xl mx-auto text-stone-400 text-sm sm:text-base leading-relaxed font-light">
-            وُلدت دار SÈN لتقدم المفهوم الأصيل لعطور النيش الفاخرة: زيوت فرنسية نقية بتركيز 20% دون وسطاء أو تكاليف باهظة، وبميثاق ثقة يضمن لك التجربة الكاملة قبل أي قرار.
+            وُلدت دار SÈN لتقدم المفهوم الأصيل لعطور النيش الفاخرة: Eau de Parfum Intense بتركيز عطري 20% دون وسطاء أو تكاليف باهظة، وبميثاق ثقة يضمن لك التجربة الكاملة قبل أي قرار.
           </p>
         </div>
       </section>
@@ -76,9 +76,9 @@ export default function AboutPage() {
                   <Award className="w-4 h-4" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-white mb-1">تركيز 20% Extrait de Parfum</h4>
+                  <h4 className="text-sm font-medium text-white mb-1">Eau de Parfum Intense بتركيز 20%</h4>
                   <p className="text-xs text-stone-400 font-light leading-relaxed">
-                    نستخدم أعلى فئات التركيز العطري لضمان ثبات يتجاوز 14 ساعة وفوحان يسبق حضورك أينما ذهبت.
+                    نعلن تركيزاً عطرياً بنسبة 20% ضمن فئة Eau de Parfum Intense، ونرفق عينة تمنحك فرصة اختبار الرائحة قبل فتح الزجاجة.
                   </p>
                 </div>
               </div>

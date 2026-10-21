@@ -28,7 +28,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
         {/* Luxury Brand Monogram Ribbon */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-champagne text-[#F5E4D2] text-xs sm:text-[13px] font-medium mb-6 tracking-widest uppercase shadow-lg">
           <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
-          <span>دار عطور نيش باريسية • زيوت نقية 100% بتركيز Extrait de Parfum</span>
+          <span>دار عطور نيش باريسية • Eau de Parfum Intense بتركيز 20%</span>
         </div>
 
         {/* Main Headline with Haute Parfumerie Copywriting */}
@@ -47,7 +47,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
         {/* Price & Guarantee Pill */}
         <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#1C1A18]/90 border border-[#E4C7A8]/30 text-xs sm:text-sm font-medium text-[#ECE5DA] mb-10 shadow-xl">
           <Droplet className="w-4 h-4 text-[#C58652]" strokeWidth={1.75} />
-          <span>50ml Extrait de Parfum • <strong className="text-white font-serif text-base">650 ج.م</strong> • عينة 2ml مجانية للتجربة قبل فتح العبوة</span>
+          <span>50ml Eau de Parfum Intense • تركيز 20% • <strong className="text-white font-serif text-base">650 ج.م</strong> • عينة 2ml مجانية للتجربة قبل فتح العبوة</span>
         </div>
 
         {/* Action CTAs Linking to Dedicated Independent Pages */}

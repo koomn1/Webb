@@ -20,7 +20,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "SÈN Haute Parfumerie | عطور نيش باريسية • Zeste & Aura",
   description:
-    "دار SÈN Haute Parfumerie — توليفات عطرية بتركيز 20% زيوت نيش فرنسية نقية مع ميثاق الثقة والأمان وعينة استكشافية 2ml والدفع عند الاستلام.",
+    "دار SÈN Haute Parfumerie — عطور Eau de Parfum Intense بتركيز عطري 20% مع عينة استكشافية 2ml وميثاق الثقة والدفع عند الاستلام.",
   keywords: ["SÈN", "SÈN Parfums", "SÈN Haute Parfumerie", "عطور سِيان", "عطر زيست", "عطر أورا", "Zeste", "Aura", "عطور نيش مصر"],
   icons: {
     icon: "/images/sen_monogram.svg",

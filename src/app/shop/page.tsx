@@ -37,7 +37,7 @@ export default function ShopPage() {
             توليفات دار <span className="champagne-gradient-text">SÈN Paris • Le Caire</span>
           </h1>
           <p className="max-w-2xl mx-auto text-stone-400 text-sm sm:text-base leading-relaxed font-light">
-            عطور Extrait de Parfum نقية بتركيز 20% زيوت نيش فرنسية. كل زجاجة تتضمن عينة استكشافية 2 مل مجاناً مع ميثاق الثقة والدفع عند الاستلام.
+            عطور Eau de Parfum Intense بتركيز 20%. كل زجاجة تتضمن عينة استكشافية 2 مل مجاناً مع ميثاق الثقة والدفع عند الاستلام.
           </p>
 
           {/* Quick Filter Buttons */}

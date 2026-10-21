@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Perfume } from "@/data/perfumes";
+import { Perfume, FRAGRANCE_OIL_PERCENTAGE } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
 import { X, ShoppingBag, Check, ShieldCheck, Sparkles, Phone } from "lucide-react";
 
@@ -31,6 +31,11 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
 
   const isZeste = perfume.id === "sen-zeste";
   const isAura = perfume.id === "sen-aura";
+  const scentStages = [
+    { title: "الافتتاحية", english: "Top Notes", cue: "الانطباع الأول", notes: perfume.topNotes, accent: "bg-[#8EBBA0]", badge: "border-[#8EBBA0]/30 text-[#A9CBB7]" },
+    { title: "قلب العطر", english: "Heart Notes", cue: "ملامح الرائحة", notes: perfume.heartNotes, accent: "bg-[#D19BB0]", badge: "border-[#D19BB0]/30 text-[#D9AFC0]" },
+    { title: "القاعدة", english: "Base Notes", cue: "الأثر الذي يستقر", notes: perfume.baseNotes, accent: "bg-[#C58652]", badge: "border-[#C58652]/30 text-[#E4C7A8]" },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fadeIn" dir="rtl">
@@ -71,7 +76,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
           )}
 
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-stone-300 glass-champagne px-4 py-2.5 rounded-2xl">
-            <span className="font-light">{perfume.concentration} (20% زيوت نقية)</span>
+            <span className="font-light">{perfume.concentration} • تركيز عطري {FRAGRANCE_OIL_PERCENTAGE}%</span>
             <span className="text-[#E4C7A8] font-mono font-medium">{perfume.volumeMl}ml</span>
           </div>
         </div>
@@ -98,22 +103,30 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
           <div className="mb-6 p-4 rounded-2xl bg-[#161413] border border-[#24201D]">
             <h4 className="text-xs font-medium text-stone-300 uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-              <span>الهرم العطري والتكوين الباريسي</span>
+              <span>الهرم العطري</span>
             </h4>
 
-            <div className="space-y-2.5 text-xs">
-              <div>
-                <span className="text-stone-500 font-medium block mb-0.5">القمة العطرية (Top Notes):</span>
-                <span className="text-stone-200 font-light">{perfume.topNotes.join(" • ")}</span>
-              </div>
-              <div>
-                <span className="text-stone-500 font-medium block mb-0.5">قلب العطر (Heart Notes):</span>
-                <span className="text-stone-200 font-light">{perfume.heartNotes.join(" • ")}</span>
-              </div>
-              <div>
-                <span className="text-stone-500 font-medium block mb-0.5">القاعدة والثبات (Base Notes):</span>
-                <span className="text-stone-200 font-light">{perfume.baseNotes.join(" • ")}</span>
-              </div>
+            <div className="space-y-2.5" aria-label="مراحل تطور الرائحة">
+              {scentStages.map((stage, index) => (
+                <div key={stage.english} className="relative overflow-hidden rounded-xl border border-[#302C28] bg-[#100F0E] p-3">
+                  <span className={`absolute inset-y-0 right-0 w-1 ${stage.accent}`} aria-hidden="true" />
+                  <div className="flex items-start gap-3">
+                    <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold ${stage.badge}`} aria-hidden="true">
+                      0{index + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                        <h5 className="text-xs font-semibold text-stone-100">{stage.title}</h5>
+                        <span className="text-[10px] text-stone-500" dir="ltr">{stage.english}</span>
+                      </div>
+                      <p className="mt-0.5 text-[10px] text-stone-500">{stage.cue}</p>
+                      <p className="mt-1.5 text-xs font-light leading-relaxed text-stone-200">
+                        {stage.notes.length ? stage.notes.join(" • ") : "لم تُضف النوتات بعد"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

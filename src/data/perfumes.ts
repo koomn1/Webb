@@ -1,5 +1,8 @@
 import { asset } from "@/lib/paths";
 
+export const FRAGRANCE_CONCENTRATION_LABEL = "Eau de Parfum Intense";
+export const FRAGRANCE_OIL_PERCENTAGE = 20;
+
 export interface Perfume {
   id: string;
   slug: string;
@@ -44,7 +47,7 @@ export const PERFUMES: Perfume[] = [
     price: 650,
     comparePrice: 750,
     volumeMl: 50,
-    concentration: "Eau de Parfum",
+    concentration: FRAGRANCE_CONCENTRATION_LABEL,
     oilPct: 20,
     topNotes: ["قشور البرتقال الأحمر", "تفاح مقرمش منعش", "برغموت كالابريا"],
     heartNotes: ["سكر مكرمل دافئ", "زهر البرتقال النيرولي", "هيل استوائي"],
@@ -56,8 +59,8 @@ export const PERFUMES: Perfume[] = [
       "عطرٌ مهيب وُضع للرجل الذي لا يحتاج أن يرفع صوته ليُثبت حضوره. يبدأ بانتعاش آسر من البرتقال الأحمر والتفاح المقرمش، ينساب إلى قلب دافئ من السكر المكرمل وزهر البرتقال النادر، ثم يستقر في هدوء واثق على قاعدة من خشب الأرز الأطلسي والعنبر النقي. ثبات يدوم لأكثر من 14 ساعة وفوحان يترك بصمته أينما حللت.",
     descriptionEn:
       "A bold, invigorating masculine signature balancing crisp blood orange and orchard apple with sweet caramelized sugar and deep cedarwood.",
-    rating: 4.97,
-    reviewsCount: 184,
+    rating: 0,
+    reviewsCount: 0,
     badge: "الأكثر مبيعاً للرجال",
     stockQuantity: 48,
     inStock: true,
@@ -75,7 +78,7 @@ export const PERFUMES: Perfume[] = [
     price: 650,
     comparePrice: 750,
     volumeMl: 50,
-    concentration: "Eau de Parfum",
+    concentration: FRAGRANCE_CONCENTRATION_LABEL,
     oilPct: 20,
     topNotes: ["تفاح أحمر سكري", "برتقال حلو ندي", "برغموت مشرق"],
     heartNotes: ["غزل بنات وسكر ناعم", "باقة زهور بيضاء ملكية", "ياسمين فرنسي"],
@@ -87,8 +90,8 @@ export const PERFUMES: Perfume[] = [
       "قصيدة أنثوية تجسد الرقة والفتنة الآسرة. تتراقص نفحات التفاح الأحمر السكري والبرتقال الندي مع باقة زهور بيضاء نادرة من حقول غراس الفرنسية، لتذوب في هالة مغناطيسية من المسك الأبيض المخملي وخشب الصندل. عطرٌ يلتف حولك كالحرير ويأسر كل من يقترب.",
     descriptionEn:
       "An enchanting feminine aura wrapped in crisp red apple, whimsical spun sugar, and radiant white petals grounded by velvety white musk.",
-    rating: 4.98,
-    reviewsCount: 219,
+    rating: 0,
+    reviewsCount: 0,
     badge: "الأكثر طلباً للنساء",
     stockQuantity: 36,
     inStock: true,
@@ -106,7 +109,7 @@ export const PERFUMES: Perfume[] = [
     price: 1150,
     comparePrice: 1300,
     volumeMl: 100,
-    concentration: "Eau de Parfum (2 x 50ml)",
+    concentration: `${FRAGRANCE_CONCENTRATION_LABEL} (2 × 50ml)`,
     oilPct: 20,
     topNotes: ["قشور برتقال أحمر وتفاح سكري"],
     heartNotes: ["سكر مكرمل وزهور بيضاء نادرة"],
@@ -118,8 +121,8 @@ export const PERFUMES: Perfume[] = [
       "التناغم الملكي الأرقى من دار SÈN. عطران صُمما ليكمل كل منهما الآخر: حضور Zeste الرجالي الواثق وغموض Aura الأنثوي الفاتن. تأتيك الباقة في صندوقين فاخرين مع عينتين 2 مل مجاناً للضمان الذهبي، وشحن مجاني وسريع لكافة محافظات مصر.",
     descriptionEn:
       "The definitive dual luxury set. Includes full bottles of SÈN Zeste and SÈN Aura in individual luxury boxes with two complimentary 2ml Golden Guarantee testers.",
-    rating: 5.0,
-    reviewsCount: 342,
+    rating: 0,
+    reviewsCount: 0,
     badge: "وفر 150 ج.م + شحن مجاني",
     stockQuantity: 25,
     inStock: true,

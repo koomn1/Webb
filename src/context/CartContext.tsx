@@ -1,7 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
-import { Perfume, PERFUMES } from "@/data/perfumes";
+import {
+  Perfume,
+  PERFUMES,
+  FRAGRANCE_CONCENTRATION_LABEL,
+  FRAGRANCE_OIL_PERCENTAGE,
+} from "@/data/perfumes";
 import {
   signInWithGoogle,
   signInWithEmailPassword,
@@ -26,6 +31,14 @@ import {
 } from "@/lib/supabase";
 import { appLink, asset } from "@/lib/paths";
 import { calculateDiscountAmount, normalizeDiscountCode } from "@/lib/discount-math";
+
+function normalizeConcentrationLabel(value: unknown): string {
+  const stored = String(value || "").trim();
+  if (/extrait\s+de\s+parfum/i.test(stored)) {
+    return stored.replace(/extrait\s+de\s+parfum/gi, FRAGRANCE_CONCENTRATION_LABEL);
+  }
+  return stored || FRAGRANCE_CONCENTRATION_LABEL;
+}
 
 export interface CartItem {
   id: string; // perfumeId
@@ -156,8 +169,8 @@ function toAppPerfume(sp: SupabaseProduct): Perfume {
     price: Number(sp.price),
     comparePrice: sp.original_price ? Number(sp.original_price) : undefined,
     volumeMl: sp.volume_ml,
-    concentration: sp.concentration,
-    oilPct: 20,
+    concentration: normalizeConcentrationLabel(sp.concentration),
+    oilPct: FRAGRANCE_OIL_PERCENTAGE,
     topNotes: Array.isArray(sp.top_notes) ? sp.top_notes : [],
     heartNotes: Array.isArray(sp.heart_notes) ? sp.heart_notes : [],
     baseNotes: Array.isArray(sp.base_notes) ? sp.base_notes : [],
@@ -166,8 +179,9 @@ function toAppPerfume(sp: SupabaseProduct): Perfume {
     image: sp.image.startsWith("http") || sp.image.startsWith("/") || sp.image.startsWith("data:") ? sp.image : asset(sp.image),
     descriptionAr: sp.description_ar,
     descriptionEn: sp.description_ar,
-    rating: sp.rating ? Number(sp.rating) : 4.9,
-    reviewsCount: sp.reviews_count ? Number(sp.reviews_count) : 120,
+    // Legacy numeric placeholders are not verified customer reviews; do not expose them as social proof.
+    rating: 0,
+    reviewsCount: 0,
     badge: sp.badge,
     stockQuantity: 50,
     inStock: sp.is_available,
@@ -223,7 +237,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (localCustom) {
         const parsed: Perfume[] = JSON.parse(localCustom);
         if (Array.isArray(parsed)) {
-          baseList = parsed;
+          baseList = parsed.map((product) => ({
+            ...product,
+            concentration: normalizeConcentrationLabel(product.concentration),
+            rating: 0,
+            reviewsCount: 0,
+          }));
         }
       }
     } catch {}

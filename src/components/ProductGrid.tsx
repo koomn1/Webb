@@ -34,7 +34,7 @@ export function ProductGrid({ onOpenQuickView }: { onOpenQuickView: (perfume: Pe
           توليفاتٌ عطرية <span className="champagne-gradient-text italic font-serif">تحكي قصة تميزك</span>
         </h2>
         <p className="text-sm sm:text-base text-[#ABA59C] font-light leading-relaxed">
-          صيغت بتركيز 20% Extrait de Parfum من أندر الزيوت الفرنسية النقية لضمان ثبات ملكي يتجاوز 14 ساعة وفوحان ساحر. استلم شحنتك، جرّب العينة المرفقة أولاً في منزلك، وادفع عند الاستلام.
+          صيغت بتركيز 20% Eau de Parfum Intense من أندر الزيوت الفرنسية النقية لضمان تجربة عطرية متكاملة. استلم شحنتك، جرّب العينة المرفقة أولاً في منزلك، وادفع عند الاستلام.
         </p>
       </div>
 

@@ -79,7 +79,7 @@ export function Footer() {
               HAUTE PARFUMERIE
             </span>
             <p className="text-stone-400 text-xs leading-relaxed mb-4 font-light">
-              توليفات عطرية بتركيبات نيش فرنسية مبتكرة وزيوت نقية بتركيز 20%. ثبات استثنائي يتجاوز 14 ساعة مع ميثاق الثقة والأمان.
+              توليفات عطرية بتركيبات نيش فرنسية مبتكرة من Eau de Parfum Intense بتركيز عطري 20%، مع عينة مجانية وميثاق الثقة والأمان.
             </p>
           </div>
 

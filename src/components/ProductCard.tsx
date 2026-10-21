@@ -77,7 +77,7 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
           {/* Concentration */}
           <div className="flex items-center justify-between text-xs mb-2">
             <span className="text-[#E4C7A8] tracking-widest font-semibold text-[11px] uppercase">
-              {perfume.concentration}
+              {perfume.concentration} • {perfume.oilPct}%
             </span>
           </div>
 

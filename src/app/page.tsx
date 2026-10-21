@@ -11,6 +11,7 @@ import { FragranceFinder } from "@/components/FragranceFinder";
 import { CartDrawer } from "@/components/CartDrawer";
 import { CheckoutModal } from "@/components/CheckoutModal";
 import { Footer } from "@/components/Footer";
+import { CustomerFeedbackInvitation } from "@/components/CustomerFeedbackInvitation";
 import { PERFUMES } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
 import {
@@ -21,7 +22,6 @@ import {
   ShoppingBag,
   Award,
   Droplets,
-  HeartHandshake,
   Compass,
 } from "lucide-react";
 import { appLink } from "@/lib/paths";
@@ -48,7 +48,7 @@ export default function LandingPage() {
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <Award className="w-5 h-5 text-[#C58652] mx-auto mb-2.5" strokeWidth={1.5} />
               <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">زيوت نيش فرنسية</h4>
-              <p className="text-[11px] text-stone-400 font-light">تركيز 20% Extrait de Parfum</p>
+              <p className="text-[11px] text-stone-400 font-light">Eau de Parfum Intense • تركيز 20%</p>
             </div>
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <ShieldCheck className="w-5 h-5 text-[#8EBBA0] mx-auto mb-2.5" strokeWidth={1.5} />
@@ -169,6 +169,9 @@ export default function LandingPage() {
 
       {/* Golden Guarantee Teaser */}
       <GoldenGuaranteeSection />
+
+      {/* Invite real customer feedback; never render fabricated testimonials. */}
+      <CustomerFeedbackInvitation />
 
       {/* Brand Craftsmanship Story */}
       <section className="py-24 bg-gradient-to-b from-[#0C0B0A] via-[#161413] to-[#0C0B0A] border-t border-[#24201D]">
