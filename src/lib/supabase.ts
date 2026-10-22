@@ -182,12 +182,14 @@ export interface SupabaseOrderPayload {
   discount_code?: string | null;
   idempotency_key: string;
   website?: string;
+  whatsapp_consent?: boolean;
 }
 
 export async function saveOrderToSupabase(payload: SupabaseOrderPayload) {
   if (!isSupabaseConfigured()) return null;
   try {
-    const { data, error } = await supabase.rpc("submit_checkout", {
+    const rpcName = payload.whatsapp_consent ? "submit_checkout_with_contact" : "submit_checkout";
+    const rpcArgs = {
       p_customer_name: payload.customer_name,
       p_phone: payload.phone,
       p_governorate: payload.governorate,
@@ -197,7 +199,9 @@ export async function saveOrderToSupabase(payload: SupabaseOrderPayload) {
       p_discount_code: payload.discount_code || null,
       p_idempotency_key: payload.idempotency_key,
       p_website: payload.website || null,
-    });
+      ...(payload.whatsapp_consent ? { p_whatsapp_consent: true } : {}),
+    };
+    const { data, error } = await supabase.rpc(rpcName, rpcArgs);
     if (error) {
       throw new Error(error.message);
     }
@@ -223,6 +227,68 @@ export async function fetchOrdersFromSupabase() {
   } catch (err) {
     console.warn("Supabase fetchOrders exception:", err);
     return [];
+  }
+}
+
+export interface OrderContactHistoryAttempt {
+  kind: "initial" | "result";
+  attempt: number;
+  status: string;
+  error_code: string | null;
+  attempted_at: string;
+  completed_at: string | null;
+}
+
+export interface OrderContactHistoryRow {
+  event_id: string;
+  order_id: string;
+  order_number: string;
+  order_status: string;
+  contact_status: string;
+  result_notice_status: string;
+  attempt_count: number;
+  max_attempts: number;
+  result_attempt_count: number;
+  last_attempt_at: string | null;
+  response_deadline_at: string | null;
+  last_error_code: string | null;
+  result_last_error_code: string | null;
+  updated_at: string;
+  attempts: OrderContactHistoryAttempt[];
+}
+
+export async function fetchOrderContactHistory(limit = 50, offset = 0): Promise<{
+  rows: OrderContactHistoryRow[];
+  error: string | null;
+}> {
+  if (!isSupabaseConfigured()) return { rows: [], error: "خدمة سجل التواصل غير مهيأة." };
+  try {
+    const { data, error } = await supabase.functions.invoke("order-contact-dispatch", {
+      body: { action: "list", limit, offset },
+    });
+    if (error) return { rows: [], error: "تعذر تحميل سجل التواصل." };
+    const payload = data as { rows?: unknown } | null;
+    return {
+      rows: Array.isArray(payload?.rows) ? payload.rows as OrderContactHistoryRow[] : [],
+      error: null,
+    };
+  } catch {
+    return { rows: [], error: "تعذر الاتصال بخدمة سجل التواصل." };
+  }
+}
+
+export async function retryOrderContact(eventId: string): Promise<{ success: boolean; error: string | null }> {
+  if (!isSupabaseConfigured()) return { success: false, error: "خدمة التواصل غير مهيأة." };
+  try {
+    const { data, error } = await supabase.functions.invoke("order-contact-dispatch", {
+      body: { action: "retry", event_id: eventId },
+    });
+    if (error || !data || data.success !== true) {
+      return { success: false, error: "تعذر إعادة المحاولة؛ تحقق من الحالة وحد المحاولات." };
+    }
+    return { success: true, error: null };
+  } catch {
+    return { success: false, error: "تعذر الاتصال بخدمة إعادة المحاولة." };
   }
 }
 

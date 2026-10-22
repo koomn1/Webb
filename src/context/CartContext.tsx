@@ -103,7 +103,7 @@ interface CartContextType {
   logoutUser: () => Promise<void>;
   createOrder: (
     orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">,
-    checkoutMeta: { idempotencyKey: string; website?: string }
+    checkoutMeta: { idempotencyKey: string; website?: string; whatsappConsent?: boolean }
   ) => Promise<StoredOrder>;
   updateOrderStatus: (orderId: string, status: StoredOrder["status"]) => Promise<void>;
   refreshOrders: () => Promise<void>;
@@ -759,7 +759,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const createOrder = async (
     orderData: Omit<StoredOrder, "id" | "status" | "createdAt" | "paymentMethod">,
-    checkoutMeta: { idempotencyKey: string; website?: string }
+    checkoutMeta: { idempotencyKey: string; website?: string; whatsappConsent?: boolean }
   ) => {
     if (process.env.NODE_ENV === "production" && !isSupabaseConfigured()) {
       throw new Error("خدمة الطلبات غير متاحة حالياً. لم يتم حفظ طلبك؛ حاول لاحقاً.");
@@ -777,6 +777,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       discount_code: appliedDiscount?.code,
       idempotency_key: checkoutMeta.idempotencyKey,
       website: checkoutMeta.website,
+      whatsapp_consent: checkoutMeta.whatsappConsent === true,
     });
     if (isSupabaseConfigured() && !savedOrder) {
       throw new Error("لم تُرجع قاعدة البيانات رقم الطلب. لم يتم تأكيد الطلب، حاول مرة أخرى.");

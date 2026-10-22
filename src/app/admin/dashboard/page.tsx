@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart, StoredOrder } from "@/context/CartContext";
@@ -40,9 +40,12 @@ import {
   UploadCloud,
 } from "lucide-react";
 import {
+  fetchOrderContactHistory,
   fetchRealActiveVisitorsCount,
+  retryOrderContact,
   saveOrderToSupabase,
   SupabaseDiscountCode,
+  type OrderContactHistoryRow,
   uploadProductImage,
 } from "@/lib/supabase";
 import { appLink, asset } from "@/lib/paths";
@@ -59,6 +62,30 @@ const PRESET_IMAGES = [
   { label: "الهرم العطري - قلب (Scent Heart)", url: "/images/scent_heart.webp" },
   { label: "الهرم العطري - قاعدة (Scent Base)", url: "/images/scent_base.webp" },
 ];
+
+const CONTACT_STATUS_LABELS: Record<string, string> = {
+  waiting_consent: "لا توجد موافقة",
+  waiting_setup: "بانتظار تهيئة الخدمة",
+  queued: "بانتظار الإرسال",
+  sending: "جارٍ الإرسال",
+  sent: "أُرسلت",
+  delivered: "تم التسليم",
+  read: "تمت القراءة",
+  confirmed: "مؤكد من العميل",
+  cancelled: "ألغاه العميل",
+  failed: "فشل الإرسال",
+  no_response: "لم يصل رد",
+  opted_out: "أوقف التواصل",
+  not_needed: "لا يلزم",
+};
+
+const ORDER_STATUS_LABELS: Record<string, string> = {
+  PENDING: "معلق",
+  CONFIRMED: "مؤكد",
+  SHIPPED: "قيد الشحن",
+  DELIVERED: "تم التسليم",
+  CANCELLED: "ملغي",
+};
 
 export default function AdminDashboardPage() {
   const {
@@ -93,6 +120,9 @@ export default function AdminDashboardPage() {
   const [governorateFilter, setGovernorateFilter] = useState<string>("ALL");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const [contactHistory, setContactHistory] = useState<OrderContactHistoryRow[]>([]);
+  const [contactHistoryLoading, setContactHistoryLoading] = useState(true);
+  const [contactHistoryError, setContactHistoryError] = useState<string | null>(null);
 
   // Manual Order Creation Modal State
   const [showAddOrderModal, setShowAddOrderModal] = useState(false);
@@ -191,6 +221,24 @@ export default function AdminDashboardPage() {
     toastTimer.current = setTimeout(() => setToast(null), 3500);
   };
 
+  const loadOrderContactHistory = useCallback(async (showLoading = true) => {
+    if (showLoading) setContactHistoryLoading(true);
+    const result = await fetchOrderContactHistory(50, 0);
+    setContactHistory(result.rows);
+    setContactHistoryError(result.error);
+    setContactHistoryLoading(false);
+  }, []);
+
+  const handleOrderContactRetry = async (eventId: string) => {
+    const result = await retryOrderContact(eventId);
+    if (!result.success) {
+      notify(result.error || "تعذرت إعادة المحاولة.", "error");
+      return;
+    }
+    notify("أُضيفت المحاولة المحدودة إلى قائمة الإرسال.");
+    await loadOrderContactHistory(false);
+  };
+
   const runConfirmedAction = async () => {
     const action = confirmAction?.run;
     setConfirmAction(null);
@@ -212,6 +260,20 @@ export default function AdminDashboardPage() {
     }, 400);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isSuperAdmin || activeTab !== "orders") return;
+    let isMounted = true;
+    fetchOrderContactHistory(50, 0).then((result) => {
+      if (!isMounted) return;
+      setContactHistory(result.rows);
+      setContactHistoryError(result.error);
+      setContactHistoryLoading(false);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [activeTab, isSuperAdmin]);
 
   // Poll real active visitors count every 15 seconds
   useEffect(() => {
@@ -236,6 +298,7 @@ export default function AdminDashboardPage() {
       refreshOrders(),
       refreshProducts(),
       refreshDiscountCodes(),
+      loadOrderContactHistory(false),
       fetchRealActiveVisitorsCount().then((c) => setActiveVisitors(c)),
     ]);
     setIsRefreshing(false);
@@ -849,6 +912,121 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
             </button>
           </div>
 
+          <section className="max-w-7xl mx-auto glass-dark border border-zinc-800 rounded-3xl p-4 sm:p-6 mb-5 shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 className="text-base font-bold text-white flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 text-emerald-400" />
+                  سجل التواصل الآلي للطلبات
+                </h2>
+                <p className="mt-1 text-[11px] leading-relaxed text-zinc-500">
+                  أحدث 50 حدثاً. لا توجد مكالمات آلية؛ رسائل WhatsApp لا تعمل قبل تهيئة الخدمة وفتح قاطع التشغيل.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void loadOrderContactHistory()}
+                disabled={contactHistoryLoading}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs font-semibold text-zinc-200 hover:border-[#C58652]/60 disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${contactHistoryLoading ? "animate-spin" : ""}`} />
+                تحديث السجل
+              </button>
+            </div>
+
+            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6">
+              {[
+                { label: "إجمالي السجلات", value: contactHistory.length, color: "text-zinc-100" },
+                { label: "قيد الانتظار", value: contactHistory.filter((row) => ["waiting_setup", "queued", "sending"].includes(row.contact_status)).length, color: "text-amber-300" },
+                { label: "مؤكدة", value: contactHistory.filter((row) => row.contact_status === "confirmed").length, color: "text-emerald-300" },
+                { label: "ملغاة بالرد", value: contactHistory.filter((row) => row.contact_status === "cancelled").length, color: "text-rose-300" },
+                { label: "فشل الإرسال", value: contactHistory.filter((row) => row.contact_status === "failed" || row.result_notice_status === "failed").length, color: "text-orange-300" },
+                { label: "لا يوجد رد", value: contactHistory.filter((row) => row.contact_status === "no_response").length, color: "text-yellow-200" },
+              ].map((stat) => (
+                <div key={stat.label} className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-3 py-2">
+                  <div className="text-[10px] text-zinc-500">{stat.label}</div>
+                  <div className={`mt-0.5 text-lg font-bold ${stat.color}`}>{stat.value}</div>
+                </div>
+              ))}
+            </div>
+
+            {contactHistoryError && (
+              <div role="status" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-200">
+                {contactHistoryError} قد يلزم تطبيق ترحيل Supabase ونشر Edge Functions قبل ظهور السجل.
+              </div>
+            )}
+            {contactHistoryLoading && <p className="py-6 text-center text-xs text-zinc-500">جارٍ تحميل سجل التواصل...</p>}
+            {!contactHistoryLoading && !contactHistoryError && contactHistory.length === 0 && (
+              <p className="py-6 text-center text-xs text-zinc-500">لا توجد أحداث تواصل مسجلة حتى الآن.</p>
+            )}
+            {!contactHistoryLoading && contactHistory.length > 0 && (
+              <div className="overflow-x-auto rounded-2xl border border-zinc-800">
+                <table className="w-full min-w-[820px] text-right text-[11px]">
+                  <thead className="bg-zinc-900/80 text-zinc-400">
+                    <tr>
+                      <th className="px-3 py-3 font-semibold">الطلب</th>
+                      <th className="px-3 py-3 font-semibold">حالة الطلب</th>
+                      <th className="px-3 py-3 font-semibold">نتيجة WhatsApp</th>
+                      <th className="px-3 py-3 font-semibold">إشعار النتيجة</th>
+                      <th className="px-3 py-3 font-semibold">المحاولات</th>
+                      <th className="px-3 py-3 font-semibold">آخر تحديث</th>
+                      <th className="px-3 py-3 font-semibold">إجراء</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800/70">
+                    {contactHistory.map((row) => {
+                      const canRetry = (
+                        ["failed", "no_response"].includes(row.contact_status) && row.attempt_count < row.max_attempts
+                      ) || (
+                        row.result_notice_status === "failed" && row.result_attempt_count < row.max_attempts
+                      );
+                      const contactTone = row.contact_status === "confirmed" ? "text-emerald-300" :
+                        row.contact_status === "cancelled" || row.contact_status === "opted_out" ? "text-rose-300" :
+                        row.contact_status === "failed" || row.contact_status === "no_response" ? "text-amber-300" : "text-zinc-300";
+                      return (
+                        <tr key={row.event_id} className="align-top hover:bg-zinc-900/40">
+                          <td className="whitespace-nowrap px-3 py-3 font-mono font-bold text-[#E4C7A8]">{row.order_number}</td>
+                          <td className="whitespace-nowrap px-3 py-3 text-zinc-300">{ORDER_STATUS_LABELS[row.order_status] || row.order_status}</td>
+                          <td className={`whitespace-nowrap px-3 py-3 font-semibold ${contactTone}`}>
+                            {CONTACT_STATUS_LABELS[row.contact_status] || row.contact_status}
+                            {row.last_error_code && <span className="mt-1 block font-mono text-[9px] text-zinc-500">{row.last_error_code}</span>}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-3 text-zinc-400">
+                            {CONTACT_STATUS_LABELS[row.result_notice_status] || row.result_notice_status}
+                            {row.result_last_error_code && <span className="mt-1 block font-mono text-[9px] text-zinc-500">{row.result_last_error_code}</span>}
+                          </td>
+                          <td className="px-3 py-3 text-zinc-300">
+                            <span className="whitespace-nowrap">الأولي: {row.attempt_count}/{row.max_attempts}</span>
+                            <span className="mt-1 block whitespace-nowrap text-zinc-500">النتيجة: {row.result_attempt_count}/{row.max_attempts}</span>
+                            {row.attempts.slice(-3).map((attempt, index) => (
+                              <span key={`${attempt.kind}-${attempt.attempt}-${index}`} className="mt-1 block whitespace-nowrap text-[9px] text-zinc-500">
+                                {attempt.kind === "initial" ? "طلب" : "نتيجة"} #{attempt.attempt}: {CONTACT_STATUS_LABELS[attempt.status] || attempt.status}
+                              </span>
+                            ))}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-3 text-zinc-500">
+                            {new Date(row.updated_at).toLocaleString("ar-EG", { dateStyle: "short", timeStyle: "short" })}
+                          </td>
+                          <td className="px-3 py-3">
+                            {canRetry ? (
+                              <button
+                                type="button"
+                                onClick={() => void handleOrderContactRetry(row.event_id)}
+                                className="whitespace-nowrap rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-amber-200 hover:bg-amber-500/20"
+                              >
+                                إعادة المحاولة
+                              </button>
+                            ) : <span className="text-[10px] text-zinc-600">—</span>}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+
           {/* Orders Management Table */}
           <div className="max-w-7xl mx-auto glass-dark border border-zinc-800 rounded-3xl p-4 sm:p-6 mb-8 shadow-2xl">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
@@ -992,7 +1170,7 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                           <td className="py-3.5 px-3.5">
                             <select
                               value={order.status}
-                              onChange={(e) => updateOrderStatus(order.id, e.target.value as any)}
+                              onChange={(e) => updateOrderStatus(order.id, e.target.value as StoredOrder["status"])}
                               className={`px-2.5 py-1.5 rounded-xl text-xs font-bold focus:outline-none border cursor-pointer ${
                                 order.status === "CONFIRMED"
                                   ? "bg-blue-500/15 text-blue-400 border-blue-500/40"

@@ -69,6 +69,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     address: "",
     notes: "",
   });
+  const [whatsappConsent, setWhatsappConsent] = useState(false);
 
   const [couponInput, setCouponInput] = useState("");
   const [couponMsg, setCouponMsg] = useState<{ text: string; isError: boolean } | null>(null);
@@ -124,6 +125,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       setCouponMsg(null);
       setSubmitError(null);
       setFormData({ fullName: "", phone: "", governorate: "القاهرة", address: "", notes: "" });
+      setWhatsappConsent(false);
     }
     wasOpenRef.current = isOpen;
   }, [isOpen, orderConfirmed]);
@@ -197,6 +199,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       }, {
         idempotencyKey,
         website,
+        whatsappConsent,
       });
 
       try {
@@ -340,9 +343,21 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     <AlertCircle className="w-3 h-3" /> {errors.phone}
                   </span>
                 )}
-                <span className="text-[10px] text-stone-500 mt-1 block">
-                  سنرسل لك رسالة تأكيد عبر واتساب ورسالة نصية قبل خروج المندوب.
-                </span>
+                <label htmlFor="whatsapp-order-consent" className="mt-2 flex items-start gap-2.5 rounded-xl border border-[#24201D] bg-[#161413]/70 p-3 cursor-pointer">
+                  <input
+                    id="whatsapp-order-consent"
+                    type="checkbox"
+                    checked={whatsappConsent}
+                    onChange={(event) => setWhatsappConsent(event.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[#C58652]"
+                  />
+                  <span className="text-[11px] leading-relaxed text-stone-300">
+                    أوافق على تلقي رسائل WhatsApp الخاصة بتأكيد هذا الطلب أو إلغائه وتحديث حالته.
+                    <span className="mt-1 block text-[10px] text-stone-500">
+                      اختياري وغير مطلوب لإتمام الطلب. لن تُستخدم هذه الموافقة للتسويق، ويمكنك إيقاف الرسائل لاحقاً.
+                    </span>
+                  </span>
+                </label>
               </div>
 
               {/* Governorate Dropdown */}

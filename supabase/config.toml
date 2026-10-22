@@ -383,6 +383,14 @@ inspector_port = 8083
 # The Deno major version to use.
 deno_version = 2
 
+[functions.order-whatsapp-webhook]
+# Meta uses the GET challenge and an HMAC-signed POST, not a Supabase JWT.
+verify_jwt = false
+
+[functions.order-contact-dispatch]
+# This function verifies the Vault cron token or an authenticated admin itself.
+verify_jwt = false
+
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
