@@ -9,23 +9,23 @@ export function GoldenGuaranteeSection() {
   const steps = [
     {
       num: "01",
-      title: "استلم وعاين شحنتك",
-      desc: "استلم طردك من مندوب الشحن في أي محافظة مصرية، وتأكد من سلامة العبوة الخارجية قبل الدفع.",
+      title: "استلم وادفع للمندوب",
+      desc: "استلم الشحنة وتأكد من سلامة العبوة الخارجية، ثم ادفع قيمة الطلب للمندوب عند التسليم.",
     },
     {
       num: "02",
-      title: "اختبر العينة المجانية (2 مل)",
-      desc: "افتح العينة التجريبية الـ 2ml المرفقة مجاناً في الصندوق، ورش منها بسخاء على معصمك وملابسك.",
+      title: "اختبر العينة في المنزل (2 مل)",
+      desc: "بعد الدفع، افتح العينة 2ml المرفقة من نفس التوليفة وجربها في المنزل قبل فتح الزجاجة الكبيرة.",
     },
     {
       num: "03",
-      title: "عِش ثبات العطر وتطوره",
-      desc: "راقب التناغم العطري وقوة الفوحان والثبات الذي يمتد لأكثر من 14 ساعة عبر مختلف أوقات اليوم.",
+      title: "راقب تطور الرائحة",
+      desc: "خذ وقتك لملاحظة النغمات والأثر العطري في ظروفك المعتادة؛ الأداء يختلف حسب البشرة والطقس وطريقة الاستخدام.",
     },
     {
       num: "04",
-      title: "الرضا التام أو استرداد فوري",
-      desc: "إن لم يلامس العطر ذوقك الرفيع، احتفظ بالعينة وأعد الزجاجة الأصلية المغلقة واسترد كامل المبلغ دون تعقيد.",
+      title: "استرداد خلال 7 أيام",
+      desc: "إن لم يناسبك العطر، تواصل معنا خلال 7 أيام وأعد الزجاجة الكبيرة مغلقة. شحن المرتجع على العميل، إلا عند الخطأ أو العيب.",
     },
   ];
 
@@ -37,7 +37,7 @@ export function GoldenGuaranteeSection() {
           <div className="relative aspect-[16/9] rounded-3xl overflow-hidden border border-[#E4C7A8]/30 shadow-2xl group">
             <Image
               src={asset("/images/golden_guarantee.webp")}
-              alt="الضمان الذهبي من SÈN Parfums"
+              alt="الضمان الذهبي من سين"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
@@ -47,7 +47,7 @@ export function GoldenGuaranteeSection() {
                 عينة تجريبية 2 مل مجاناً مع كل زجاجة
               </span>
               <span className="text-[#ABA59C]">
-                تجربة شخصية خالية من أي مخاطرة • الدفع عند الاستلام بعد المعاينة
+                ادفع عند الاستلام، ثم جرّب العينة في منزلك
               </span>
             </div>
           </div>
@@ -56,7 +56,7 @@ export function GoldenGuaranteeSection() {
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#1A261E] border border-[#2B4734] text-[#A5C2B0] text-xs font-semibold uppercase tracking-widest mb-4">
               <ShieldCheck className="w-4 h-4 text-[#688A75]" strokeWidth={1.75} />
-              <span>ميثاق الثقة والأمان • SÈN COMMITMENT</span>
+              <span>ميثاق الثقة والأمان • سين</span>
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-white font-normal mb-6 leading-tight">
@@ -65,7 +65,7 @@ export function GoldenGuaranteeSection() {
             </h2>
 
             <p className="text-[#ABA59C] text-sm sm:text-base leading-relaxed font-light mb-8">
-              ثقتنا التامة في نقاء الزيوت الفرنسية وثباتها قادتنا لابتكار الضمان الأكثر شفافية في عالم العطور: نرفق مع كل زجاجة 50 مل عينة تجريبية 2 مل مطابقة 100%. اختبر العطر على مدار يومك، وإن لم يلامس توقعاتك استرجع كامل المبلغ فوراً.
+              نرفق مع كل زجاجة 50 مل عينة 2 مل من نفس التوليفة. ادفع عند الاستلام، جرّب العينة في المنزل، وإذا لم تناسبك يمكنك طلب الإرجاع خلال 7 أيام مع بقاء الزجاجة الكبيرة مغلقة.
             </p>
 
             {/* 4 Steps */}

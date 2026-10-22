@@ -48,7 +48,7 @@ function OrderTimeline({ status }: { status: StoredOrder["status"] }) {
         <XCircle className="w-5 h-5 mt-0.5 shrink-0" strokeWidth={1.5} />
         <div>
           <p className="font-semibold text-sm">تم إلغاء الطلب</p>
-          <p className="text-xs text-rose-200/70 mt-1">لو محتاج مساعدة، تواصل مع فريق SÈN.</p>
+          <p className="text-xs text-rose-200/70 mt-1">لو محتاج مساعدة، تواصل مع فريق سين.</p>
         </div>
       </div>
     );
@@ -223,7 +223,7 @@ export default function MyProductsPage() {
         <div className="max-w-5xl mx-auto">
           <header className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
             <div>
-              <p className="text-[#C58652] text-[10px] tracking-[0.28em] uppercase mb-3">SÈN PRIVATE ACCOUNT</p>
+              <p className="text-[#C58652] text-[10px] tracking-[0.28em] uppercase mb-3">حساب سين</p>
               <h1 className="font-serif text-3xl sm:text-5xl text-[#F5E4D2]">منتجاتي</h1>
               <p className="text-[#8f887f] text-sm mt-3">تابع طلباتك وتفاصيل التوصيل من مكان واحد.</p>
             </div>

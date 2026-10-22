@@ -43,7 +43,7 @@ export default function FinderPage() {
     top: {
       name: "القمة العطرية (Notes de Tête)",
       timeframe: "اللحظات الأولى (0 - 30 دقيقة)",
-      desc: "الانطباع العطري الأول الذي يأسر الحواس بمجرد استنشاق الرذاذ، يعتمد على الزيوت الطيارة النقية كالحمضيات الإيطالية والتفاح المقرمش.",
+      desc: "الانطباع العطري الأول الذي يأسر الحواس بمجرد استنشاق الرذاذ، يعتمد على الالنغمات الطيارة الخفيفة كالحمضيات الإيطالية والتفاح المقرمش.",
     },
     heart: {
       name: "قلب العطر (Notes de Cœur)",
@@ -52,8 +52,8 @@ export default function FinderPage() {
     },
     base: {
       name: "القاعدة والثبات (Notes de Fond)",
-      timeframe: "الأثر الممتد (5 - 14+ ساعة)",
-      desc: "مرساة العطر وسر ثباته الأسطوري؛ زيوت ثقيلة ونادرة من الأخشاب المعتقة والعنبر الملكي والمسك الحريري تلتصق بالبشرة والأقمشة لأيام.",
+      timeframe: "الأثر الممتد (تطور الأثر العطري)",
+      desc: "قاعدة العطر وعمقه؛ نغمات دافئة من الأخشاب والعنبر والمسك تمنح التكوين امتداده المتدرج.",
     },
   };
 
@@ -68,7 +68,7 @@ export default function FinderPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
             <Compass className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-            <span>المستشار العطري التفاعلي • SÈN</span>
+            <span>المستشار العطري التفاعلي • سين</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-medium text-white mb-4">
             استكشاف الهرم العطري <span className="champagne-gradient-text italic font-serif">والتكوين النقي</span>

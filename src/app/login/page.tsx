@@ -69,7 +69,7 @@ export default function LoginPage() {
             S
           </div>
           <span className="font-serif text-2xl tracking-[0.2em] font-light text-white">
-            SÈN <span className="text-[#C58652] font-semibold">PARIS</span>
+            سين <span className="text-[#C58652] font-semibold">PARIS</span>
           </span>
         </Link>
         <h1 className="font-serif text-2xl sm:text-3xl font-medium text-white mb-2">تسجيل الدخول</h1>

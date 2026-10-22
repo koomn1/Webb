@@ -31,10 +31,10 @@ export default function ShopPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
             <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-            <span>التوليفات الحصرية • SÈN Haute Parfumerie</span>
+            <span>التوليفات الحصرية • سين</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-medium text-white tracking-tight mb-4">
-            توليفات دار <span className="champagne-gradient-text">SÈN Paris • Le Caire</span>
+            توليفات دار <span className="champagne-gradient-text">سين</span>
           </h1>
           <p className="max-w-2xl mx-auto text-stone-400 text-sm sm:text-base leading-relaxed font-light">
             عطور Eau de Parfum Intense بتركيز 20%. كل زجاجة تتضمن عينة استكشافية 2 مل مجاناً مع ميثاق الثقة والدفع عند الاستلام.

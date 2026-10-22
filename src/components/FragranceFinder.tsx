@@ -43,7 +43,7 @@ export function FragranceFinder({ isOpen, onClose, onSelectPerfume }: FragranceF
         <div className="text-center max-w-xl mx-auto mb-8">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#C58652]/10 border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-wider mb-3">
             <Compass className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-            <span>المستشار العطري • SÈN Haute Parfumerie</span>
+            <span>المستشار العطري • سين</span>
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl text-white mb-2 font-medium">
             استكشاف الهرم العطري والنفحات النقية
@@ -56,8 +56,8 @@ export function FragranceFinder({ isOpen, onClose, onSelectPerfume }: FragranceF
         {/* Product Selector Tabs */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           {[
-            { id: "zeste", label: "SÈN Zeste (رجالي)", tag: "انتعاش برغموت كابري والجلد المدبوغ", accent: "border-[#688A75]/50 bg-[#688A75]/10 text-[#8EBBA0]" },
-            { id: "aura", label: "SÈN Aura (نسائي)", tag: "توت بري وزهور السوسن المخملية", accent: "border-[#A86E85]/50 bg-[#A86E85]/10 text-[#D19BB0]" },
+            { id: "zeste", label: "سين Zeste (رجالي)", tag: "انتعاش برغموت كابري والجلد المدبوغ", accent: "border-[#688A75]/50 bg-[#688A75]/10 text-[#8EBBA0]" },
+            { id: "aura", label: "سين Aura (نسائي)", tag: "توت بري وزهور السوسن المخملية", accent: "border-[#A86E85]/50 bg-[#A86E85]/10 text-[#D19BB0]" },
             { id: "duo", label: "باقة الثنائي الملكية", tag: "التجربة الكاملة معاً + توصيل مجاني", accent: "border-[#C58652]/50 bg-[#C58652]/10 text-[#E4C7A8]" },
           ].map((item) => (
             <button
@@ -168,7 +168,7 @@ export function FragranceFinder({ isOpen, onClose, onSelectPerfume }: FragranceF
                 <span className="text-stone-200 font-medium">{currentPerfume.sillage}</span>
               </div>
               <div>
-                <span className="text-stone-500 block mb-0.5">ثبات الزيوت النقية:</span>
+                <span className="text-stone-500 block mb-0.5">الأثر العطري:</span>
                 <span className="text-stone-200 font-medium">{currentPerfume.longevity}</span>
               </div>
             </div>

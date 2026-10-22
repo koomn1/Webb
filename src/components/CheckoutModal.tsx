@@ -251,7 +251,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   };
 
   const whatsappSupportUrl = `https://wa.me/201018995002?text=${encodeURIComponent(
-    `مرحباً، أود متابعة طلبي رقم ${confirmedOrderNumber} في دار SÈN Parfums.`
+    `مرحباً، أود متابعة طلبي رقم ${confirmedOrderNumber} في دار سين.`
   )}`;
 
   return (
@@ -280,12 +280,12 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   إتمام الطلب • الدفع عند الاستلام (COD)
                 </h2>
                 <span className="text-[11px] text-[#C58652] tracking-wider uppercase block">
-                  SÈN Haute Parfumerie • خدمة التوصيل الخاص
+                  سين • خدمة التوصيل الخاص
                 </span>
               </div>
             </div>
             <p className="text-xs text-stone-400 mb-6 font-light leading-relaxed">
-              ادفع نقداً لمندوب الشحن بعد معاينة الطرد وفحصه، مع ميثاق الثقة والأمان وعينة الـ 2ml المرفقة مجاناً.
+              ادفع نقداً لمندوب الشحن عند استلام الطرد. بعد الدفع، جرّب عينة الـ 2ml في المنزل قبل فتح الزجاجة الكبيرة.
             </p>
 
             {/* Form */}
@@ -471,10 +471,10 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                 </div>
                 <div className="text-xs">
                   <span className="font-medium text-[#E4C7A8] block mb-0.5">
-                    طريقة الدفع: الدفع نقداً عند الاستلام والمعاينة (COD)
+                    طريقة الدفع: الدفع نقداً عند الاستلام (COD)
                   </span>
                   <span className="text-stone-400 text-[11px] font-light">
-                    تدفع القيمة لمندوب التوصيل بعد استلام الطرد وفحصه بكل طمأنينة.
+                    تدفع القيمة لمندوب التوصيل بعد استلام الطرد بكل طمأنينة.
                   </span>
                 </div>
               </div>
@@ -557,10 +557,10 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             </div>
 
             <h2 className="font-serif text-3xl text-white mb-2 font-medium">
-              شكراً لاختيارك دار SÈN
+              شكراً لاختيارك دار سين
             </h2>
             <p className="text-xs sm:text-sm text-stone-300 max-w-md mx-auto mb-6 font-light leading-relaxed">
-              تم استلام طلبك باعتناء، وسيتواصل معك مستشار التوصيل لتأكيد موعد التسليم والدفع نقداً عند استلام ومعاينة الزجاجة.
+              تم استلام طلبك باعتناء، وسيتواصل معك مستشار التوصيل لتأكيد موعد التسليم والدفع نقداً عند استلام الطلب.
             </p>
 
             <div className="mx-auto mb-6 max-w-sm rounded-2xl border border-[#C58652]/30 bg-[#161413] px-5 py-4">

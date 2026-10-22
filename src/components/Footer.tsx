@@ -31,14 +31,14 @@ export function Footer() {
 
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0C0B0A] border border-[#C58652]/30 text-[#E4C7A8] text-[11px] font-medium uppercase tracking-widest mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-            <span>دائرة SÈN الخاصة • امتيازات حصرية</span>
+            <span>دائرة سين الخاصة • امتيازات حصرية</span>
           </div>
 
           <h3 className="font-serif text-2xl sm:text-3xl text-white mb-2 font-medium">
             انضم لنخبة متذوقي العطور النيش
           </h3>
           <p className="text-stone-400 text-xs sm:text-sm font-light max-w-lg mx-auto mb-6 leading-relaxed">
-            استقبل دعوات الإصدارات المحدودة وامتيازات خاصة على توليفات SÈN Zeste و Aura وتجارب عطرية خاصة تُصنع لك.
+            استقبل دعوات الإصدارات المحدودة وامتيازات خاصة على توليفات سين Zeste و Aura وتجارب عطرية خاصة تُصنع لك.
           </p>
 
           {!subscribed ? (
@@ -63,7 +63,7 @@ export function Footer() {
           ) : (
             <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#688A75]/15 border border-[#688A75]/40 text-[#8EBBA0] font-medium text-xs animate-fadeIn">
               <Check className="w-4 h-4" strokeWidth={2} />
-              <span>مرحباً بك في دائرة SÈN Haute Parfumerie الخاصة.</span>
+              <span>مرحباً بك في دائرة سين الخاصة.</span>
             </div>
           )}
         </div>
@@ -73,7 +73,7 @@ export function Footer() {
           {/* Brand Info */}
           <div className="md:col-span-1">
             <span className="font-serif text-3xl tracking-[0.25em] font-light uppercase text-white block mb-0.5">
-              SÈN
+              سين
             </span>
             <span className="text-[10px] tracking-[0.3em] text-[#C58652] uppercase font-semibold block mb-4">
               HAUTE PARFUMERIE
@@ -179,7 +179,7 @@ export function Footer() {
                   </Link>
                 </li>
               )}
-              <li>الدفع عند الاستلام والمعاينة لكافة المحافظات</li>
+              <li>الدفع عند الاستلام لكافة المحافظات</li>
               <li>توصيل سريع ومؤمن بعناية فائقة</li>
               <li>ميثاق استرجاع مريح بعينة الـ 2ml المجانية</li>
             </ul>
@@ -188,7 +188,7 @@ export function Footer() {
 
         {/* Bottom Bar: Copyright & Payment Badges */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500 font-light">
-          <p>© 2026 SÈN Haute Parfumerie. جميع الحقوق محفوظة.</p>
+          <p>© 2026 سين. جميع الحقوق محفوظة.</p>
 
           <div className="flex items-center gap-3">
             <span className="px-3 py-1 rounded-full bg-[#161413] border border-[#24201D] text-xs font-medium text-[#E4C7A8]">

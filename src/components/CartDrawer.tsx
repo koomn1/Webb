@@ -113,7 +113,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               <h2 id="cart-title" className="font-serif text-lg text-white font-medium tracking-wide">
                 المقتنيات العطرية
               </h2>
-              <span className="text-[10px] tracking-widest uppercase text-[#C58652]">SÈN Paris • Le Caire</span>
+              <span className="text-[10px] tracking-widest uppercase text-[#C58652]">سين</span>
             </div>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#24201D] text-[#E4C7A8] font-mono font-medium border border-[#C58652]/20">
               {cart.reduce((s, i) => s + i.quantity, 0)}
@@ -244,7 +244,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                 حقيبتك بانتظار توقيعك العطري
               </h3>
               <p className="text-xs text-stone-400 max-w-xs mx-auto mb-6 leading-relaxed font-light">
-                استكشف توليفات SÈN Zeste المنعشة، أو نعومة SÈN Aura المخملية، أو اقتنِ باقة الثنائي الملكية مع ميثاق الثقة التام.
+                استكشف توليفات سين Zeste المنعشة، أو نعومة سين Aura المخملية، أو اقتنِ باقة الثنائي الملكية مع ميثاق الثقة التام.
               </p>
               <button
                 type="button"
@@ -261,10 +261,10 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
             <div className="p-4 rounded-2xl bg-[#161413]/70 border border-[#688A75]/30 text-xs">
               <div className="flex items-center gap-2 text-[#8EBBA0] font-medium mb-1.5">
                 <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
-                <span>ميثاق الثقة والأمان (100% Guaranteed):</span>
+                <span>ميثاق الثقة والأمان:</span>
               </div>
               <p className="text-[11px] text-stone-300 leading-relaxed font-light">
-                ستصلك عينة استكشافية 2ml مطابقة لكل زجاجة في طردك. اختبر ثبات العطر وفوحانه بهدوء أولاً؛ وإن لم يطابق ذائقتك، يمكنك إرجاع الزجاجة الكبرى المغلقة واسترداد قيمتها فوراً دون أي تكلفة.
+                ستصلك عينة 2ml من نفس التوليفة مع كل زجاجة. ادفع عند الاستلام وجربها في المنزل؛ وإن لم تناسبك، يمكنك طلب الإرجاع خلال 7 أيام مع بقاء الزجاجة الكبيرة مغلقة. شحن المرتجع على العميل إلا عند الخطأ أو العيب.
               </p>
             </div>
           )}
@@ -346,7 +346,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               <div className="flex items-center justify-between text-xs text-stone-500">
                 <span>التسليم والدفع:</span>
                 <span className="text-[#E4C7A8] font-medium">
-                  {isFreeShipping ? "توصيل مجاني (الدفع عند المعاينة)" : "الدفع عند الاستلام (COD)"}
+                  {isFreeShipping ? "توصيل مجاني (الدفع عند الاستلام)" : "الدفع عند الاستلام (COD)"}
                 </span>
               </div>
 

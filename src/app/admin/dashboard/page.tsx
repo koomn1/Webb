@@ -53,8 +53,8 @@ import { Fake404 } from "@/components/Fake404";
 
 // Preset image choices for easy addition/editing
 const PRESET_IMAGES = [
-  { label: "سِيان زيست (Zeste)", url: "/images/zeste.webp" },
-  { label: "سِيان أورا (Aura)", url: "/images/aura.webp" },
+  { label: "سين زيست (Zeste)", url: "/images/zeste.webp" },
+  { label: "سين أورا (Aura)", url: "/images/aura.webp" },
   { label: "باقة الثنائي (Duo Bundle)", url: "/images/duo_bundle.webp" },
   { label: "ستايل رجالي فخم (Lifestyle Men)", url: "/images/lifestyle_man.webp" },
   { label: "ستايل نسائي راقي (Lifestyle Women)", url: "/images/lifestyle_woman.webp" },
@@ -520,7 +520,7 @@ export default function AdminDashboardPage() {
       nameAr: newNameAr.trim(),
       gender: newGender,
       genderAr: newGenderAr.trim(),
-      taglineAr: newTaglineAr.trim() || "توليفة نيش استثنائية من دار SÈN",
+      taglineAr: newTaglineAr.trim() || "توليفة نيش استثنائية من دار سين",
       taglineEn: newNameEn.trim(),
       price: Number(newPrice),
       comparePrice: newComparePrice ? Number(newComparePrice) : undefined,
@@ -531,7 +531,7 @@ export default function AdminDashboardPage() {
       heartNotes: heartArr.length > 0 ? heartArr : ["توابل دافئة", "زهور نقية"],
       baseNotes: baseArr.length > 0 ? baseArr : ["خشب الأرز", "عنبر ومسك"],
       sillage: "فوحان هائل ومؤثر",
-      longevity: "ثبات يتجاوز 14 ساعة",
+      longevity: "أثر عطري يدوم حسب الاستخدام والبيئة",
       image: newImage.trim(),
       descriptionAr: newDescriptionAr.trim() || "توليفة عطرية صُنعت بعناية لتعكس الرقي والأصالة الفرنسية.",
       descriptionEn: newDescriptionAr.trim(),
@@ -605,7 +605,7 @@ export default function AdminDashboardPage() {
 
   // Copy SQL script to clipboard
   const handleCopySql = () => {
-    const sqlCode = `-- SÈN Haute Parfumerie - Products & Discount Codes Migration
+    const sqlCode = `-- سين - Products & Discount Codes Migration
 CREATE TABLE IF NOT EXISTS public.products (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
@@ -623,7 +623,7 @@ CREATE TABLE IF NOT EXISTS public.products (
     heart_notes JSONB NOT NULL DEFAULT '[]'::jsonb,
     base_notes JSONB NOT NULL DEFAULT '[]'::jsonb,
     sillage TEXT NOT NULL DEFAULT 'فوحان استثنائي',
-    longevity TEXT NOT NULL DEFAULT 'ثبات يفوق 14 ساعة',
+    longevity TEXT NOT NULL DEFAULT 'أثر عطري متوازن',
     badge TEXT,
     rating NUMERIC(2, 1) DEFAULT NULL,
     reviews_count INTEGER NOT NULL DEFAULT 0,
@@ -688,7 +688,7 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2">
             <span>لوحة تحكم السوبر أدمن</span>
-            <span className="text-gradient-gold font-serif">SÈN Parfums</span>
+            <span className="text-gradient-gold font-serif">سين</span>
           </h1>
           <p className="text-zinc-400 text-xs sm:text-sm mt-1">
             مرحباً، <span className="text-[#E4C7A8] font-mono">{user?.email}</span> • تحكم شامل في الطلبات، كتالوج العطور، وأكواد الخصم
@@ -1095,7 +1095,7 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                     {filteredOrders.map((order) => {
                       const cleanPhone = order.phone.replace(/^0/, "20");
                       const whatsappMsg = encodeURIComponent(
-                        `مرحباً أستاذ ${order.customerName}، معك دار SÈN Parfums بخصوص طلبك رقم [${order.id}] بقيمة ${order.total} ج.م مع الضمان الذهبي. نود تأكيد عنوان الشحن: ${order.governorate} - ${order.address}.`
+                        `مرحباً أستاذ ${order.customerName}، معك دار سين بخصوص طلبك رقم [${order.id}] بقيمة ${order.total} ج.م مع الضمان الذهبي. نود تأكيد عنوان الشحن: ${order.governorate} - ${order.address}.`
                       );
 
                       return (
@@ -1556,7 +1556,7 @@ CREATE TABLE IF NOT EXISTS public.products (
     heart_notes JSONB NOT NULL DEFAULT '[]'::jsonb,
     base_notes JSONB NOT NULL DEFAULT '[]'::jsonb,
     sillage TEXT NOT NULL DEFAULT 'فوحان استثنائي',
-    longevity TEXT NOT NULL DEFAULT 'ثبات يفوق 14 ساعة',
+    longevity TEXT NOT NULL DEFAULT 'أثر عطري متوازن',
     badge TEXT,
     rating NUMERIC(2, 1) DEFAULT NULL,
     reviews_count INTEGER NOT NULL DEFAULT 0,
@@ -1820,7 +1820,7 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
             <div className="flex items-center justify-between mb-5 pb-3 border-b border-zinc-800">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <PlusCircle className="w-5 h-5 text-[#C58652]" />
-                <span>إضافة عطر جديد لدار SÈN</span>
+                <span>إضافة عطر جديد لدار سين</span>
               </h3>
               <button
                 onClick={() => setShowAddProductModal(false)}
@@ -1837,7 +1837,7 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                   <input
                     type="text"
                     required
-                    placeholder="مثال: سِيان نوار (SÈN Noir)"
+                    placeholder="مثال: سين نوار (سين Noir)"
                     value={newNameAr}
                     onChange={(e) => setNewNameAr(e.target.value)}
                     className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#C58652]"
@@ -1847,7 +1847,7 @@ CREATE POLICY "Admin All Discounts" ON public.discount_codes FOR ALL USING (true
                   <label className="block text-zinc-300 font-semibold mb-1">الاسم بالإنجليزية</label>
                   <input
                     type="text"
-                    placeholder="مثال: SÈN Noir"
+                    placeholder="مثال: سين Noir"
                     value={newNameEn}
                     onChange={(e) => setNewNameEn(e.target.value)}
                     className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#C58652]"

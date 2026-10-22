@@ -86,11 +86,11 @@ export default function RegisterPage() {
             S
           </div>
           <span className="font-serif text-2xl tracking-[0.2em] font-light text-white">
-            SÈN <span className="text-[#C58652] font-semibold">PARIS</span>
+            سين <span className="text-[#C58652] font-semibold">PARIS</span>
           </span>
         </Link>
         <h1 className="font-serif text-2xl sm:text-3xl font-medium text-white mb-2">إنشاء حساب جديد</h1>
-        <p className="text-stone-400 text-xs sm:text-sm font-light">انضم لدائرة SÈN الخاصة واستمتع بتجربة اقتناء عطرية استثنائية</p>
+        <p className="text-stone-400 text-xs sm:text-sm font-light">انضم لدائرة سين الخاصة واستمتع بتجربة اقتناء عطرية استثنائية</p>
       </div>
 
       {/* Main Card */}

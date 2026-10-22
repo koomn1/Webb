@@ -156,7 +156,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
           <div className="p-4 rounded-2xl bg-[#161413] border border-[#688A75]/30 text-xs mb-6">
             <div className="flex items-center gap-2 text-[#8EBBA0] font-medium mb-1">
               <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
-              <span>ميثاق الثقة والأمان (100% Guaranteed):</span>
+              <span>ميثاق الثقة والأمان:</span>
             </div>
             <p className="text-[11px] text-stone-300 leading-relaxed font-light">
               ستحصل على عينة 2 مل مطابقة ومغلفة لتجربتها أولاً. في حال لم يطابق العطر ذوقك، يمكنك استرجاع الزجاجة الـ 50 مل المغلقة واسترداد كامل قيمتها دون أي سؤال أو تكلفة.
@@ -188,7 +188,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
 
             {/* Total Price */}
             <div className="text-start">
-              <span className="text-[10px] text-stone-500 uppercase tracking-wider block">الإجمالي (الدفع عند المعاينة):</span>
+              <span className="text-[10px] text-stone-500 uppercase tracking-wider block">الإجمالي (الدفع عند الاستلام):</span>
               <span className="font-serif text-2xl font-medium text-[#E4C7A8]">
                 {totalPrice.toLocaleString()} ج.م
               </span>

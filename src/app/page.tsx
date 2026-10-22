@@ -57,12 +57,12 @@ export default function LandingPage() {
             </div>
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <Truck className="w-5 h-5 text-[#C58652] mx-auto mb-2.5" strokeWidth={1.5} />
-              <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">الدفع عند المعاينة</h4>
+              <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">الدفع عند الاستلام</h4>
               <p className="text-[11px] text-stone-400 font-light">توصيل سريع لكافة المحافظات</p>
             </div>
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <Droplets className="w-5 h-5 text-[#E4C7A8] mx-auto mb-2.5" strokeWidth={1.5} />
-              <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">ثبات يفوق 14 ساعة</h4>
+              <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">أثر عطري متوازن</h4>
               <p className="text-[11px] text-stone-400 font-light">أثر عطري مميز وثابت طوال اليوم</p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function LandingPage() {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
               <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-              <span>التوقيع العطري الخاص • SÈN</span>
+              <span>التوقيع العطري الخاص • سين</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl font-medium text-white tracking-tight mb-4">
               إبداعان يعيدان صياغة التميز
@@ -177,15 +177,15 @@ export default function LandingPage() {
       <section className="py-24 bg-gradient-to-b from-[#0C0B0A] via-[#161413] to-[#0C0B0A] border-t border-[#24201D]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
           <h2 className="font-serif text-3xl sm:text-4xl font-medium text-white mb-6">
-            رؤية دار <span className="champagne-gradient-text">SÈN Haute Parfumerie</span>
+            رؤية دار <span className="champagne-gradient-text">سين</span>
           </h2>
           <p className="text-stone-300 text-xs sm:text-base leading-relaxed mb-8 font-light">
-            تأسست دار SÈN لتقديم تجربة عطور النيش الباريسية الفاخرة مباشرة لعشاق التميز، مع الحفاظ على أعلى معايير الجودة والنقاء دون وسائط تجارية. نبتكر توليفات نادرة بزجاجات تعكس الوقار والهيبة والأثر المستمر.
+            تأسست دار سين لتقديم تجربة عطور نيش مستوحاة من مدارس العطور الفرنسية الفاخرة مباشرة لعشاق التميز، مع الحفاظ على أعلى معايير الجودة والنقاء دون وسائط تجارية. نبتكر توليفات نادرة بزجاجات تعكس الوقار والهيبة والأثر المستمر.
           </p>
           <div className="inline-flex items-center gap-6 text-xs text-stone-400 font-light">
-            <span>زيوت فرنسية نقية 100%</span>
+            <span>تركيبات عطرية بتركيز 20%</span>
             <span className="text-[#C58652]">•</span>
-            <span>الدفع عند المعاينة والاستلام</span>
+            <span>الدفع عند الاستلام والاستلام</span>
             <span className="text-[#C58652]">•</span>
             <span>ميثاق استرداد كامل بالضمان</span>
           </div>

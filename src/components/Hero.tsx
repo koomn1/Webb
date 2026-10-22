@@ -13,7 +13,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
       <div className="absolute inset-0 z-0">
         <Image
           src={asset("/images/hero.webp")}
-          alt="SÈN Haute Parfumerie Zeste & Aura"
+          alt="سين Zeste & Aura"
           fill
           priority
           className="object-cover object-center scale-105 opacity-45"
@@ -28,13 +28,13 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
         {/* Luxury Brand Monogram Ribbon */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-champagne text-[#F5E4D2] text-xs sm:text-[13px] font-medium mb-6 tracking-widest uppercase shadow-lg">
           <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
-          <span>دار عطور نيش باريسية • Eau de Parfum Intense بتركيز 20%</span>
+          <span>دار عطور نيش مستوحاة من مدارس العطور الفرنسية • Eau de Parfum Intense بتركيز 20%</span>
         </div>
 
         {/* Main Headline with Haute Parfumerie Copywriting */}
         <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal tracking-wide text-white leading-[1.15] mb-6">
           <span className="block text-[#E4C7A8] text-xs sm:text-sm font-sans tracking-[0.45em] uppercase mb-4 font-medium">
-            SÈN HAUTE PARFUMERIE • PARIS
+            سين HAUTE PARFUMERIE • PARIS
           </span>
           أثرٌ عطريٌ <span className="champagne-gradient-text font-serif italic">يسبق حضورك</span>
         </h1>
@@ -94,7 +94,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
               <Truck className="w-4 h-4" strokeWidth={1.5} />
             </div>
             <div className="text-xs">
-              <p className="font-semibold text-white">الدفع عند الاستلام والمعاينة</p>
+              <p className="font-semibold text-white">الدفع عند الاستلام</p>
               <p className="text-[#736D65]">ادفع فقط بعد استلام الشحنة وفحصها</p>
             </div>
           </div>
@@ -105,7 +105,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
             </div>
             <div className="text-xs">
               <p className="font-semibold text-white">استشارات 01018995002</p>
-              <p className="text-[#736D65]">فريق دار SÈN متواجد يومياً لمساعدتك</p>
+              <p className="text-[#736D65]">فريق دار سين متواجد يومياً لمساعدتك</p>
             </div>
           </div>
         </div>

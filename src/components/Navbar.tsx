@@ -123,7 +123,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
             <Link href={appLink("/")} className="inline-block group focus-visible:outline-none py-1">
               <div className="flex flex-col items-center">
                 <span className="font-serif text-2xl sm:text-3xl tracking-[0.25em] font-light uppercase text-white transition-colors duration-300 group-hover:text-[#F5E4D2]">
-                  SÈN
+                  سين
                 </span>
                 <span className="block text-[8px] tracking-[0.45em] text-[#C58652] uppercase font-medium -mt-1">
                   HAUTE PARFUMERIE

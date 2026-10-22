@@ -38,6 +38,7 @@ export default function DuoPage() {
     if (duoProduct) {
       addToCart(duoProduct, 1);
       setAdded(true);
+      setIsCheckoutOpen(true);
       setTimeout(() => setAdded(false), 2000);
     }
   };
@@ -55,7 +56,7 @@ export default function DuoPage() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
               <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-              <span>الإصدار الملكي المتكامل • SÈN PARIS</span>
+              <span>الإصدار الملكي المتكامل • سين</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white font-medium mb-4">
               باقة الثنائي الملكية <span className="champagne-gradient-text italic font-serif">Zeste & Aura</span>
@@ -71,7 +72,7 @@ export default function DuoPage() {
             <div className="lg:col-span-7 relative aspect-[4/3] rounded-2xl overflow-hidden border border-[#24201D] bg-[#0C0B0A] shadow-2xl group">
               <Image
                 src={asset("/images/duo_bundle.webp")}
-                alt="باقة الثنائي الملكية SÈN"
+                alt="باقة الثنائي الملكية سين"
                 fill
                 priority
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -100,18 +101,18 @@ export default function DuoPage() {
                 </h3>
 
                 <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light mb-5">
-                  احصل على تجربة دار SÈN كاملة بسعر خاص جداً: سحر انتعاش Zeste الصقلي والجلد المدبوغ، مع نعومة Aura المخملية بتوت العليق وزهور السوسن والمسك الأبيض.
+                  احصل على تجربة دار سين كاملة بسعر خاص جداً: سحر انتعاش Zeste الصقلي والجلد المدبوغ، مع نعومة Aura المخملية بتوت العليق وزهور السوسن والمسك الأبيض.
                 </p>
 
                 {/* Offer Highlights */}
                 <div className="space-y-2.5 text-xs text-stone-300 font-light mb-6">
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-[#8EBBA0]" strokeWidth={2} />
-                    <span>زجاجة كاملة 50 مل SÈN Zeste (رجالي فاخر)</span>
+                    <span>زجاجة كاملة 50 مل سين Zeste (رجالي فاخر)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-[#8EBBA0]" strokeWidth={2} />
-                    <span>زجاجة كاملة 50 مل SÈN Aura (حريمي ناعم وساحر)</span>
+                    <span>زجاجة كاملة 50 مل سين Aura (حريمي ناعم وساحر)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-[#8EBBA0]" strokeWidth={2} />
@@ -123,7 +124,7 @@ export default function DuoPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-[#8EBBA0]" strokeWidth={2} />
-                    <span>الدفع نقداً عند الاستلام والمعاينة (COD)</span>
+                    <span>الدفع نقداً عند الاستلام (COD)</span>
                   </div>
                 </div>
 
@@ -178,7 +179,7 @@ export default function DuoPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs uppercase tracking-widest text-[#C58652] block mb-2 font-medium">
-              THE SÈN DUALITY • ثنائية الهيبة والرقة
+              ثنائية سين • ثنائية الهيبة والرقة
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl text-white font-medium mb-3">
               حضورٌ يفرض احترامه، وجاذبيةٌ تأسِر القلوب
@@ -194,13 +195,13 @@ export default function DuoPage() {
               <div className="relative aspect-[4/3] overflow-hidden bg-[#0C0B0A]">
                 <Image
                   src={asset("/images/lifestyle_man.webp")}
-                  alt="عطر SÈN Zeste للرجال"
+                  alt="عطر سين Zeste للرجال"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#161413] via-transparent to-transparent" />
                 <span className="absolute top-4 right-4 px-3 py-1 rounded-full bg-[#688A75]/25 border border-[#688A75]/40 text-[#8EBBA0] text-[11px] font-medium backdrop-blur-md">
-                  SÈN Zeste • رجالي
+                  سين Zeste • رجالي
                 </span>
               </div>
               <div className="p-6 sm:p-8">
@@ -229,13 +230,13 @@ export default function DuoPage() {
               <div className="relative aspect-[4/3] overflow-hidden bg-[#0C0B0A]">
                 <Image
                   src={asset("/images/lifestyle_woman.webp")}
-                  alt="عطر SÈN Aura للنساء"
+                  alt="عطر سين Aura للنساء"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#161413] via-transparent to-transparent" />
                 <span className="absolute top-4 right-4 px-3 py-1 rounded-full bg-[#A86E85]/25 border border-[#A86E85]/40 text-[#D19BB0] text-[11px] font-medium backdrop-blur-md">
-                  SÈN Aura • نسائي
+                  سين Aura • نسائي
                 </span>
               </div>
               <div className="p-6 sm:p-8">

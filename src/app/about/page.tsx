@@ -32,13 +32,13 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
             <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-            <span>قصة الدار • L'HISTOIRE DE SÈN</span>
+            <span>قصة الدار • L'HISTOIRE DE سين</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white font-medium mb-6">
             سحر باريس <span className="champagne-gradient-text italic font-serif">وعراقة القاهرة</span>
           </h1>
           <p className="max-w-2xl mx-auto text-stone-400 text-sm sm:text-base leading-relaxed font-light">
-            وُلدت دار SÈN لتقدم المفهوم الأصيل لعطور النيش الفاخرة: Eau de Parfum Intense بتركيز عطري 20% دون وسطاء أو تكاليف باهظة، وبميثاق ثقة يضمن لك التجربة الكاملة قبل أي قرار.
+            وُلدت دار سين لتقدم المفهوم الأصيل لعطور النيش الفاخرة: Eau de Parfum Intense بتركيز عطري 20% دون وسطاء أو تكاليف باهظة، وبميثاق ثقة يضمن لك التجربة الكاملة قبل أي قرار.
           </p>
         </div>
       </section>
@@ -49,7 +49,7 @@ export default function AboutPage() {
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-[#C58652]/30 shadow-2xl bg-[#0C0B0A]">
             <Image
               src={asset("/images/hero.webp")}
-              alt="دار SÈN Haute Parfumerie"
+              alt="دار سين"
               fill
               className="object-cover"
             />
@@ -67,7 +67,7 @@ export default function AboutPage() {
               لماذا اخترنا أن نكون مختلفين؟
             </h2>
             <p className="text-stone-300 text-xs sm:text-sm leading-relaxed font-light">
-              معظم العطور المتداولة في الأسواق إما باهظة الثمن بسبب الإعلانات والوسطاء، أو تفتقر إلى النقاء والثبات الحقيقي. في دار SÈN، قررنا صياغة المعادلة العادلة:
+              معظم العطور المتداولة في الأسواق إما باهظة الثمن بسبب الإعلانات والوسطاء، أو تفتقر إلى النقاء والثبات الحقيقي. في دار سين، قررنا صياغة المعادلة العادلة:
             </p>
 
             <div className="space-y-4">
@@ -100,7 +100,7 @@ export default function AboutPage() {
                   <HeartHandshake className="w-4 h-4" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-white mb-1">الدفع عند الاستلام والمعاينة</h4>
+                  <h4 className="text-sm font-medium text-white mb-1">الدفع عند الاستلام</h4>
                   <p className="text-xs text-stone-400 font-light leading-relaxed">
                     لا حاجة لأي بطاقات بنكية أو دفع مسبق. عاين طردك عند باب منزلك وادفع نقداً لمندوب الشحن.
                   </p>
@@ -117,7 +117,7 @@ export default function AboutPage() {
               هل أنت مستعد لاكتشاف توقيعك العطري؟
             </h3>
             <p className="text-xs sm:text-sm text-stone-400 font-light leading-relaxed">
-              اختر عطر SÈN Zeste المنعش أو SÈN Aura الساحر أو اقتنِ باقة الثنائي الملكية مع الشحن المجاني.
+              اختر عطر سين Zeste المنعش أو سين Aura الساحر أو اقتنِ باقة الثنائي الملكية مع الشحن المجاني.
             </p>
             <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
               <Link
