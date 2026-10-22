@@ -8,7 +8,7 @@ import {
 } from "@/lib/supabase";
 
 const feedbackMessage = encodeURIComponent(
-  "مرحباً دار SÈN، جرّبت عينة العطر وأود مشاركة انطباعي."
+  "مرحباً دار سين، جرّبت عينة العطر وأود مشاركة انطباعي."
 );
 
 export function CustomerFeedbackInvitation() {
@@ -38,7 +38,7 @@ export function CustomerFeedbackInvitation() {
                 <span>آراء بموافقة أصحابها</span>
               </div>
               <h2 id="customer-reviews-title" className="font-serif text-2xl font-medium text-white sm:text-3xl">
-                تجارب حقيقية مع SÈN
+                تجارب حقيقية مع سين
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-stone-400">
                 كلمات شاركها عملاء جرّبوا العطر ووافقوا على نشر انطباعاتهم.
@@ -88,7 +88,7 @@ export function CustomerFeedbackInvitation() {
               جرّبت العينة؟ شاركنا انطباعك
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-stone-400">
-              رأيك يساعدنا على تطوير تجربتك ويمنح العملاء صورة صادقة عن العطر. أرسل ملاحظتك إلى فريق SÈN بعد التجربة.
+              رأيك يساعدنا على تطوير تجربتك ويمنح العملاء صورة صادقة عن العطر. أرسل ملاحظتك إلى فريق سين بعد التجربة.
             </p>
             <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-stone-500">
               <ShieldCheck className="h-3.5 w-3.5 text-[#8EBBA0]" aria-hidden="true" />
@@ -100,7 +100,7 @@ export function CustomerFeedbackInvitation() {
             href={`https://wa.me/201018995002?text=${feedbackMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="إرسال انطباعك عن العينة إلى SÈN عبر واتساب"
+            aria-label="إرسال انطباعك عن العينة إلى سين عبر واتساب"
             className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-[#C58652]/40 bg-[#1C1A18] px-6 py-3 text-sm font-medium text-[#E4C7A8] transition-colors hover:border-[#E4C7A8] hover:bg-[#24201D]"
           >
             <MessageCircle className="h-4 w-4" aria-hidden="true" />

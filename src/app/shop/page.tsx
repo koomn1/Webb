@@ -66,7 +66,7 @@ export default function ShopPage() {
         
         {/* Duo Bundle Spotlight */}
         <div className="mt-8">
-          <DuoBundleSection />
+          <DuoBundleSection onOrder={() => setIsCheckoutOpen(true)} />
         </div>
       </main>
 

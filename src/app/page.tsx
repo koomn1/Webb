@@ -165,7 +165,7 @@ export default function LandingPage() {
       </section>
 
       {/* Duo Bundle Section */}
-      <DuoBundleSection />
+      <DuoBundleSection onOrder={() => setIsCheckoutOpen(true)} />
 
       {/* Golden Guarantee Teaser */}
       <GoldenGuaranteeSection />
@@ -185,7 +185,7 @@ export default function LandingPage() {
           <div className="inline-flex items-center gap-6 text-xs text-stone-400 font-light">
             <span>تركيبات عطرية بتركيز 20%</span>
             <span className="text-[#C58652]">•</span>
-            <span>الدفع عند الاستلام والاستلام</span>
+            <span>الدفع عند الاستلام</span>
             <span className="text-[#C58652]">•</span>
             <span>ميثاق استرداد كامل بالضمان</span>
           </div>
