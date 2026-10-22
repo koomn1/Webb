@@ -47,8 +47,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <Award className="w-5 h-5 text-[#C58652] mx-auto mb-2.5" strokeWidth={1.5} />
-              <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">زيوت نيش فرنسية</h4>
-              <p className="text-[11px] text-stone-400 font-light">Eau de Parfum Intense • تركيز 20%</p>
+              <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">توليفات سين العطرية</h4>
+              <p className="text-[11px] text-stone-400 font-light">Eau de Parfum • 50 مل</p>
             </div>
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <ShieldCheck className="w-5 h-5 text-[#8EBBA0] mx-auto mb-2.5" strokeWidth={1.5} />
@@ -58,12 +58,12 @@ export default function LandingPage() {
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <Truck className="w-5 h-5 text-[#C58652] mx-auto mb-2.5" strokeWidth={1.5} />
               <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">الدفع عند الاستلام</h4>
-              <p className="text-[11px] text-stone-400 font-light">توصيل سريع لكافة المحافظات</p>
+              <p className="text-[11px] text-stone-400 font-light">تظهر رسوم التوصيل حسب المحافظة</p>
             </div>
             <div className="p-4 sm:p-5 rounded-2xl bg-[#161413] border border-[#24201D] hover:border-[#C58652]/30 transition-colors">
               <Droplets className="w-5 h-5 text-[#E4C7A8] mx-auto mb-2.5" strokeWidth={1.5} />
               <h4 className="text-xs sm:text-sm font-medium text-white mb-0.5">أثر عطري متوازن</h4>
-              <p className="text-[11px] text-stone-400 font-light">أثر عطري مميز وثابت طوال اليوم</p>
+              <p className="text-[11px] text-stone-400 font-light">يختلف الأثر بحسب البشرة والجو وطريقة الاستخدام</p>
             </div>
           </div>
         </div>
@@ -180,14 +180,14 @@ export default function LandingPage() {
             رؤية دار <span className="champagne-gradient-text">سين</span>
           </h2>
           <p className="text-stone-300 text-xs sm:text-base leading-relaxed mb-8 font-light">
-            تأسست دار سين لتقديم تجربة عطور نيش مستوحاة من مدارس العطور الفرنسية الفاخرة مباشرة لعشاق التميز، مع الحفاظ على أعلى معايير الجودة والنقاء دون وسائط تجارية. نبتكر توليفات نادرة بزجاجات تعكس الوقار والهيبة والأثر المستمر.
+            تقدم دار سين توليفات عطرية Eau de Parfum بنوتات معلنة وتجربة عينة 2 مل مع كل زجاجة. تعرّف على Zeste وAura واختر ما يناسب ذوقك.
           </p>
           <div className="inline-flex items-center gap-6 text-xs text-stone-400 font-light">
-            <span>تركيبات عطرية بتركيز 20%</span>
+            <span>عطور Eau de Parfum</span>
             <span className="text-[#C58652]">•</span>
             <span>الدفع عند الاستلام</span>
             <span className="text-[#C58652]">•</span>
-            <span>ميثاق استرداد كامل بالضمان</span>
+            <span>عينة 2 مل مع كل زجاجة</span>
           </div>
         </div>
       </section>

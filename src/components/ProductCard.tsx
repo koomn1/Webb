@@ -21,8 +21,8 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
     setTimeout(() => setAddedEffect(false), 1800);
   };
 
-  const isZeste = perfume.id === "zeste";
-  const isAura = perfume.id === "aura";
+  const isZeste = perfume.id === "sen-zeste";
+  const isAura = perfume.id === "sen-aura";
 
   return (
     <div className="group relative flex flex-col bg-[#161413] border border-[#2B2724] hover:border-[#E4C7A8]/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.7)]">
@@ -76,8 +76,8 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
         <div>
           {/* Concentration */}
           <div className="flex items-center justify-between text-xs mb-2">
-            <span className="text-[#E4C7A8] tracking-widest font-semibold text-[11px] uppercase">
-              {perfume.concentration} • {perfume.oilPct}%
+              <span className="text-[#E4C7A8] tracking-widest font-semibold text-[11px] uppercase">
+              {perfume.concentration}
             </span>
           </div>
 
@@ -145,7 +145,7 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" strokeWidth={1.75} />
-                  <span>طلب الآن (COD)</span>
+                  <span>أضف إلى السلة</span>
                 </>
               )}
             </button>

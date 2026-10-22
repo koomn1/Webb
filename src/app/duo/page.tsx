@@ -56,13 +56,13 @@ export default function DuoPage() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
               <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-              <span>الإصدار الملكي المتكامل • سين</span>
+              <span>باقة الثنائي • سين</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white font-medium mb-4">
               باقة الثنائي الملكية <span className="champagne-gradient-text italic font-serif">Zeste & Aura</span>
             </h1>
             <p className="max-w-2xl mx-auto text-stone-400 text-xs sm:text-base leading-relaxed font-light">
-              التناغم الأرقى بين هيبة الرجل العصري وجاذبية المرأة الآسرة. زجاجتان كاملتان 50 مل + عينتان استكشافيتان 2 مل مع توصيل مجاني وتوفير استثنائي.
+              تضم الباقة زجاجتي Zeste وAura بحجم 50 مل لكل منهما، وعينة 2 مل لكل عطر، مع شحن مجاني.
             </p>
           </div>
 
@@ -85,7 +85,7 @@ export default function DuoPage() {
                   <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
                   <span>مرفق عينتان استكشافيتان 2ml مجاناً</span>
                 </span>
-                <span className="font-mono text-[#E4C7A8]">2 × 50ml (100ml نقي)</span>
+                <span className="font-mono text-[#E4C7A8]">2 × 50ml</span>
               </div>
             </div>
 
@@ -101,7 +101,7 @@ export default function DuoPage() {
                 </h3>
 
                 <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light mb-5">
-                  احصل على تجربة دار سين كاملة بسعر خاص جداً: سحر انتعاش Zeste الصقلي والجلد المدبوغ، مع نعومة Aura المخملية بتوت العليق وزهور السوسن والمسك الأبيض.
+                  تضم الباقة Zeste ببرتقال أحمر وتفاح وبرغموت، وسكر مكرمل ونيرولي وأرز وتونكا وعنبر؛ وAura بتفاح أحمر وبرتقال حلو وبرغموت وسكر مغزول وزهور بيضاء ومسك أبيض وصندل.
                 </p>
 
                 {/* Offer Highlights */}
@@ -136,7 +136,7 @@ export default function DuoPage() {
                     </span>
                   </div>
                   <span className="px-3 py-1 rounded-full bg-[#688A75]/20 text-[#8EBBA0] border border-[#688A75]/30 text-xs font-medium">
-                    وفر 150 ج.م الآن
+                    وفر 150 ج.م
                   </span>
                 </div>
               </div>
@@ -160,13 +160,13 @@ export default function DuoPage() {
                   ) : (
                     <>
                       <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
-                      <span>اقتنِ باقة الثنائي الآن (الدفع عند الاستلام)</span>
+                      <span>اقتنِ باقة الثنائي الآن</span>
                     </>
                   )}
                 </button>
 
                 <p className="text-center text-[11px] text-stone-500 font-light">
-                  ميثاق الثقة والأمان مفعّل تلقائياً: يحق لك استرجاع الطرد واسترداد كامل أموالك فوراً.
+                  مع كل زجاجة عينة 2 مل. تواصل خلال 7 أيام من الاستلام إذا لم يناسبك العطر، مع إبقاء الزجاجة الكبيرة مغلقة. يتحمل العميل شحن المرتجع عند تغيير الرأي، وتتحمل سين تكلفته عند الخطأ أو العيب؛ ويُرد المبلغ بعد وصول المرتجع وفحصه.
                 </p>
               </div>
             </div>
@@ -206,20 +206,20 @@ export default function DuoPage() {
               </div>
               <div className="p-6 sm:p-8">
                 <h3 className="font-serif text-2xl font-medium text-white mb-2">
-                  سطوة الانتعاش الصقلي والجلد المدبوغ
+                  حمضيات وتفاح مع سكر وأخشاب دافئة
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-400 leading-relaxed font-light mb-4">
-                  برغموت كالابريا واليوسفي الصقلي مع دفء السكر المكرمل، يستقران على أخشاب الأرز الأطلسي والجلد المعتق. عطر الثقة والقيادة والهيبة.
+                  برتقال أحمر وتفاح مقرمش وبرغموت، مع سكر مكرمل ومغزول ونيرولي؛ ثم خشب الأرز وحبوب التونكا والعنبر.
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   <span className="px-2.5 py-1 rounded-md bg-[#0C0B0A] text-stone-300 text-xs font-light border border-[#24201D]">
-                    • برغموت كابري
+                    • برتقال أحمر وتفاح وبرغموت
                   </span>
                   <span className="px-2.5 py-1 rounded-md bg-[#0C0B0A] text-stone-300 text-xs font-light border border-[#24201D]">
                     • سكر مكرمل
                   </span>
                   <span className="px-2.5 py-1 rounded-md bg-[#0C0B0A] text-stone-300 text-xs font-light border border-[#24201D]">
-                    • جلد وأرز
+                    • نيرولي وأرز وتونكا وعنبر
                   </span>
                 </div>
               </div>
@@ -241,20 +241,20 @@ export default function DuoPage() {
               </div>
               <div className="p-6 sm:p-8">
                 <h3 className="font-serif text-2xl font-medium text-white mb-2">
-                  سحر الأنوثة المخملية والسوسن الأبيض
+                  تفاح وسكر مغزول وزهور بيضاء
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-400 leading-relaxed font-light mb-4">
-                  توت العليق الفرنسي والتفاح السكري مع زهور السوسن والياسمين، يستقران على الفانيليا المدغشقرية وخشب الصندل والمسك الأبيض الحريري.
+                  تفاح أحمر وبرتقال حلو وبرغموت، مع سكر مغزول وزهور بيضاء، على قاعدة من المسك الأبيض وخشب الصندل.
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   <span className="px-2.5 py-1 rounded-md bg-[#0C0B0A] text-stone-300 text-xs font-light border border-[#24201D]">
-                    • توت وتفاح سكري
+                    • تفاح أحمر وبرتقال حلو وبرغموت
                   </span>
                   <span className="px-2.5 py-1 rounded-md bg-[#0C0B0A] text-stone-300 text-xs font-light border border-[#24201D]">
-                    • سوسن وياسمين
+                    • سكر مغزول وزهور بيضاء
                   </span>
                   <span className="px-2.5 py-1 rounded-md bg-[#0C0B0A] text-stone-300 text-xs font-light border border-[#24201D]">
-                    • صندل ومسك أبيض
+                    • مسك أبيض وخشب الصندل
                   </span>
                 </div>
               </div>

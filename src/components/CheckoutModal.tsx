@@ -277,7 +277,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               </div>
               <div>
                 <h2 id="checkout-title" className="font-serif text-2xl text-white font-medium">
-                  إتمام الطلب • الدفع عند الاستلام (COD)
+                  إتمام الطلب
                 </h2>
                 <span className="text-[11px] text-[#C58652] tracking-wider uppercase block">
                   سين • خدمة التوصيل الخاص

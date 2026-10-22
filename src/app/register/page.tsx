@@ -86,7 +86,7 @@ export default function RegisterPage() {
             S
           </div>
           <span className="font-serif text-2xl tracking-[0.2em] font-light text-white">
-            سين <span className="text-[#C58652] font-semibold">PARIS</span>
+            سين <span className="text-[#C58652] font-semibold">PARFUMS</span>
           </span>
         </Link>
         <h1 className="font-serif text-2xl sm:text-3xl font-medium text-white mb-2">إنشاء حساب جديد</h1>

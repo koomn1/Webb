@@ -28,13 +28,13 @@ export function ProductGrid({ onOpenQuickView }: { onOpenQuickView: (perfume: Pe
       <div className="text-center max-w-3xl mx-auto mb-12">
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#1C1A18] border border-[#E4C7A8]/30 text-[#E4C7A8] text-xs font-semibold uppercase tracking-widest mb-3">
           <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
-          <span>التشكيلة الأيقونية • ÉDITION LIMITÉE</span>
+          <span>تشكيلة SÈN Parfums</span>
         </div>
         <h2 className="font-serif text-3xl sm:text-5xl text-white font-normal mb-4">
           توليفاتٌ عطرية <span className="champagne-gradient-text italic font-serif">تحكي قصة تميزك</span>
         </h2>
         <p className="text-sm sm:text-base text-[#ABA59C] font-light leading-relaxed">
-          صيغت بتركيز 20% Eau de Parfum Intense من أندر الزيوت الفرنسية النقية لضمان تجربة عطرية متكاملة. استلم شحنتك، جرّب العينة المرفقة أولاً في منزلك، وادفع عند الاستلام.
+            عطور Eau de Parfum مع نوتات معلنة لكل توليفة وعينة 2 مل مع كل زجاجة. تظهر رسوم الشحن ووسيلة الدفع قبل تأكيد الطلب.
         </p>
       </div>
 

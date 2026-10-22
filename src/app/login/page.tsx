@@ -69,11 +69,11 @@ export default function LoginPage() {
             S
           </div>
           <span className="font-serif text-2xl tracking-[0.2em] font-light text-white">
-            سين <span className="text-[#C58652] font-semibold">PARIS</span>
+            سين <span className="text-[#C58652] font-semibold">PARFUMS</span>
           </span>
         </Link>
         <h1 className="font-serif text-2xl sm:text-3xl font-medium text-white mb-2">تسجيل الدخول</h1>
-        <p className="text-stone-400 text-xs sm:text-sm font-light">مرحباً بك مجدداً في عالم النيش والعطور الفرنسية النادرة</p>
+        <p className="text-stone-400 text-xs sm:text-sm font-light">مرحباً بك مجدداً في SÈN Parfums</p>
       </div>
 
       {/* Main Card */}

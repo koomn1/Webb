@@ -56,14 +56,14 @@ export function FragranceFinder({ isOpen, onClose, onSelectPerfume }: FragranceF
         {/* Product Selector Tabs */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           {[
-            { id: "zeste", label: "سين Zeste (رجالي)", tag: "انتعاش برغموت كابري والجلد المدبوغ", accent: "border-[#688A75]/50 bg-[#688A75]/10 text-[#8EBBA0]" },
-            { id: "aura", label: "سين Aura (نسائي)", tag: "توت بري وزهور السوسن المخملية", accent: "border-[#A86E85]/50 bg-[#A86E85]/10 text-[#D19BB0]" },
+            { id: "zeste", label: "سين Zeste (رجالي)", tag: "برتقال أحمر وتفاح وبرغموت مع سكر ونيرولي", accent: "border-[#688A75]/50 bg-[#688A75]/10 text-[#8EBBA0]" },
+            { id: "aura", label: "سين Aura (نسائي)", tag: "تفاح أحمر وبرتقال حلو وسكر وزهور بيضاء", accent: "border-[#A86E85]/50 bg-[#A86E85]/10 text-[#D19BB0]" },
             { id: "duo", label: "باقة الثنائي الملكية", tag: "التجربة الكاملة معاً + توصيل مجاني", accent: "border-[#C58652]/50 bg-[#C58652]/10 text-[#E4C7A8]" },
           ].map((item) => (
             <button
               key={item.id}
               type="button"
-              onClick={() => setSelectedGender(item.id as any)}
+              onClick={() => setSelectedGender(item.id as "zeste" | "aura" | "duo")}
               className={`p-3.5 sm:p-4 rounded-2xl text-center border transition-all duration-300 ${
                 selectedGender === item.id
                   ? item.accent + " shadow-[0_0_25px_rgba(197,134,82,0.15)]"
@@ -203,7 +203,7 @@ export function FragranceFinder({ isOpen, onClose, onSelectPerfume }: FragranceF
                   className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] text-xs font-semibold hover:brightness-105 transition-all shadow-md flex items-center gap-1.5"
                 >
                   <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
-                  <span>أضف للسلة (COD)</span>
+                  <span>أضف إلى السلة</span>
                 </button>
               </div>
             </div>

@@ -38,7 +38,7 @@ export function Footer() {
             انضم لنخبة متذوقي العطور النيش
           </h3>
           <p className="text-stone-400 text-xs sm:text-sm font-light max-w-lg mx-auto mb-6 leading-relaxed">
-            استقبل دعوات الإصدارات المحدودة وامتيازات خاصة على توليفات سين Zeste و Aura وتجارب عطرية خاصة تُصنع لك.
+            تعرّف على توليفتي سين Zeste وAura وأخبار العلامة.
           </p>
 
           {!subscribed ? (
@@ -79,7 +79,7 @@ export function Footer() {
               HAUTE PARFUMERIE
             </span>
             <p className="text-stone-400 text-xs leading-relaxed mb-4 font-light">
-              توليفات عطرية بتركيبات نيش فرنسية مبتكرة من Eau de Parfum Intense بتركيز عطري 20%، مع عينة مجانية وميثاق الثقة والأمان.
+              توليفات عطرية Eau de Parfum بنوتات معلنة، مع عينة 2 مل وميثاق الضمان الذهبي.
             </p>
           </div>
 
@@ -113,7 +113,7 @@ export function Footer() {
                 </a>
               </li>
               <li className="text-[11px] text-stone-500 pt-1 font-light">
-                فريق الاستشارات العطرية متواجد طوال أيام الأسبوع.
+                للاستفسارات ومتابعة الطلب، تواصل عبر الهاتف أو واتساب.
               </li>
             </ul>
           </div>
@@ -180,7 +180,7 @@ export function Footer() {
                 </li>
               )}
               <li>الدفع عند الاستلام لكافة المحافظات</li>
-              <li>توصيل سريع ومؤمن بعناية فائقة</li>
+              <li>تظهر رسوم التوصيل حسب المحافظة قبل تأكيد الطلب</li>
               <li>ميثاق استرجاع مريح بعينة الـ 2ml المجانية</li>
             </ul>
           </div>

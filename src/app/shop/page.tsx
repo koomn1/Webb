@@ -37,7 +37,7 @@ export default function ShopPage() {
             توليفات دار <span className="champagne-gradient-text">سين</span>
           </h1>
           <p className="max-w-2xl mx-auto text-stone-400 text-sm sm:text-base leading-relaxed font-light">
-            عطور Eau de Parfum Intense بتركيز 20%. كل زجاجة تتضمن عينة استكشافية 2 مل مجاناً مع ميثاق الثقة والدفع عند الاستلام.
+            عطور Eau de Parfum بنوتات معلنة. كل زجاجة تتضمن عينة 2 مل، وتظهر رسوم الشحن وطريقة الدفع قبل تأكيد الطلب.
           </p>
 
           {/* Quick Filter Buttons */}

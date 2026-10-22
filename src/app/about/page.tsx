@@ -32,13 +32,13 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#161413] border border-[#C58652]/30 text-[#E4C7A8] text-xs font-medium uppercase tracking-widest mb-4">
             <Sparkles className="w-3.5 h-3.5 text-[#C58652]" strokeWidth={1.5} />
-            <span>قصة الدار • L'HISTOIRE DE سين</span>
+            <span>قصة الدار • L&apos;HISTOIRE DE سين</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white font-medium mb-6">
-            سحر باريس <span className="champagne-gradient-text italic font-serif">وعراقة القاهرة</span>
+            حكاية دار <span className="champagne-gradient-text italic font-serif">سين</span>
           </h1>
           <p className="max-w-2xl mx-auto text-stone-400 text-sm sm:text-base leading-relaxed font-light">
-            وُلدت دار سين لتقدم المفهوم الأصيل لعطور النيش الفاخرة: Eau de Parfum Intense بتركيز عطري 20% دون وسطاء أو تكاليف باهظة، وبميثاق ثقة يضمن لك التجربة الكاملة قبل أي قرار.
+            تقدم دار سين توليفات Eau de Parfum بنوتات واضحة، مع عينة 2 مل تتيح لك تجربة الرائحة قبل فتح الزجاجة الكبيرة.
           </p>
         </div>
       </section>
@@ -56,9 +56,9 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0C0B0A]/80 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 glass-champagne p-4 rounded-2xl text-xs text-stone-300">
               <span className="text-[#E4C7A8] font-medium text-sm block mb-1">
-                استخلاص نقي بمدينة غراس الفرنسية (Grasse)
+                Zeste وAura • نوتات معلنة
               </span>
-              نعتمد على زيوت نادرة تخضع لأدق معايير النقاء والثبات.
+              تعرّف على مكونات كل توليفة في صفحات العطور.
             </div>
           </div>
 
@@ -67,7 +67,7 @@ export default function AboutPage() {
               لماذا اخترنا أن نكون مختلفين؟
             </h2>
             <p className="text-stone-300 text-xs sm:text-sm leading-relaxed font-light">
-              معظم العطور المتداولة في الأسواق إما باهظة الثمن بسبب الإعلانات والوسطاء، أو تفتقر إلى النقاء والثبات الحقيقي. في دار سين، قررنا صياغة المعادلة العادلة:
+              نعرض نوتات العطر ومعلومات الطلب بوضوح، ونرفق عينة 2 مل مع كل زجاجة لتجربتها في المنزل قبل فتح العبوة الأساسية.
             </p>
 
             <div className="space-y-4">
@@ -76,9 +76,9 @@ export default function AboutPage() {
                   <Award className="w-4 h-4" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-white mb-1">Eau de Parfum Intense بتركيز 20%</h4>
+                  <h4 className="text-sm font-medium text-white mb-1">Eau de Parfum</h4>
                   <p className="text-xs text-stone-400 font-light leading-relaxed">
-                    نعلن تركيزاً عطرياً بنسبة 20% ضمن فئة Eau de Parfum Intense، ونرفق عينة تمنحك فرصة اختبار الرائحة قبل فتح الزجاجة.
+                    تجد نوتات كل توليفة معلنة في صفحة المنتج، مع عينة 2 مل للتجربة قبل فتح الزجاجة.
                   </p>
                 </div>
               </div>
@@ -90,7 +90,7 @@ export default function AboutPage() {
                 <div>
                   <h4 className="text-sm font-medium text-white mb-1">ميثاق الثقة والأمان (العينة 2ml)</h4>
                   <p className="text-xs text-stone-400 font-light leading-relaxed">
-                    لا تشتري عطراً دون أن تجربه. كل طلب يحتوي عينة 2ml مجانية؛ جرّبها في بيتك، وإن لم تُعجبك، استرد كامل أموالك فوراً.
+                    كل زجاجة 50 مل معها عينة 2 مل. إذا لم يناسبك العطر، تواصل خلال 7 أيام من الاستلام مع إبقاء الزجاجة الكبيرة مغلقة. يتحمل العميل شحن المرتجع عند تغيير الرأي، وتتحمل سين تكلفته عند الخطأ أو العيب؛ ويُرد المبلغ بعد وصول المرتجع وفحصه.
                   </p>
                 </div>
               </div>

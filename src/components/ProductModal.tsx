@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Perfume, FRAGRANCE_OIL_PERCENTAGE } from "@/data/perfumes";
+import { Perfume } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
 import { X, ShoppingBag, Check, ShieldCheck, Sparkles, Phone, Compass } from "lucide-react";
 import { appLink } from "@/lib/paths";
@@ -78,7 +78,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
           )}
 
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-stone-300 glass-champagne px-4 py-2.5 rounded-2xl">
-            <span className="font-light">{perfume.concentration} • تركيز عطري {FRAGRANCE_OIL_PERCENTAGE}%</span>
+            <span className="font-light">{perfume.concentration}</span>
             <span className="text-[#E4C7A8] font-mono font-medium">{perfume.volumeMl}ml</span>
           </div>
         </div>
@@ -147,7 +147,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
               <span className="text-stone-200 font-medium">{perfume.sillage}</span>
             </div>
             <div>
-              <span className="text-stone-500 block mb-0.5">ثبات الزيوت النقية:</span>
+              <span className="text-stone-500 block mb-0.5">مدة الأثر:</span>
               <span className="text-stone-200 font-medium">{perfume.longevity}</span>
             </div>
           </div>
@@ -159,7 +159,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
               <span>ميثاق الثقة والأمان:</span>
             </div>
             <p className="text-[11px] text-stone-300 leading-relaxed font-light">
-              ستحصل على عينة 2 مل مطابقة ومغلفة لتجربتها أولاً. في حال لم يطابق العطر ذوقك، يمكنك استرجاع الزجاجة الـ 50 مل المغلقة واسترداد كامل قيمتها دون أي سؤال أو تكلفة.
+              مع كل زجاجة عينة 2 مل. جرّبها أولاً، وإذا لم يناسبك العطر فتواصل خلال 7 أيام من الاستلام لإرجاع الزجاجة الكبيرة مغلقة. يتحمل العميل شحن المرتجع عند تغيير الرأي، وتتحمل سين تكلفته للمنتج الخاطئ أو المعيب، ويُرد المبلغ بعد وصول المرتجع وفحصه.
             </p>
           </div>
 
@@ -188,7 +188,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
 
             {/* Total Price */}
             <div className="text-start">
-              <span className="text-[10px] text-stone-500 uppercase tracking-wider block">الإجمالي (الدفع عند الاستلام):</span>
+                <span className="text-[10px] text-stone-500 uppercase tracking-wider block">الإجمالي:</span>
               <span className="font-serif text-2xl font-medium text-[#E4C7A8]">
                 {totalPrice.toLocaleString()} ج.م
               </span>
@@ -213,7 +213,7 @@ export function ProductModal({ perfume, onClose }: ProductModalProps) {
             ) : (
               <>
                 <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
-                <span>إضافة إلى حقيبة الطلب (الدفع عند الاستلام)</span>
+                <span>أضف إلى السلة</span>
               </>
             )}
           </button>

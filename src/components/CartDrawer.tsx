@@ -344,10 +344,14 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               )}
 
               <div className="flex items-center justify-between text-xs text-stone-500">
-                <span>التسليم والدفع:</span>
+                <span>رسوم الشحن:</span>
                 <span className="text-[#E4C7A8] font-medium">
-                  {isFreeShipping ? "توصيل مجاني (الدفع عند الاستلام)" : "الدفع عند الاستلام (COD)"}
+                  {isFreeShipping ? "توصيل مجاني" : "تُحدد الرسوم بعد اختيار المحافظة"}
                 </span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-stone-500">
+                <span>طريقة الدفع:</span>
+                <span className="text-[#E4C7A8] font-medium">الدفع عند الاستلام (COD)</span>
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-[#24201D] text-white">
@@ -369,7 +373,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               }}
               className="w-full min-h-[50px] py-3.5 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] font-semibold text-xs uppercase tracking-wider hover:shadow-[0_0_30px_rgba(197,134,82,0.35)] transition-all flex items-center justify-center gap-2 group"
             >
-              <span>إتمام الطلب (الدفع عند الاستلام فقط)</span>
+              <span>إتمام الطلب</span>
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
             </button>
           </div>

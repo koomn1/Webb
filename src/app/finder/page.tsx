@@ -27,11 +27,18 @@ export default function FinderPage() {
   const { products, addToCart } = useCart();
   const [selectedPerfumeId, setSelectedPerfumeId] = useState<string>("sen-zeste");
   const [activeTier, setActiveTier] = useState<"top" | "heart" | "base">("top");
+  const [audience, setAudience] = useState<"men" | "women" | "both">("men");
+  const [scentPreference, setScentPreference] = useState<"citrus" | "sweet">("citrus");
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [quickViewPerfume, setQuickViewPerfume] = useState<Perfume | null>(null);
 
   const currentPerfume =
     products.find((p) => p.id === selectedPerfumeId) || products[0];
+
+  const chooseAudience = (choice: "men" | "women" | "both") => {
+    setAudience(choice);
+    setSelectedPerfumeId(choice === "both" ? "sen-duo-bundle" : choice === "women" ? "sen-aura" : "sen-zeste");
+  };
 
   const tierImages = {
     top: asset("/images/scent_top.webp"),
@@ -42,18 +49,18 @@ export default function FinderPage() {
   const tierMeta = {
     top: {
       name: "القمة العطرية (Notes de Tête)",
-      timeframe: "اللحظات الأولى (0 - 30 دقيقة)",
-      desc: "الانطباع العطري الأول الذي يأسر الحواس بمجرد استنشاق الرذاذ، يعتمد على الالنغمات الطيارة الخفيفة كالحمضيات الإيطالية والتفاح المقرمش.",
+      timeframe: "الانطباع الأول",
+      desc: "الانطباع الأول في التوليفة؛ تظهر فيه النوتات العليا المعلنة لكل عطر.",
     },
     heart: {
       name: "قلب العطر (Notes de Cœur)",
-      timeframe: "ذروة الحضور العطري (30 دقيقة - 5 ساعات)",
-      desc: "جوهر الشخصية العطرية وروح الزجاجة، يبدأ بالظهور بتدرج بعد هدوء الافتتاحية ليمنح العطر عمقه الباريسي الغني بالزهور والسكر المكرمل.",
+      timeframe: "وسط التكوين",
+      desc: "النوتات التي تكوّن قلب كل عطر كما هو موضح في قائمته.",
     },
     base: {
-      name: "القاعدة والثبات (Notes de Fond)",
-      timeframe: "الأثر الممتد (تطور الأثر العطري)",
-      desc: "قاعدة العطر وعمقه؛ نغمات دافئة من الأخشاب والعنبر والمسك تمنح التكوين امتداده المتدرج.",
+      name: "القاعدة العطرية (Notes de Fond)",
+      timeframe: "قاعدة التكوين",
+      desc: "النوتات الأساسية في التوليفة؛ تختلف تجربة العطر وأثره من شخص إلى آخر.",
     },
   };
 
@@ -71,11 +78,40 @@ export default function FinderPage() {
             <span>المستشار العطري التفاعلي • سين</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-medium text-white mb-4">
-            استكشاف الهرم العطري <span className="champagne-gradient-text italic font-serif">والتكوين النقي</span>
+            اكتشف العطر <span className="champagne-gradient-text italic font-serif">الأنسب لذوقك</span>
           </h1>
           <p className="text-stone-400 text-xs sm:text-base font-light max-w-2xl mx-auto leading-relaxed">
-            اختبر التدرج الطبقي لكل قطرة عطرية كما يصممها خبراء غراس في فرنسا، وتعرّف على تفاصيل المكونات من النفحة الأولى وحتى استقرار القاعدة.
+            أجب عن سؤالين عن لمن العطر وما إذا كنت تفضّل الحمضيات أو النوتات الحلوة، ثم استكشف الهرم العطري للتوليفة المقترحة.
           </p>
+
+          <div className="mt-8 mx-auto max-w-3xl rounded-2xl border border-[#24201D] bg-[#161413]/90 p-5 text-start">
+            <p className="text-xs font-medium text-[#E4C7A8] mb-2">1. لمن تبحث عن العطر؟</p>
+            <div className="flex flex-wrap gap-2 mb-5">
+              {[
+                { id: "men" as const, label: "رجالي" },
+                { id: "women" as const, label: "نسائي" },
+                { id: "both" as const, label: "العطران معاً" },
+              ].map((option) => (
+                <button key={option.id} type="button" aria-pressed={audience === option.id} onClick={() => chooseAudience(option.id)} className={`rounded-full border px-4 py-2 text-xs transition-colors ${audience === option.id ? "border-[#C58652] bg-[#C58652]/15 text-[#E4C7A8]" : "border-[#302C28] text-stone-300 hover:border-[#C58652]/50"}`}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs font-medium text-[#E4C7A8] mb-2">2. أي اتجاه عطري تفضّل؟</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: "citrus" as const, label: "حمضي ومنعش" },
+                { id: "sweet" as const, label: "حلو وناعم" },
+              ].map((option) => (
+                <button key={option.id} type="button" aria-pressed={scentPreference === option.id} onClick={() => setScentPreference(option.id)} className={`rounded-full border px-4 py-2 text-xs transition-colors ${scentPreference === option.id ? "border-[#C58652] bg-[#C58652]/15 text-[#E4C7A8]" : "border-[#302C28] text-stone-300 hover:border-[#C58652]/50"}`}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-4 text-[11px] leading-relaxed text-stone-400" aria-live="polite">
+              الاقتراح الحالي: <span className="text-stone-200">{currentPerfume.nameAr}</span> — {scentPreference === "citrus" ? `نوتات الافتتاحية: ${currentPerfume.topNotes.join("، ")}` : `نوتات القلب: ${currentPerfume.heartNotes.join("، ")}`}.
+            </p>
+          </div>
 
           {/* Fragrance Selector Switch */}
           <div className="mt-8 inline-flex p-1.5 rounded-2xl bg-[#161413] border border-[#24201D] shadow-xl">
@@ -83,7 +119,7 @@ export default function FinderPage() {
               <button
                 key={p.id}
                 type="button"
-                onClick={() => setSelectedPerfumeId(p.id)}
+              onClick={() => chooseAudience(p.gender === "Duo" ? "both" : p.gender === "Femme" ? "women" : "men")}
                 className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs font-medium transition-all duration-300 ${
                   selectedPerfumeId === p.id
                     ? "bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] font-semibold shadow-md"
@@ -117,7 +153,7 @@ export default function FinderPage() {
             </div>
 
             <div className="absolute bottom-4 left-4 right-4 glass-champagne p-3 rounded-xl text-xs text-stone-300 flex items-center justify-between">
-              <span className="text-stone-400 font-light">زمن الظهور:</span>
+              <span className="text-stone-400 font-light">دور المرحلة:</span>
               <span className="text-[#E4C7A8] font-medium">{tierMeta[activeTier].timeframe}</span>
             </div>
           </div>
@@ -141,11 +177,11 @@ export default function FinderPage() {
               {[
                 { id: "top", label: "القمة العطرية (Top)", count: currentPerfume.topNotes.length, notes: currentPerfume.topNotes },
                 { id: "heart", label: "قلب العطر (Heart)", count: currentPerfume.heartNotes.length, notes: currentPerfume.heartNotes },
-                { id: "base", label: "القاعدة والثبات (Base)", count: currentPerfume.baseNotes.length, notes: currentPerfume.baseNotes },
+                { id: "base", label: "القاعدة العطرية (Base)", count: currentPerfume.baseNotes.length, notes: currentPerfume.baseNotes },
               ].map((tier) => (
                 <div
                   key={tier.id}
-                  onClick={() => setActiveTier(tier.id as any)}
+                  onClick={() => setActiveTier(tier.id as "top" | "heart" | "base")}
                   className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer ${
                     activeTier === tier.id
                       ? "bg-[#0C0B0A] border-[#C58652] shadow-[0_0_25px_rgba(197,134,82,0.15)]"
@@ -194,7 +230,7 @@ export default function FinderPage() {
                 <span className="text-stone-200 font-medium">{currentPerfume.sillage}</span>
               </div>
               <div>
-                <span className="text-stone-500 block mb-0.5">مدة الثبات:</span>
+                <span className="text-stone-500 block mb-0.5">مدة الأثر:</span>
                 <span className="text-stone-200 font-medium">{currentPerfume.longevity}</span>
               </div>
             </div>
@@ -223,7 +259,7 @@ export default function FinderPage() {
                   className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] text-xs font-semibold hover:shadow-[0_0_25px_rgba(197,134,82,0.35)] transition-all flex items-center gap-2 shadow-lg"
                 >
                   <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
-                  <span>طلب الآن (COD)</span>
+                  <span>أضف إلى السلة</span>
                 </button>
               </div>
             </div>

@@ -28,26 +28,26 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
         {/* Luxury Brand Monogram Ribbon */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-champagne text-[#F5E4D2] text-xs sm:text-[13px] font-medium mb-6 tracking-widest uppercase shadow-lg">
           <Sparkles className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
-          <span>دار عطور نيش مستوحاة من مدارس العطور الفرنسية • Eau de Parfum Intense بتركيز 20%</span>
+          <span>دار SÈN Parfums • Eau de Parfum</span>
         </div>
 
         {/* Main Headline with Haute Parfumerie Copywriting */}
         <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal tracking-wide text-white leading-[1.15] mb-6">
           <span className="block text-[#E4C7A8] text-xs sm:text-sm font-sans tracking-[0.45em] uppercase mb-4 font-medium">
-            سين HAUTE PARFUMERIE • PARIS
+            SÈN PARFUMS
           </span>
           أثرٌ عطريٌ <span className="champagne-gradient-text font-serif italic">يسبق حضورك</span>
         </h1>
 
         {/* Brand Narrative Copywriting */}
         <p className="max-w-2xl mx-auto text-[#ABA59C] text-sm sm:text-base md:text-lg leading-relaxed mb-8 font-light">
-          حين تلتقي ندرة الزيوت الفرنسية بفلسفة الفخامة الهادئة. صغنا <strong className="text-white font-medium">Zeste للرجل</strong> بنفحات البرتقال الأحمر والسكر المكرمل، و <strong className="text-white font-medium">Aura للأنثى</strong> بعبير التفاح المخملي والمسك الأبيض. اختبر فخامة النيش أولاً في منزلك عبر عينتك المجانية مع كل زجاجة.
+          تعرّف على توليفتي SÈN: <strong className="text-white font-medium">Zeste</strong> ببرتقال أحمر وتفاح وبرغموت، وسكر مكرمل ونيرولي، وأخشاب دافئة؛ و<strong className="text-white font-medium">Aura</strong> بتفاح أحمر وبرتقال حلو وبرغموت، وسكر مغزول وزهور بيضاء ومسك أبيض. تأتي عينة 2 مل مع كل زجاجة لتجربتها أولاً.
         </p>
 
         {/* Price & Guarantee Pill */}
         <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#1C1A18]/90 border border-[#E4C7A8]/30 text-xs sm:text-sm font-medium text-[#ECE5DA] mb-10 shadow-xl">
           <Droplet className="w-4 h-4 text-[#C58652]" strokeWidth={1.75} />
-          <span>50ml Eau de Parfum Intense • تركيز 20% • <strong className="text-white font-serif text-base">650 ج.م</strong> • عينة 2ml مجانية للتجربة قبل فتح العبوة</span>
+          <span>50ml Eau de Parfum • <strong className="text-white font-serif text-base">650 ج.م</strong> • عينة 2ml للتجربة قبل فتح العبوة</span>
         </div>
 
         {/* Action CTAs Linking to Dedicated Independent Pages */}
@@ -84,7 +84,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
               <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
             </div>
             <div className="text-xs">
-              <p className="font-semibold text-white">ميثاق الثقة 100%</p>
+              <p className="font-semibold text-white">الضمان الذهبي</p>
               <p className="text-[#736D65]">عينة 2 مل مجانية مع كل زجاجة لتجربتها أولاً</p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
             </div>
             <div className="text-xs">
               <p className="font-semibold text-white">الدفع عند الاستلام</p>
-              <p className="text-[#736D65]">ادفع فقط بعد استلام الشحنة وفحصها</p>
+              <p className="text-[#736D65]">ادفع للمندوب، ثم جرّب العينة في المنزل</p>
             </div>
           </div>
 
@@ -105,7 +105,7 @@ export function Hero({ onOpenFinder }: { onOpenFinder?: () => void }) {
             </div>
             <div className="text-xs">
               <p className="font-semibold text-white">استشارات 01018995002</p>
-              <p className="text-[#736D65]">فريق دار سين متواجد يومياً لمساعدتك</p>
+              <p className="text-[#736D65]">للاستفسارات ومتابعة الطلب</p>
             </div>
           </div>
         </div>

@@ -60,12 +60,12 @@ export function GoldenGuaranteeSection() {
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-white font-normal mb-6 leading-tight">
-              تجربةٌ عطرية حرة في منزلك <br />
-              <span className="champagne-gradient-text italic font-serif">دون أدنى مخاطرة</span>
+              ابدأ بالعينة في منزلك <br />
+              <span className="champagne-gradient-text italic font-serif">قبل فتح الزجاجة الكبيرة</span>
             </h2>
 
             <p className="text-[#ABA59C] text-sm sm:text-base leading-relaxed font-light mb-8">
-              نرفق مع كل زجاجة 50 مل عينة 2 مل من نفس التوليفة. ادفع عند الاستلام، جرّب العينة في المنزل، وإذا لم تناسبك يمكنك طلب الإرجاع خلال 7 أيام مع بقاء الزجاجة الكبيرة مغلقة.
+              نرفق مع كل زجاجة 50 مل عينة 2 مل من نفس التوليفة. ادفع عند الاستلام، وجرب العينة في المنزل. يمكنك طلب الإرجاع خلال 7 أيام مع بقاء الزجاجة الكبيرة مغلقة؛ يتحمل العميل شحن المرتجع عند تغيير الرأي، وتتحمل سين تكلفته عند الخطأ أو العيب.
             </p>
 
             {/* 4 Steps */}

@@ -27,7 +27,7 @@ export function DuoBundleSection({ onOrder }: { onOrder?: () => void }) {
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute top-4 right-4 bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] font-bold text-xs px-3.5 py-1.5 rounded-full shadow-lg">
-              وفر 150 ج.م فوراً
+              وفر 150 ج.م
             </div>
             <div className="absolute bottom-4 left-4 right-4 glass-luxury py-2.5 px-4 rounded-xl flex items-center justify-between text-xs text-[#ECE5DA]">
               <span className="text-[#F5E4D2] font-semibold">زجاجتان 50 مل (Zeste رجالي + Aura نسائي)</span>
@@ -48,7 +48,7 @@ export function DuoBundleSection({ onOrder }: { onOrder?: () => void }) {
             </h2>
 
             <p className="text-sm sm:text-base text-[#ABA59C] font-light leading-relaxed mb-6">
-              اقتنِ العطرين معاً بسعر ترويجي استثنائي: زجاجة سين Zeste الرجالية المنعشة بنفحات البرتقال الأحمر والسكر المكرمل، وزجاجة سين Aura النسائية الرقيقة بعبير التفاح السكري والمسك الأبيض، مع شحن مجاني وعينتين للضمان الذهبي.
+              تضم الباقة Zeste بنفحات البرتقال الأحمر والتفاح والبرغموت، والسكر المكرمل والنيرولي وخشب الأرز والتونكا والعنبر؛ وAura بالتفاح الأحمر والبرتقال الحلو والبرغموت والسكر المغزول والزهور البيضاء والمسك الأبيض والصندل. تشمل الباقة عينتين 2 مل وشحناً مجانياً.
             </p>
 
             {/* Feature Bullets */}
@@ -69,18 +69,17 @@ export function DuoBundleSection({ onOrder }: { onOrder?: () => void }) {
                 <div className="w-6 h-6 rounded-full bg-[#E4C7A8]/20 flex items-center justify-center text-[#E4C7A8] shrink-0 font-bold text-xs">
                   ✓
                 </div>
-                <span className="text-[#A5C2B0] font-semibold">شحن مجاني وسريع لكافة محافظات مصر والدفع عند الاستلام</span>
+                <span className="text-[#A5C2B0] font-semibold">شحن مجاني لكافة المحافظات</span>
               </div>
             </div>
 
             {/* Price & Buy Action */}
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4 border-t border-[#25221F]">
               <div>
-                <span className="text-xs text-[#736D65] line-through block">1,300 ج.م</span>
                 <span className="font-serif text-3xl font-bold text-[#F5E4D2]">
                   1,150 ج.م
                 </span>
-                <span className="text-[11px] text-[#ABA59C] block">شامل الضريبة والشحن المجاني لباب بيتك</span>
+                <span className="text-[11px] text-[#ABA59C] block">يشمل الشحن المجاني</span>
               </div>
 
               <button
@@ -92,7 +91,7 @@ export function DuoBundleSection({ onOrder }: { onOrder?: () => void }) {
                 className="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-[#E4C7A8] via-[#F5E4D2] to-[#C58652] text-[#0C0B0A] font-bold text-xs uppercase tracking-wider hover:shadow-[0_0_35px_rgba(228,199,168,0.35)] transition-all flex items-center justify-center gap-2 group"
               >
                 <ShoppingBag className="w-4 h-4" strokeWidth={1.75} />
-                <span>اطلب باقة الثنائي الآن (الدفع عند الاستلام)</span>
+                <span>اطلب باقة الثنائي الآن</span>
               </button>
             </div>
           </div>

@@ -18,9 +18,9 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "سين | عطور نيش مستوحاة من مدارس العطور الفرنسية • Zeste & Aura",
+  title: "SÈN Parfums | Zeste & Aura",
   description:
-    "دار سين — عطور Eau de Parfum Intense بتركيز 20% مستوحاة من مدارس العطور الفرنسية، مع عينة استكشافية 2ml وميثاق الثقة والدفع عند الاستلام.",
+    "دار سين — عطور Eau de Parfum بنوتات معلنة، مع عينة 2 مل لكل زجاجة وخيارات التوصيل والدفع عند الاستلام في مصر.",
   keywords: ["سين", "سين", "سين", "عطور سين", "عطر زيست", "عطر أورا", "Zeste", "Aura", "عطور نيش مصر"],
   icons: {
     icon: "/images/sen_monogram.svg",
