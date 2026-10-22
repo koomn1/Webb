@@ -869,13 +869,15 @@ DECLARE
   v_order_status text;
   v_phone text;
 BEGIN
-  SELECT e, o.status, private.normalize_egypt_phone(o.phone)
-  INTO v_event, v_order_status, v_phone
+  SELECT e INTO v_event
   FROM private.order_contact_events e
-  JOIN public.orders o ON o.id = e.order_id
   WHERE e.id = p_event_id
-  FOR UPDATE OF e;
+  FOR UPDATE;
   IF NOT FOUND THEN RETURN jsonb_build_object('success', false, 'reason', 'not_found'); END IF;
+  SELECT o.status, private.normalize_egypt_phone(o.phone)
+  INTO v_order_status, v_phone
+  FROM public.orders o
+  WHERE o.id = v_event.order_id;
   IF EXISTS (SELECT 1 FROM private.order_contact_suppressions s WHERE s.phone_e164 = v_phone) THEN
     RETURN jsonb_build_object('success', false, 'reason', 'opted_out');
   END IF;
