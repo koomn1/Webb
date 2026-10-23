@@ -27,7 +27,7 @@ import {
 import { appLink } from "@/lib/paths";
 
 export default function LandingPage() {
-  const { products } = useCart();
+  const { products, addToCart } = useCart();
   const [isFinderOpen, setIsFinderOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
@@ -99,13 +99,16 @@ export default function LandingPage() {
                   >
                     <div>
                       <div className="relative aspect-square rounded-2xl overflow-hidden mb-6 border border-[#24201D] bg-[#0C0B0A]">
-                        <Image
-                          src={perfume.image}
-                          alt={perfume.name}
-                          fill
-                          unoptimized={perfume.image?.startsWith("data:") || perfume.image?.startsWith("http")}
-                          className="object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
+                        <Link href={appLink(`/product/${perfume.slug}`)} className="absolute inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#E4C7A8]" aria-label={`تفاصيل ${perfume.nameAr}`}>
+                          <Image
+                            src={perfume.image}
+                            alt={perfume.nameAr}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            unoptimized={perfume.image?.startsWith("data:") || perfume.image?.startsWith("http")}
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </Link>
                         <div
                           className={`absolute top-4 right-4 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium border ${
                             isZeste
@@ -118,7 +121,7 @@ export default function LandingPage() {
                       </div>
 
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-serif text-2xl font-medium text-white">{perfume.nameAr}</h3>
+                        <h3 className="font-serif text-2xl font-medium text-white"><Link href={appLink(`/product/${perfume.slug}`)} className="rounded-sm hover:text-[#E4C7A8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E4C7A8]">{perfume.nameAr}</Link></h3>
                         <div className="text-left">
                           <div className="font-serif text-xl font-medium text-[#E4C7A8]">{perfume.price} ج.م</div>
                         </div>
@@ -140,13 +143,14 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <Link
-                    href={appLink("/shop")}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#D8B28C] to-[#C58652] text-[#0C0B0A] font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_0_25px_rgba(197,134,82,0.35)] transition-all shadow-md"
-                  >
-                    <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
-                    <span>اقتنِ العطر مع عينة الاختبار 2ml</span>
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link href={appLink(`/product/${perfume.slug}`)} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#3A342F] px-3 text-xs font-medium text-[#F5E4D2] transition-colors hover:border-[#E4C7A8]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E4C7A8]">
+                      تفاصيل العطر
+                    </Link>
+                    <button type="button" onClick={() => addToCart(perfume, 1)} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E4C7A8] via-[#F5E4D2] to-[#C58652] px-3 text-xs font-bold text-[#0C0B0A] shadow-md transition-shadow hover:shadow-[0_0_25px_rgba(197,134,82,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5E4D2]" aria-label={`إضافة ${perfume.nameAr} إلى الحقيبة`}>
+                      <ShoppingBag className="h-4 w-4" strokeWidth={1.5} /> أضف للسلة
+                    </button>
+                  </div>
                 </div>
               );
             })}

@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Perfume } from "@/data/perfumes";
 import { useCart } from "@/context/CartContext";
-import { ShoppingBag, Eye, Check, ShieldCheck, Sparkles } from "lucide-react";
+import { ShoppingBag, Eye, Check, ShieldCheck } from "lucide-react";
+import { appLink } from "@/lib/paths";
 
 interface ProductCardProps {
   perfume: Perfume;
@@ -58,15 +60,22 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
         </div>
 
         {/* Quick View Button */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div className="absolute inset-x-3 bottom-3 z-10 flex gap-2 opacity-100 transition-opacity duration-200 md:inset-x-4 md:bottom-4 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+          <Link
+            href={appLink(`/product/${perfume.slug}`)}
+            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E4C7A8]/55 bg-[#0C0B0A]/85 px-3 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:border-[#E4C7A8] hover:text-[#F5E4D2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5E4D2]"
+            aria-label={`تفاصيل ${perfume.nameAr}`}
+          >
+            تفاصيل العطر
+          </Link>
           <button
             type="button"
             onClick={() => onOpenQuickView(perfume)}
-            className="px-4 py-2.5 rounded-full glass-luxury border border-[#E4C7A8]/50 text-white hover:text-[#F5E4D2] hover:border-[#E4C7A8] text-xs font-semibold tracking-wider uppercase transition-all duration-200 transform translate-y-3 group-hover:translate-y-0 flex items-center gap-2 shadow-xl"
+            className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-black/70 px-3 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:border-[#E4C7A8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5E4D2]"
             aria-label={`نظرة سريعة على ${perfume.nameAr}`}
           >
-            <Eye className="w-3.5 h-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
-            <span>نظرة سريعة والهرم العطري</span>
+            <Eye className="h-3.5 w-3.5 text-[#E4C7A8]" strokeWidth={1.5} />
+            <span>نظرة سريعة</span>
           </button>
         </div>
       </div>
@@ -82,8 +91,8 @@ export function ProductCard({ perfume, onOpenQuickView }: ProductCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="font-serif text-2xl text-white font-medium mb-1.5 group-hover:text-[#F5E4D2] transition-colors">
-            {perfume.nameAr}
+          <h3 className="mb-1.5 font-serif text-2xl font-medium text-white transition-colors group-hover:text-[#F5E4D2]">
+            <Link href={appLink(`/product/${perfume.slug}`)} className="rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E4C7A8]">{perfume.nameAr}</Link>
           </h3>
 
           {/* Tagline */}

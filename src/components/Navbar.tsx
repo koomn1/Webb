@@ -47,14 +47,16 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="w-10 h-10 flex items-center justify-center rounded-full text-[#ABA59C] hover:text-white hover:bg-[#1C1A18] transition-colors"
-              aria-label="القائمة الرئيسية"
+              className="w-11 h-11 flex items-center justify-center rounded-full text-[#ABA59C] hover:text-white hover:bg-[#1C1A18] transition-colors"
+              aria-label={mobileMenuOpen ? "إغلاق القائمة الرئيسية" : "فتح القائمة الرئيسية"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="sen-mobile-navigation"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" strokeWidth={1.5} /> : <Menu className="w-5 h-5" strokeWidth={1.5} />}
             </button>
             <Link
               href={appLink("/finder")}
-              className="w-10 h-10 flex items-center justify-center rounded-full text-[#E4C7A8] hover:bg-[#1C1A18] transition-colors"
+              className="w-11 h-11 flex items-center justify-center rounded-full text-[#E4C7A8] hover:bg-[#1C1A18] transition-colors"
               title="مستكشف النوتات العطرية"
               aria-label="مستكشف النوتات"
             >
@@ -202,18 +204,18 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#12100E] border-b border-[#25221F] px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-4 duration-200">
-          <nav className="flex flex-col space-y-3 text-sm font-semibold">
+          <nav id="sen-mobile-navigation" aria-label="التنقل الرئيسي للهاتف" className="flex flex-col space-y-3 text-sm font-semibold">
             <Link
               href={appLink("/")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-white hover:text-[#E4C7A8] transition-colors py-1"
+              className="flex min-h-11 items-center text-white transition-colors hover:text-[#E4C7A8]"
             >
               الرئيسية
             </Link>
             <Link
               href={appLink("/shop")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#ABA59C] hover:text-[#E4C7A8] transition-colors py-1"
+              className="flex min-h-11 items-center text-[#ABA59C] transition-colors hover:text-[#E4C7A8]"
             >
               تشكيلة العطور
             </Link>
@@ -221,7 +223,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
               <Link
                 href={appLink("/my-products")}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-[#E4C7A8] hover:text-white transition-colors py-1"
+                className="flex min-h-11 items-center text-[#E4C7A8] transition-colors hover:text-white"
               >
                 منتجاتي وتتبع الطلبات
               </Link>
@@ -229,14 +231,14 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
             <Link
               href={appLink("/duo")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#F5E4D2] hover:text-[#E4C7A8] transition-colors py-1"
+              className="flex min-h-11 items-center text-[#F5E4D2] transition-colors hover:text-[#E4C7A8]"
             >
               باقة الثنائي الملكية
             </Link>
             <Link
               href={appLink("/finder")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#E4C7A8] hover:text-white transition-colors py-1 flex items-center gap-2"
+              className="flex min-h-11 items-center gap-2 text-[#E4C7A8] transition-colors hover:text-white"
             >
               <Compass className="w-4 h-4 text-[#C58652]" strokeWidth={1.5} />
               <span>المستشار العطري والهرم</span>
@@ -244,14 +246,14 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
             <Link
               href={appLink("/guarantee")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#ABA59C] hover:text-[#E4C7A8] transition-colors py-1"
+              className="flex min-h-11 items-center text-[#ABA59C] transition-colors hover:text-[#E4C7A8]"
             >
               ميثاق الثقة والضمان
             </Link>
             <Link
               href={appLink("/about")}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#ABA59C] hover:text-[#E4C7A8] transition-colors py-1"
+              className="flex min-h-11 items-center text-[#ABA59C] transition-colors hover:text-[#E4C7A8]"
             >
               قصة الدار
             </Link>
@@ -267,7 +269,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
                     setMobileMenuOpen(false);
                     logoutUser();
                   }}
-                  className="text-xs text-rose-400 hover:text-rose-300 font-semibold"
+                  className="min-h-11 px-3 text-xs font-semibold text-rose-400 hover:text-rose-300"
                 >
                   تسجيل الخروج
                 </button>
@@ -277,7 +279,7 @@ export function Navbar({ onOpenFinder }: { onOpenFinder?: () => void }) {
                 <Link
                   href={appLink("/login")}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-center py-2.5 rounded-xl bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] font-bold text-xs"
+                  className="flex min-h-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#E4C7A8] to-[#C58652] px-3 text-center text-xs font-bold text-[#0C0B0A]"
                 >
                   تسجيل الدخول / حساب جديد
                 </Link>

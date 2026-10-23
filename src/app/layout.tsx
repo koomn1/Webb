@@ -18,6 +18,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sen-parfums.pages.dev"),
   title: "SÈN Parfums | Zeste & Aura",
   description:
     "دار سين — عطور Eau de Parfum بنوتات معلنة، مع عينة 2 مل لكل زجاجة وخيارات التوصيل والدفع عند الاستلام في مصر.",

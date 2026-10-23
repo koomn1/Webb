@@ -2,7 +2,9 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { appLink } from "@/lib/paths";
 import {
   X,
   Trash2,
@@ -123,7 +125,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-[#161413] border border-[#24201D] text-stone-400 hover:text-white hover:border-[#C58652]/60 transition-colors"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#24201D] bg-[#161413] text-stone-400 transition-colors hover:border-[#C58652]/60 hover:text-white"
             aria-label="إغلاق حقيبة التسوق"
           >
             <X className="w-4 h-4" />
@@ -178,8 +180,8 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                 <div className="flex-1 flex flex-col justify-between">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h4 className="font-serif text-base text-white font-medium leading-snug">
-                        {item.perfume.nameAr}
+                      <h4 className="font-serif text-base font-medium leading-snug text-white">
+                        <Link href={appLink(`/product/${item.perfume.slug}`)} onClick={() => setIsOpen(false)} className="rounded-sm hover:text-[#E4C7A8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E4C7A8]">{item.perfume.nameAr}</Link>
                       </h4>
                       <span className="text-[11px] text-[#C58652] block font-light">
                         {item.perfume.volumeMl}ml • {item.perfume.concentration}
@@ -189,7 +191,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                     <button
                       type="button"
                       onClick={() => removeFromCart(item.id)}
-                      className="text-stone-500 hover:text-rose-400 p-1 transition-colors"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-stone-500 transition-colors hover:bg-rose-400/10 hover:text-rose-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400"
                       aria-label="حذف المنتج"
                     >
                       <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -246,13 +248,13 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
               <p className="text-xs text-stone-400 max-w-xs mx-auto mb-6 leading-relaxed font-light">
                 استكشف توليفات سين Zeste المنعشة، أو نعومة سين Aura المخملية، أو اقتنِ باقة الثنائي الملكية مع ميثاق الثقة التام.
               </p>
-              <button
-                type="button"
+              <Link
+                href={appLink("/shop")}
                 onClick={() => setIsOpen(false)}
-                className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#E4C7A8] to-[#C58652] text-[#0C0B0A] text-xs font-semibold uppercase tracking-wider hover:brightness-105 transition-all shadow-md"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-gradient-to-r from-[#E4C7A8] to-[#C58652] px-6 py-2.5 text-xs font-semibold text-[#0C0B0A] transition-all hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5E4D2]"
               >
-                تصفح التوليفات الحصرية
-              </button>
+                تصفح التشكيلة
+              </Link>
             </div>
           )}
 
@@ -287,7 +289,7 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                   <button
                     type="button"
                     onClick={removeDiscountCode}
-                    className="text-stone-400 hover:text-rose-400 p-1 text-[11px]"
+                    className="min-h-11 min-w-11 rounded-lg px-2 text-[11px] text-stone-400 transition-colors hover:text-rose-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E4C7A8]"
                     title="إزالة الكود"
                   >
                     إلغاء
@@ -302,11 +304,11 @@ export function CartDrawer({ onOpenCheckout }: CartDrawerProps) {
                     onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                     placeholder="كود الخصم (مثال: SEN10)"
                     dir="ltr"
-                    className="flex-1 bg-[#161413] border border-[#24201D] focus:border-[#C58652] rounded-xl px-3.5 py-2 text-xs text-white placeholder-stone-500 font-mono uppercase focus:outline-none"
+                    className="min-h-11 flex-1 rounded-xl border border-[#24201D] bg-[#161413] px-3.5 text-xs font-mono uppercase text-white placeholder-stone-500 focus:border-[#C58652] focus:outline-none"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-[#161413] border border-[#C58652]/40 hover:border-[#C58652] text-[#E4C7A8] text-xs font-semibold shrink-0 transition-colors"
+                    className="min-h-11 shrink-0 rounded-xl border border-[#C58652]/40 bg-[#161413] px-4 text-xs font-semibold text-[#E4C7A8] transition-colors hover:border-[#C58652] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E4C7A8]"
                   >
                     تطبيق
                   </button>
